@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PreferencesController">
+            <connections>
+                <outlet property="screenshotSizeMenu" destination="UrI-JZ-pt5" id="RbG-L0-7Sc"/>
+                <outlet property="screenshotSizePopup" destination="Fol-lv-a1Y" id="W0W-EM-54G"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="k2w-Wa-h0P"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Traces Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="400" height="236"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <view key="contentView" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="400" height="236"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Hz-T1-x1c">
+                        <rect key="frame" x="18" y="143" width="4" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="yAZ-qB-uKD">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lmJ-7z-l7V">
+                        <rect key="frame" x="264" y="81" width="119" height="26"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="esE-bQ-GPh">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="9TN-hA-Bbq">
+                                <items>
+                                    <menuItem title="every 15 min" tag="900" id="MHR-cy-qHq">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="every 30 min" tag="1800" id="gy8-2C-COk">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="every 45 min" tag="2700" id="ctS-5Q-Kw2">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="every 1 hr" tag="3600" id="ThA-3I-0gM">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="every 1.5 hrs" tag="5400" id="11t-fT-phs">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="every 2 hrs" tag="7200" id="hYJ-41-7cJ">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="enabled" keyPath="values.experienceLoop" id="BWH-zZ-oaL"/>
+                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.experienceTime" id="yBN-ho-Mxf"/>
+                        </connections>
+                    </popUpButton>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1s3-g2-KxR">
+                        <rect key="frame" x="18" y="87" width="220" height="18"/>
+                        <buttonCell key="cell" type="check" title="Ask me to bookmark my activity" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UuK-75-D6D">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.experienceLoop" id="uZC-dj-rWl"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SRk-Tp-1k3">
+                        <rect key="frame" x="18" y="200" width="245" height="18"/>
+                        <buttonCell key="cell" type="check" title="Record my activity with screenshots" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="xvG-1l-aM9">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changedScreenshot:" target="-2" id="L9H-Rt-hdb"/>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.screenshots" id="Ou6-PB-JfV"/>
+                        </connections>
+                    </button>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fol-lv-a1Y">
+                        <rect key="frame" x="264" y="196" width="119" height="26"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="BkZ-rt-qbl">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="UrI-JZ-pt5"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageSize" id="Sve-AZ-IeE"/>
+                        </connections>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MCx-He-BaE">
+                        <rect key="frame" x="264" y="170" width="119" height="26"/>
+                        <popUpButtonCell key="cell" type="push" title="1 min" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="60" imageScaling="proportionallyDown" inset="2" selectedItem="9AK-hx-2ds" id="p5f-OP-xsw">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="D6E-E4-w3I">
+                                <items>
+                                    <menuItem title="5 s" tag="5" id="6X8-af-NkJ">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="30 s" tag="30" id="pqy-b3-UlS">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="1 min" state="on" tag="60" id="9AK-hx-2ds">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="5 min" tag="300" id="os1-iu-p3n">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="15 min" tag="900" id="bDY-Zj-h49">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="changedMaxScreenshot:" target="-2" id="vFK-3M-3BY"/>
+                            <binding destination="bq4-b7-72c" name="enabled" keyPath="values.periodicScreenshots" id="R0a-e2-nXE"/>
+                            <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" previousBinding="R0a-e2-nXE" id="K05-md-2Et">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageTimeMax" id="KgS-Bf-G5F"/>
+                        </connections>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jag-5S-acr">
+                        <rect key="frame" x="264" y="145" width="119" height="26"/>
+                        <popUpButtonCell key="cell" type="push" title="100 ms" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="100" imageScaling="proportionallyDown" inset="2" selectedItem="Vmd-sT-BVh" id="09X-sw-uCA">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="iNT-ec-GTk">
+                                <items>
+                                    <menuItem title="100 ms" state="on" tag="100" id="Vmd-sT-BVh">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="250 ms" tag="250" id="gfB-zu-ZS7">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="500 ms" tag="500" id="tCq-oD-7ED">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="1 s" tag="1000" id="uaX-fy-gql">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="5 s" tag="5000" id="uOC-RX-ngQ">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="enabled" keyPath="values.eventScreenshots" id="5dc-Dw-R0E"/>
+                            <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" previousBinding="5dc-Dw-R0E" id="b7Q-je-3Bu">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageTimeMin" id="RNS-ea-qVX"/>
+                        </connections>
+                    </popUpButton>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gej-9d-kwU">
+                        <rect key="frame" x="59" y="174" width="194" height="18"/>
+                        <buttonCell key="cell" type="check" title="once every" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="PZL-HA-Rlp">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" id="53z-zQ-VVR">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.periodicScreenshots" id="tmD-a5-5qM"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RPs-fa-HLl">
+                        <rect key="frame" x="59" y="149" width="194" height="18"/>
+                        <buttonCell key="cell" type="check" title="when I do something, every" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6Dw-AI-eyE">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" id="esV-WZ-gw8">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.eventScreenshots" id="wMn-uf-2de"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1fb-Nd-v0y">
+                        <rect key="frame" x="18" y="119" width="194" height="18"/>
+                        <buttonCell key="cell" type="check" title="Record what I type" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XVh-Re-UO5">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.keystrokes" id="Io0-x5-cDU"/>
+                        </connections>
+                    </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fjq-eI-XUi">
+                        <rect key="frame" x="18" y="52" width="216" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Delete my recrodings from the last" id="JfQ-PH-Cvr">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-Da-zOp">
+                        <rect key="frame" x="264" y="47" width="119" height="26"/>
+                        <popUpButtonCell key="cell" type="push" title="15 min" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="15" imageScaling="proportionallyDown" inset="2" id="fHE-9R-i1h">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="Hqd-50-G36">
+                                <items>
+                                    <menuItem title="15 min" state="on" tag="15" id="Zgm-ic-exC"/>
+                                    <menuItem title="hour" tag="60" id="v48-WD-1OU"/>
+                                    <menuItem title="day" tag="1440" id="yyc-CC-wV0"/>
+                                    <menuItem title="week" tag="7980" id="Adz-R5-Nlb">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="forever" tag="-1" id="WS3-YI-17Z">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="226-0l-pkz">
+                        <rect key="frame" x="260" y="16" width="126" height="32"/>
+                        <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PIc-sZ-IdQ">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="clearData:" target="-2" id="EJ1-q0-yns"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="285" y="401"/>
+        </window>
+        <customObject id="2X5-EM-jwX" customClass="PreferencesController"/>
+        <userDefaultsController representsSharedInstance="YES" id="bq4-b7-72c"/>
+    </objects>
+</document>

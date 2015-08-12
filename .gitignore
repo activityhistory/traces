@@ -1,0 +1,28 @@
+*.pyc
+*.egg-info
+*.key
+build/
+dist/
+dist/traces.app*
+
+.Python
+tests/
+bin/
+lib/
+include/
+
+*.egg
+*.eggs
+
+
+# Created by https://www.gitignore.io
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
+
+## Directory-based project format:
+.idea/

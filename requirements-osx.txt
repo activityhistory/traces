@@ -1,0 +1,6 @@
+pyobjc-core==2.5.1
+pyobjc-framework-Quartz==2.5.1
+pyobjc-framework-Cocoa==2.5.1
+pyobjc-framework-CoreLocation==2.5.1
+pyobjc-framework-LaunchServices==2.5.1
+setuptools==18.0.1_0

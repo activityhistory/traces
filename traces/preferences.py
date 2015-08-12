@@ -1,0 +1,157 @@
+# -*- coding: utf-8 -*-
+"""
+Traces: Activity Tracker
+Copyright (C) 2015 Adam Rule
+with Aurélien Tabard, Jonas Keper, Azeem Ghumman, and Maxime Guyaux
+
+Inspired by Selfspy and Burrito
+https://github.com/gurgeh/selfspy
+https://github.com/pgbovine/burrito/
+
+You should have received a copy of the GNU General Public License
+along with Traces. If not, see <http://www.gnu.org/licenses/>.
+"""
+
+
+import objc
+from objc import IBAction, IBOutlet
+
+from AppKit import *
+from Foundation import *
+
+from Cocoa import NSNotificationCenter
+
+
+def getValueForPreference(pref):
+    """
+    Finds the value for a preference in the defaults controller and returns it
+    The defaults controller lets us save preferences across runnings of the program
+    """
+    try:
+        value = NSUserDefaultsController.sharedUserDefaultsController().values().valueForKey_(pref)
+        return value
+    except:
+        print "Error retrieving preference value"
+        return
+
+# Preferences window controller
+class PreferencesController(NSWindowController):
+
+    # outlets for UI elements
+    screenshotSizePopup = IBOutlet()
+    screenshotSizeMenu = IBOutlet()
+    # clearDataPopup = IBOutlet()
+
+    # dynamic review table
+    list = [{'checked':False, 'image':'', 'app_name':'First App', 'windows':[{'checked':False, 'window_name':'Window 1', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Second App', 'windows':[{'checked':False, 'window_name':'Window 4', 'image':''},{'checked':False, 'window_name':'Window 5', 'image':''},{'checked':False, 'window_name':'Window 6', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Third App', 'windows':[{'checked':False, 'window_name':'Window 7', 'image':''},{'checked':False, 'window_name':'Window 8', 'image':''},{'checked':False, 'window_name':'Window 9', 'image':''}]}]
+    window_list = [{'checked':False, 'window_name':'Window 10', 'image':''},{'checked':False, 'window_name':'Window 11', 'image':''},{'checked':False, 'window_name':'Window 12', 'image':''}]
+    NSMutableDictionary = objc.lookUpClass('NSMutableDictionary')
+    NSNumber = objc.lookUpClass('NSNumber')
+    apps = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in list]
+    windows = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in window_list]
+    sniffer = None
+
+
+    # handle changes to the preferences
+    # TODO enable pausing screenshots
+    @IBAction
+    def changeScreenshot_(self,sender):
+        screenshots = getValueForPreference('screenshots')
+        periodic = getValueForPreference('periodicScreenshots')
+        if recording and periodic:
+            self.sniffer.activity_tracker.startLoops()
+        elif not recording and periodic:
+            self.sniffer.activity_tracker.stopLoops()
+
+    # @IBAction
+    # def changeScreenshotSize_(self,sender):
+    #     print "You asked to pause screenshots. THis function is not enabled now"
+
+    @IBAction
+    def changePeriodicScreenshots_(self,sender):
+        periodic = getValueForPreference('periodicScreenshots')
+        if periodic:
+            self.sniffer.activity_tracker.startLoops()
+        else:
+            self.sniffer.activity_tracker.stopLoops()
+
+    @IBAction
+    def changePeriodicRate_(self,sender):
+        # restart the loop to reflect the current rate
+        self.sniffer.activity_tracker.restartScreenshotLoop()
+
+    # @IBAction
+    # def changeEventScreenshots_(self,sender):
+    #     print "You asked us to start/stop the event screenshots"
+    #
+    # @IBAction
+    # def changeEventRate_(self,sender):
+    #     print "You asked us to change the event rate"
+
+    @IBAction
+    def changeKeystrokeRecording_(self,sender):
+        print "You asked us to start/stop keystroke recording"
+
+    @IBAction
+    def changeBookmark_(self,sender):
+        print "You asked us to start/stop periodic bookmarking"
+
+    @IBAction
+    def changeBookmarkRate_(self,sender):
+        print "You asked us to change the bookmark rate"
+
+    @IBAction
+    def clearData_(self,sender):
+        self.sniffer.activity_tracker.clearData()
+
+    def windowDidLoad(self):
+        NSWindowController.windowDidLoad(self)
+
+        # Set screenshot size options based on screen's native height
+        self.prefController.screenshotSizeMenu.removeAllItems()
+        nativeHeight = int(NSScreen.mainScreen().frame().size.height)
+        menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(str(nativeHeight)+' px', '', '')
+        menuitem.setTag_(nativeHeight)
+        self.prefController.screenshotSizeMenu.addItem_(menuitem)
+
+        sizes = [1080,720,480]
+        for x in sizes:
+            if x < nativeHeight:
+                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(str(x)+' px', '', '')
+                menuitem.setTag_(x)
+                self.prefController.screenshotSizeMenu.addItem_(menuitem)
+
+        # update newly created screenshot size dropdown to select saved preference or default size
+        selectedSize = NSUserDefaultsController.sharedUserDefaultsController().values().valueForKey_('imageSize')
+        selectedMenuItem = self.prefController.screenshotSizeMenu.itemWithTag_(selectedSize)
+        if(selectedMenuItem):
+            self.prefController.screenshotSizePopup.selectItemWithTag_(selectedSize)
+        else:
+            nativeMenuItem = self.prefController.screenshotSizeMenu.itemWithTag_(nativeHeight)
+            NSUserDefaultsController.sharedUserDefaultsController().defaults().setInteger_forKey_(nativeHeight,'imageSize')
+            self.prefController.screenshotSizePopup.selectItemWithTag_(nativeHeight)
+
+    def show(self):
+        try:
+            if self.prefController:
+                self.prefController.close()
+        except:
+            pass
+
+        # open window from NIB file, show front and center
+        self.prefController = PreferencesController.alloc().initWithWindowNibName_("preferences")
+        self.prefController.showWindow_(None)
+        self.prefController.window().makeKeyAndOrderFront_(None)
+        self.prefController.window().center()
+        self.prefController.retain()
+
+
+        # NSNotificationCenter.defaultCenter().postNotificationName_object_('makeAppActive',self)
+
+        # make window close on Cmd-w
+        self.prefController.window().standardWindowButton_(NSWindowCloseButton).setKeyEquivalentModifierMask_(NSCommandKeyMask)
+        self.prefController.window().standardWindowButton_(NSWindowCloseButton).setKeyEquivalent_("w")
+
+        return self.prefController
+
+    show = classmethod(show)
