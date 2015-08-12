@@ -6,6 +6,8 @@ This project was inspired by [Selfspy](https://github.com/gurgeh/selfspy) and [B
 ### Installing Traces
 We regularly compile Traces into a Mac OS X app. Go to the Release page to download the app.
 
+Traces uses MongoDB, so make sure you [download](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) MongoDB and start a MongoDB server before you start Traces. See We are woking on making this process more automatic.
+
 Since Traces takes regular screenshots it can fill your hard drive pretty quickly. We recommend setting your Data storage to an external drive, such as a USB key or SD card. Simply copy the `traces.cfg` file to the root of your desired data storage volume and mount the device onto your computer. Traces will recognize the volume and save its data there.
 
 To install manually on OSX 10.10 you should do the following:
