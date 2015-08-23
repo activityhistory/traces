@@ -29,15 +29,14 @@ class Storage:
     def __init__(self):
       #TODO need to ensure that MongoDB is running so we can use it without
       # throwing an error
-
-
+      pass
+      
     def parseLogs(self):
       if (cfg.STORAGE is "mongo"):
           self.parseToMongo()
-      elif: 
-          self.parseToSQLite()
       else:
-          raise Exception("No database defined")
+          self.parseToSQLite()
+          # raise Exception("No database defined")
 
     def parseToMongo(self):
       # open database server
@@ -81,3 +80,4 @@ class Storage:
         #         os.remove(os.path.join(screenshot_directory,f))
 
         # print "You asked to delete the last " + text + " of your history"
+        pass
