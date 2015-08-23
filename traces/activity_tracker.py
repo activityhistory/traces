@@ -17,21 +17,15 @@ import os
 import datetime
 import threading
 
-import pymongo
-
 from Foundation import *
 from AppKit import *
 from Cocoa import NSNotificationCenter
 
+from data.storage import Storage
+
 import preferences
 import config as cfg
 import sniff_cocoa as sniffer
-
-import key_parser
-import click_parser
-import scroll_parser
-import move_parser
-import app_parser
 
 
 class ActivityTracker:
@@ -43,6 +37,8 @@ class ActivityTracker:
 
         self.last_parse = cfg.NOW()
         self.parseTimer = None
+        
+        self.storage = Storage()
 
     def checkLoops(self):
         recording = preferences.getValueForPreference('recording')
@@ -101,52 +97,15 @@ class ActivityTracker:
             self.screenshotTimer.cancel()
         self.run_screenshot_loop()
 
-    # TODO make this os agnostic, and make it work for MongoDB
-    # TODO figure out way to pass number of minutes to this method
     def clearData(self):
-        # minutes_to_delete = notification.object().clearDataPopup.selectedItem().tag()
-        # text = notification.object().clearDataPopup.selectedItem().title()
-        #
-        # if minutes_to_delete == -1:
-        #     delete_from_time = datetime.datetime.min
-        # else:
-        #     delta = datetime.timedelta(minutes=minutes_to_delete)
-        #     now = datetime.datetime.now()
-        #     delete_from_time = now - delta
-        #
-        # # delete data from all tables
-        #
-        # screenshot_directory = os.path.expanduser(os.path.join(cfg.CURRENT_DIR,"screenshots"))
-        # screenshot_files = os.listdir(screenshot_directory)
-        #
-        # for f in screenshot_files:
-        #     if f[0:19] > delete_from_time.strftime("%y%m%d-%H%M%S%f") or  minutes_to_delete == -1 :
-        #         os.remove(os.path.join(screenshot_directory,f))
-
-        # print "You asked to delete the last " + text + " of your history"
+        self.storage.clearData()
         print "You asked to delete history"
 
     # TODO make it easier for others to add parser files for extensions
     def parseLogs(self):
         print "Parsing log files."
 
-        #TODO need to ensure that MongoDB is running so we can use it without
-        # throwing an error
-
-        # open database server
-        client = pymongo.MongoClient()
-        db = client[cfg.DB]
-        try:
-            # parse all the relevant log files
-            key_parser.parse_keys(db)
-            click_parser.parse_clicks(db)
-            scroll_parser.parse_scrolls(db)
-            move_parser.parse_moves(db)
-            app_parser.parse_apps(db)
-            app_parser.parse_windows(db)
-            app_parser.parse_geometries(db)
-        except:
-            print "Had an issue with parsing"
+        self.storage.parseLogs()
 
         self.last_parse = cfg.NOW()
         self.parseTimer = threading.Timer(cfg.PARSEDELAY, self.parseLogs)

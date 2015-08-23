@@ -27,6 +27,8 @@ MOVELOG = 'move.log'
 SCROLLLOG = 'scroll.log'
 WINDOWLOG = 'window.log'
 
+STORAGE = "mongo"
+
 # mongodb names
 DB = "traces"
 RECORDERCOL = "recorder"

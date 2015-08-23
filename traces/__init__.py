@@ -14,7 +14,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
-import data_storage
+import data
 import config as cfg
 from activity_tracker import ActivityTracker
 
@@ -23,10 +23,10 @@ def main():
     print "Traces is starting"
 
     # find if external drives at attached for recording
-    data_storage.checkDrive()
+    data.checkDrive()
 
     # create directories to store data,
-    data_storage.createDataDirectories(os.path.expanduser(cfg.LOCAL_DIR))
+    data.createDataDirectories(os.path.expanduser(cfg.LOCAL_DIR))
 
     # start activity tracker
     astore = ActivityTracker()
