@@ -10,6 +10,7 @@ tests/
 bin/
 lib/
 include/
+Debug/
 
 *.egg
 *.eggs
@@ -26,3 +27,4 @@ include/
 
 ## Directory-based project format:
 .idea/
+
