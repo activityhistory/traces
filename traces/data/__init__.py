@@ -16,6 +16,7 @@ import os
 import sys
 import config as cfg
 
+
 def createDataDirectories(d):
     """
     Create directories to store data
@@ -50,12 +51,15 @@ def lookupThumbdrive(namefilter=""):
         if namefilter in directory :
             volume = os.path.join(cfg.VOLUMES, directory)
             if (os.path.ismount(volume)) :
-                subDirs = os.listdir(volume)
-                for filename in subDirs:
-                    if "traces.cfg" == filename :
-                        print "backup drive found ", volume
-                        cfg.THUMBDRIVE_DIR = volume
-                        return cfg.THUMBDRIVE_DIR
+                try:
+                    subDirs = os.listdir(volume)
+                    for filename in subDirs:
+                        if "traces.cfg" == filename :
+                            print "backup drive found ", volume
+                            cfg.THUMBDRIVE_DIR = volume
+                            return cfg.THUMBDRIVE_DIR
+                except Exception, OSError:
+                    NSLog(e)
     return None
 
 def defineCurrentDrive():
