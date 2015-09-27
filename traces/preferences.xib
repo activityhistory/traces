@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferencesController">
@@ -97,7 +97,7 @@
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MCx-He-BaE">
                         <rect key="frame" x="264" y="170" width="119" height="26"/>
-                        <popUpButtonCell key="cell" type="push" title="1 min" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="60" imageScaling="proportionallyDown" inset="2" selectedItem="9AK-hx-2ds" id="p5f-OP-xsw">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="p5f-OP-xsw">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="D6E-E4-w3I">
@@ -108,10 +108,10 @@
                                     <menuItem title="30 s" tag="30" id="pqy-b3-UlS">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="1 min" state="on" tag="60" id="9AK-hx-2ds">
+                                    <menuItem title="1 min" tag="60" id="9AK-hx-2ds">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="5 min" tag="300" id="os1-iu-p3n">
+                                    <menuItem title="5 min" state="on" tag="300" id="os1-iu-p3n">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="15 min" tag="900" id="bDY-Zj-h49">
@@ -122,29 +122,29 @@
                         </popUpButtonCell>
                         <connections>
                             <action selector="changedMaxScreenshot:" target="-2" id="vFK-3M-3BY"/>
+                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageTimeMax" id="KgS-Bf-G5F"/>
                             <binding destination="bq4-b7-72c" name="enabled" keyPath="values.periodicScreenshots" id="R0a-e2-nXE"/>
                             <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" previousBinding="R0a-e2-nXE" id="K05-md-2Et">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageTimeMax" id="KgS-Bf-G5F"/>
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jag-5S-acr">
                         <rect key="frame" x="264" y="145" width="119" height="26"/>
-                        <popUpButtonCell key="cell" type="push" title="100 ms" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="100" imageScaling="proportionallyDown" inset="2" selectedItem="Vmd-sT-BVh" id="09X-sw-uCA">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="09X-sw-uCA">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="iNT-ec-GTk">
                                 <items>
-                                    <menuItem title="100 ms" state="on" tag="100" id="Vmd-sT-BVh">
+                                    <menuItem title="100 ms" tag="100" id="Vmd-sT-BVh">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="250 ms" tag="250" id="gfB-zu-ZS7">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="500 ms" tag="500" id="tCq-oD-7ED">
+                                    <menuItem title="500 ms" state="on" tag="500" id="tCq-oD-7ED">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="1 s" tag="1000" id="uaX-fy-gql">
@@ -158,12 +158,12 @@
                         </popUpButtonCell>
                         <connections>
                             <binding destination="bq4-b7-72c" name="enabled" keyPath="values.eventScreenshots" id="5dc-Dw-R0E"/>
+                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageTimeMin" id="RNS-ea-qVX"/>
                             <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" previousBinding="5dc-Dw-R0E" id="b7Q-je-3Bu">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.imageTimeMin" id="RNS-ea-qVX"/>
                         </connections>
                     </popUpButton>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gej-9d-kwU">
@@ -173,12 +173,12 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.periodicScreenshots" id="tmD-a5-5qM"/>
                             <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" id="53z-zQ-VVR">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="bq4-b7-72c" name="value" keyPath="values.periodicScreenshots" id="tmD-a5-5qM"/>
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RPs-fa-HLl">
@@ -188,12 +188,12 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
+                            <binding destination="bq4-b7-72c" name="value" keyPath="values.eventScreenshots" id="wMn-uf-2de"/>
                             <binding destination="bq4-b7-72c" name="hidden" keyPath="values.screenshots" id="esV-WZ-gw8">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="bq4-b7-72c" name="value" keyPath="values.eventScreenshots" id="wMn-uf-2de"/>
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1fb-Nd-v0y">
@@ -216,12 +216,12 @@
                     </textField>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-Da-zOp">
                         <rect key="frame" x="264" y="47" width="119" height="26"/>
-                        <popUpButtonCell key="cell" type="push" title="15 min" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="15" imageScaling="proportionallyDown" inset="2" id="fHE-9R-i1h">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="fHE-9R-i1h">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="Hqd-50-G36">
                                 <items>
-                                    <menuItem title="15 min" state="on" tag="15" id="Zgm-ic-exC"/>
+                                    <menuItem title="15 min" tag="15" id="Zgm-ic-exC"/>
                                     <menuItem title="hour" tag="60" id="v48-WD-1OU"/>
                                     <menuItem title="day" tag="1440" id="yyc-CC-wV0"/>
                                     <menuItem title="week" tag="7980" id="Adz-R5-Nlb">
