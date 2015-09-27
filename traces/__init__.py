@@ -31,7 +31,7 @@ def main():
     data.checkDrive()
 
     # create directories to store data,
-    data.createDataDirectories(os.path.expanduser(cfg.LOCAL_DIR))
+    data.createDataDirectories(os.path.expanduser(cfg.CURRENT_DIR))
 
     # start activity tracker
     astore = ActivityTracker()

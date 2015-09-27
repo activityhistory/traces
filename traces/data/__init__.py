@@ -64,7 +64,7 @@ def lookupThumbdrive(namefilter=""):
 
 def defineCurrentDrive():
     if (isThumbdrivePlugged()):
-        cfg.CURRENT_DIR = cfg.THUMBDRIVE_DIR
+        cfg.CURRENT_DIR = os.path.join(cfg.THUMBDRIVE_DIR, "traces")
     else:
         cfg.CURRENT_DIR = os.path.expanduser(cfg.LOCAL_DIR)
 
