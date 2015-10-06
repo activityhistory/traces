@@ -15,28 +15,63 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import pymongo
+import sqlalchemy
 
 import config as cfg
 
-import mongo.key_parser
-import mongo.click_parser
-import mongo.scroll_parser
-import mongo.move_parser
-import mongo.app_parser
+import utils_cocoa
+import preferences
+
+import data.sqlite.key_parser as key_parser
+import data.sqlite.click_parser as click_parser
+import data.sqlite.scroll_parser as scroll_parser
+import data.sqlite.move_parser as move_parser
+
+import data.sqlite.models as models
+
+from data.sqlite.models import (Click, Keys, Move, Scroll, App, AppEvent, Window,
+                    WindowEvent, RecordingEvent, Geometry)
+
+# import mongo.key_parser
+# import mongo.click_parser
+# import mongo.scroll_parser
+# import mongo.move_parser
+# import mongo.app_parser
+
+# import sqlite.key_parser
+# import sqlite.click_parser
+# import sqlite.scroll_parser
+# import sqlite.move_parser
+# import sqlite.app_parser
 
 
 class Storage:
-    def __init__(self):
-      #TODO need to ensure that MongoDB is running so we can use it without
-      # throwing an error
-      pass
-      
+    def __init__(self, activity_tracker):
+        self.db_name = os.path.join(cfg.CURRENT_DIR, cfg.SQLDB)
+        self.last_commit = cfg.NOW()
+        self.activity_tracker = activity_tracker
+
+        # make sql database
+        if cfg.STORAGE == "sqlite":
+            try:
+                self.session_maker = models.initialize(self.db_name)
+                self.session = self.session_maker()
+
+            except sqlalchemy.exc.OperationalError:
+                # show modal error
+                print "Database operational error. Your storage device may be full. Exiting Selfspy..."
+                utils_cocoa.show_alert("Database operational error. Your storage device may be full. Exiting Selfspy...")
+
+                # close the program
+                sys.exit()
+
     def parseLogs(self):
-      if (cfg.STORAGE is "mongo"):
-          self.parseToMongo()
-      else:
-          self.parseToSQLite()
-          # raise Exception("No database defined")
+        print "parsing logs"
+        if (cfg.STORAGE is "mongo"):
+            self.parseToMongo()
+        else:
+            self.parseToSqlite()
+            # raise Exception("No database defined")
 
     def parseToMongo(self):
       # open database server
@@ -44,19 +79,43 @@ class Storage:
       db = client[cfg.DB]
       try:
           # parse all the relevant log files
-          key_parser.parse_keys(db)
-          click_parser.parse_clicks(db)
-          scroll_parser.parse_scrolls(db)
-          move_parser.parse_moves(db)
-          app_parser.parse_apps(db)
-          app_parser.parse_windows(db)
-          app_parser.parse_geometries(db)
+          data.mongo.key_parser.parse_keys(db)
+          data.mongo.click_parser.parse_clicks(db)
+          data.mongo.scroll_parser.parse_scrolls(db)
+          data.mongo.move_parser.parse_moves(db)
+          data.mongo.app_parser.parse_apps(db)
+          data.mongo.app_parser.parse_windows(db)
+          data.mongo.app_parser.parse_geometries(db)
       except:
-          print "Had an issue with parsing"
-        
-    def parseToSQLite(self):
-      pass
-    
+          print "Had an issue parsing to MongoDB"
+
+    def parseToSqlite(self):
+        key_parser.parse_keys(self.session)
+        click_parser.parse_clicks(self.session)
+        scroll_parser.parse_scrolls(self.session)
+        move_parser.parse_moves(self.session)
+        #TODO add app parsing
+        self.sqlcommit()
+
+    def sqlcommit(self):
+        self.last_commit = cfg.NOW()
+        for _ in xrange(1000):
+            try:
+                self.session.commit()
+                break
+            except sqlalchemy.exc.OperationalError:
+                # pause recording
+                if(preferences.getValueForPreference("recording")):
+                    self.activity_tracker.sniffer.delegate.toggleLogging_(self)
+                self.session.rollback()
+                # show modal alert
+                print "Database operational error. Your storage device may be full. Turning off Selfspy recording."
+                utils_cocoa.show_alert("Database operational error. Your storage device may be full. Turning off Selfspy recording.")
+                break
+            except:
+                print "Rollback database"
+                self.session.rollback()
+
     # TODO make this os agnostic, and make it work for MongoDB
     # TODO figure out way to pass number of minutes to this method
     def clearData(self):

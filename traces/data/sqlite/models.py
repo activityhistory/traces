@@ -50,50 +50,50 @@ class Click(Core, Base):
     x = Column(Integer, nullable=False)
     y = Column(Integer, nullable=False)
 
-    app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
-    app = relationship("App", backref=backref('clicks'))
+    # app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
+    # app = relationship("App", backref=backref('clicks'))
+    #
+    # window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
+    # window = relationship("Window", backref=backref('clicks'))
+    #
+    # geometry_id = Column(Integer, ForeignKey('geometry.id'), nullable=False)
+    # geometry = relationship("Geometry", backref=backref('clicks'))
 
-    window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
-    window = relationship("Window", backref=backref('clicks'))
-
-    geometry_id = Column(Integer, ForeignKey('geometry.id'), nullable=False)
-    geometry = relationship("Geometry", backref=backref('clicks'))
-
-    def __init__(self, time, button, x, y, app_id, window_id, geometry_id):
+    def __init__(self, time, button, x, y): #app_id, window_id, geometry_id):
         self.time = time
         self.button = button
         self.x = x
         self.y = y
-        self.app_id = app_id
-        self.window_id = window_id
-        self.geometry_id = geometry_id
+        # self.app_id = app_id
+        # self.window_id = window_id
+        # self.geometry_id = geometry_id
 
     def __repr__(self):
         return "<%d Click (%d, %d)>" % (self.button, self.x, self.y)
 
 
 class Keys(Core, Base):
-    key = Column(Binary)
-    modifiers = Column (Binary)
+    key = Column(Unicode, index=True)
+    modifiers = Column(Unicode, index=True)
 
-    app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
-    app = relationship("App", backref=backref('keys'))
+    # app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
+    # app = relationship("App", backref=backref('keys'))
+    #
+    # window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
+    # window = relationship("Window", backref=backref('keys'))
+    #
+    # geometry_id = Column(Integer, ForeignKey('geometry.id'), nullable=False)
+    # geometry = relationship("Geometry", backref=backref('keys'))
 
-    window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
-    window = relationship("Window", backref=backref('keys'))
-
-    geometry_id = Column(Integer, ForeignKey('geometry.id'), nullable=False)
-    geometry = relationship("Geometry", backref=backref('keys'))
-
-    def __init__(self, time, key, modifiers, app_id, window_id, geometry_id):
+    def __init__(self, time, key, modifiers): #, app_id, window_id, geometry_id):
 
         self.time = time
         self.key = key
         self.modifiers = modifiers
-        self.started = started
-        self.app_id = app_id
-        self.window_id = window_id
-        self.geometry_id = geometry_id
+        # self.started = started
+        # self.app_id = app_id
+        # self.window_id = window_id
+        # self.geometry_id = geometry_id
 
     def __repr__(self):
         return "<Key %s>" % self.key
@@ -184,18 +184,6 @@ class WindowEvent(Core, Base):
         return "<Window '%s' '%s' >" % (self.window_id, self.event)
 
 
-class RecordingEvent(Core, Base):
-    time = Column(Unicode, index=True)
-    event = Column(Unicode, index=True)
-
-    def __init__(self, time, event_type):
-        self.time = time
-        self.event = event
-
-    def __repr__(self):
-        return "<Recording '%s' >" % self.event
-
-
 class Geometry(Core, Base):
     x = Column(Integer, nullable=False)
     y = Column(Integer, nullable=False)
@@ -213,6 +201,19 @@ class Geometry(Core, Base):
 
     def __repr__(self):
         return "<Geometry (%d, %d), (%d, %d)>" % (self.x, self.y, self.w, self.h)
+
+
+class RecordingEvent(Core, Base):
+    time = Column(Unicode, index=True)
+    event = Column(Unicode, index=True)
+
+    def __init__(self, time, event_type):
+        self.time = time
+        self.event = event
+
+    def __repr__(self):
+        return "<Recording '%s' >" % self.event
+
 
 
 # class Website(Core, Base):

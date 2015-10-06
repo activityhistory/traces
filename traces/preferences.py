@@ -34,6 +34,21 @@ def getValueForPreference(pref):
         print "Error retrieving preference value"
         return
 
+def setInitialPreferenceValues():
+    # set preferance defaults for user-facing preferences
+    prefDictionary = {}
+    prefDictionary[u"screenshots"] = True
+    prefDictionary[u'imageSize'] = 720                  # in px
+    prefDictionary[u"periodicScreenshots"] = True
+    prefDictionary[u"imagePeriodicFrequency"] = 60      # in s
+    prefDictionary[u"eventScreenshots"] = True
+    prefDictionary[u"imageEventMin"] = 100              # in ms
+    prefDictionary[u"keystrokes"] = True
+    prefDictionary[u"experienceLoop"] = True
+    prefDictionary[u"experienceTime"] = 1800            # in s
+    prefDictionary[u"recording"] = True
+    NSUserDefaultsController.sharedUserDefaultsController().setInitialValues_(prefDictionary)
+
 # Preferences window controller
 class PreferencesController(NSWindowController):
 
@@ -43,12 +58,12 @@ class PreferencesController(NSWindowController):
     # clearDataPopup = IBOutlet()
 
     # dynamic review table
-    list = [{'checked':False, 'image':'', 'app_name':'First App', 'windows':[{'checked':False, 'window_name':'Window 1', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Second App', 'windows':[{'checked':False, 'window_name':'Window 4', 'image':''},{'checked':False, 'window_name':'Window 5', 'image':''},{'checked':False, 'window_name':'Window 6', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Third App', 'windows':[{'checked':False, 'window_name':'Window 7', 'image':''},{'checked':False, 'window_name':'Window 8', 'image':''},{'checked':False, 'window_name':'Window 9', 'image':''}]}]
-    window_list = [{'checked':False, 'window_name':'Window 10', 'image':''},{'checked':False, 'window_name':'Window 11', 'image':''},{'checked':False, 'window_name':'Window 12', 'image':''}]
-    NSMutableDictionary = objc.lookUpClass('NSMutableDictionary')
-    NSNumber = objc.lookUpClass('NSNumber')
-    apps = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in list]
-    windows = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in window_list]
+    # list = [{'checked':False, 'image':'', 'app_name':'First App', 'windows':[{'checked':False, 'window_name':'Window 1', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Second App', 'windows':[{'checked':False, 'window_name':'Window 4', 'image':''},{'checked':False, 'window_name':'Window 5', 'image':''},{'checked':False, 'window_name':'Window 6', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Third App', 'windows':[{'checked':False, 'window_name':'Window 7', 'image':''},{'checked':False, 'window_name':'Window 8', 'image':''},{'checked':False, 'window_name':'Window 9', 'image':''}]}]
+    # window_list = [{'checked':False, 'window_name':'Window 10', 'image':''},{'checked':False, 'window_name':'Window 11', 'image':''},{'checked':False, 'window_name':'Window 12', 'image':''}]
+    # NSMutableDictionary = objc.lookUpClass('NSMutableDictionary')
+    # NSNumber = objc.lookUpClass('NSNumber')
+    # apps = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in list]
+    # windows = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in window_list]
     sniffer = None
 
 

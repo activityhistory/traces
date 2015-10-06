@@ -22,16 +22,7 @@ from PyObjCTools import AppHelper
 
 import LaunchServices
 
-from Cocoa import (NSEvent, NSScreen,
-                   NSKeyDown, NSKeyDownMask, NSKeyUp, NSKeyUpMask,
-                   NSLeftMouseUp, NSLeftMouseDown, NSLeftMouseUpMask,
-                   NSLeftMouseDownMask, NSRightMouseUp, NSRightMouseDown,
-                   NSRightMouseUpMask, NSRightMouseDownMask, NSMouseMoved,
-                   NSMouseMovedMask, NSScrollWheel, NSScrollWheelMask,
-                   NSFlagsChanged, NSFlagsChangedMask, NSAlternateKeyMask,
-                   NSCommandKeyMask, NSControlKeyMask, NSShiftKeyMask,
-                   NSAlphaShiftKeyMask, NSApplicationActivationPolicyProhibited,
-                   NSURL, NSString, NSTimer,NSInvocation, NSNotificationCenter)
+from Cocoa import (NSEvent, NSScreen, NSURL, NSString)
 
 import Quartz
 from Quartz import (CGWindowListCopyWindowInfo, kCGWindowListOptionOnScreenOnly,
@@ -45,7 +36,6 @@ import config as cfg
 import preferences
 import threading
 
-# from app_recorder
 import app_recorder
 from click_recorder import ClickRecorder
 from key_recorder import KeyRecorder
@@ -55,9 +45,7 @@ from scroll_recorder import ScrollRecorder
 
 class Sniffer:
     def __init__(self, activity_tracker):
-        self.screenSize = [NSScreen.mainScreen().frame().size.width, NSScreen.mainScreen().frame().size.height]
-        self.screenRatio = self.screenSize[0]/self.screenSize[1]
-
+        # set reference to tracker object that spawned this sniffer
         self.activity_tracker = activity_tracker
         self.delegate = None
 
@@ -87,19 +75,8 @@ class Sniffer:
                 print >>f, text
                 f.close()
 
-                # set preferance defaults for user-facing preferences
-                prefDictionary = {}
-                prefDictionary[u"screenshots"] = True
-                prefDictionary[u'imageSize'] = 720                  # in px
-                prefDictionary[u"periodicScreenshots"] = True
-                prefDictionary[u"imagePeriodicFrequency"] = 60      # in s
-                prefDictionary[u"eventScreenshots"] = True
-                prefDictionary[u"imageEventMin"] = 100              # in ms
-                prefDictionary[u"keystrokes"] = True
-                prefDictionary[u"experienceLoop"] = True
-                prefDictionary[u"experienceTime"] = 1800            # in s
-                prefDictionary[u"recording"] = True
-                NSUserDefaultsController.sharedUserDefaultsController().setInitialValues_(prefDictionary)
+                # set inital values for the preferences
+                preferences.setInitialPreferenceValues()
 
                 # create status-bar drop-down menu
                 self.createStatusMenu()
@@ -134,6 +111,8 @@ class Sniffer:
                     print >>f, text
                     f.close()
 
+                #TODO tell application to parse logs one last time before quiting
+
                 sc.cancel()
 
             def toggleLogging_(self, notification):
@@ -167,6 +146,7 @@ class Sniffer:
                 # needed to show window on top of other applications
                 sc.app.activateIgnoringOtherApps_(True)
 
+            # could possibly do this in XCode, but creating by code works too
             def createStatusMenu(self):
                 NSLog("Creating app menu")
                 statusbar = NSStatusBar.systemStatusBar()
@@ -184,10 +164,6 @@ class Sniffer:
                 self.iconGray = NSImage.alloc().initByReferencingFile_('../Resources/clock_grey.png')
                 self.iconGray.setScalesWhenResized_(True)
                 self.iconGray.setSize_((20, 20))
-
-                # self.iconRecord = NSImage.alloc().initByReferencingFile_('../Resources/eye_mic.png')
-                # self.iconRecord.setScalesWhenResized_(True)
-                # self.iconRecord.setSize_((20, 20))
 
                 self.changeIcon()
 
@@ -252,9 +228,9 @@ class Sniffer:
 
         # I can get this to work, but it blocks the rest of the code from
         # executing
-        self.ar = app_recorder.AppRecorder()
-        self.art = threading.Thread(target=self.ar.start_app_observers)
-        self.art.start()
+        # self.ar = app_recorder.AppRecorder()
+        # self.art = threading.Thread(target=self.ar.start_app_observers)
+        # self.art.start()
 
         AppHelper.runEventLoop()
 

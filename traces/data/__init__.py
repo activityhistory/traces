@@ -20,7 +20,6 @@ import config as cfg
 def createDataDirectories(d):
     """
     Create directories to store data
-
     d: string of full patch to data storage directory
     """
 

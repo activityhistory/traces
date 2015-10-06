@@ -27,10 +27,13 @@ MOVELOG = 'move.log'
 SCROLLLOG = 'scroll.log'
 WINDOWLOG = 'window.log'
 
-STORAGE = "mongo"
+# set storage to "mongo" to use mongodb
+# set storage to "sqlite" to use sqlite
+STORAGE = "sqlite"
 
 # mongodb names
 DB = "traces"
+SQLDB = "traces.sqlite"
 RECORDERCOL = "recorder"
 APPCOL = "apps"
 CLICKCOL = "clicks"

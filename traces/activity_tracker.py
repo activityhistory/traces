@@ -31,16 +31,15 @@ import sniff_cocoa as sniffer
 class ActivityTracker:
     def __init__(self):
 
-        # variables for tracking loops
+        # variables for managing loops
         self.last_screenshot = cfg.NOW()
         self.screenshotTimer = None
 
         self.last_parse = cfg.NOW()
         self.parseTimer = None
-        
-        self.storage = Storage()
 
     def checkLoops(self):
+        # if we're recording, start the screenshot and parsing loops
         recording = preferences.getValueForPreference('recording')
         if(recording):
             self.startLoops()
@@ -61,15 +60,16 @@ class ActivityTracker:
             if self.parseTimer:
                 self.parseTimer.cancel()
         except:
-            print "Had trouble stopping loops"
+            print "Had trouble stopping screenshot and parsing loops"
 
     def run_screenshot_loop(self):
+        # take a screenshot if computer is idle and appropriate amount of time has passed
         screenshot_time_max = preferences.getValueForPreference('imageTimeMax')
         time_since_last_screenshot = cfg.NOW() - self.last_screenshot
         if (time_since_last_screenshot > screenshot_time_max):
             self.take_screenshot()
             time_since_last_screenshot = 0.0
-        sleep_time = screenshot_time_max - time_since_last_screenshot + 0.01
+        sleep_time = screenshot_time_max - time_since_last_screenshot + 0.001 # add a milisecond for good measure
         self.screenshotTimer = threading.Timer(sleep_time,self.run_screenshot_loop)
         self.screenshotTimer.start()
 
@@ -78,6 +78,7 @@ class ActivityTracker:
       screenshots_active = preferences.getValueForPreference('screenshots')
       screenshot_time_min = preferences.getValueForPreference('imageTimeMin') / 1000.0
 
+      # take a screenshot if preferences allow
       if (screenshots_active
         and (cfg.NOW() - self.last_screenshot) > screenshot_time_min) :
           try:
@@ -97,22 +98,25 @@ class ActivityTracker:
             self.screenshotTimer.cancel()
         self.run_screenshot_loop()
 
-    def clearData(self):
-        self.storage.clearData()
-        print "You asked to delete history"
-
     # TODO make it easier for others to add parser files for extensions
     def parseLogs(self):
         print "Parsing log files."
-
         self.storage.parseLogs()
 
         self.last_parse = cfg.NOW()
         self.parseTimer = threading.Timer(cfg.PARSEDELAY, self.parseLogs)
         self.parseTimer.start()
 
+    # not sure if we need this helper function in this file
+    def clearData(self):
+        self.storage.clearData()
+        print "You asked to delete history"
+
     def run(self):
-        # TODO add platform detection before calling appropriate sniffer
         # hook up the sniffer
         self.sniffer = sniffer.Sniffer(self)
+
+        # create object to manage database storage
+        self.storage = Storage(self)
+
         self.sniffer.run()

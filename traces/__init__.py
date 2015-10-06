@@ -13,7 +13,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
-import sys  
+import sys
 
 import data
 import config as cfg
@@ -24,13 +24,13 @@ def main():
     print "Traces is starting"
 
     # setting a utf8 as the default encoding
-    reload(sys)  
+    reload(sys)
     sys.setdefaultencoding('utf8')
 
-    # find if external drives at attached for recording
+    # find if external drives are attached for storing recording data
     data.checkDrive()
 
-    # create directories to store data,
+    # create directories to store data, if needed
     data.createDataDirectories(os.path.expanduser(cfg.CURRENT_DIR))
 
     # start activity tracker
