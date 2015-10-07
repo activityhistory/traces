@@ -15,15 +15,13 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import errno
+import threading
 
 from Foundation import *
 from AppKit import *
 from PyObjCTools import AppHelper
-
 import LaunchServices
-
 from Cocoa import (NSEvent, NSScreen, NSURL, NSString)
-
 import Quartz
 from Quartz import (CGWindowListCopyWindowInfo, kCGWindowListOptionOnScreenOnly,
                     kCGWindowListOptionAll, kCGWindowListExcludeDesktopElements,
@@ -32,11 +30,9 @@ from Quartz import (CGWindowListCopyWindowInfo, kCGWindowListOptionOnScreenOnly,
 import Quartz.CoreGraphics as CG
 
 import config as cfg
-
 import preferences
-import threading
 
-import app_recorder
+from app_recorder import AppRecorder
 from click_recorder import ClickRecorder
 from key_recorder import KeyRecorder
 from move_recorder import MoveRecorder
@@ -208,7 +204,7 @@ class Sniffer:
         return AppDelegate
 
     def run(self):
-        # set up app
+        # set up the application
         self.app = NSApplication.sharedApplication()
         self.delegate = self.createAppDelegate().alloc().init()
         self.delegate.activity_tracker = self.activity_tracker
@@ -216,7 +212,7 @@ class Sniffer:
         self.app.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
         self.workspace = NSWorkspace.sharedWorkspace()
 
-        #start event listeners for recorders
+        # start listeners for event recorders
         self.cr = ClickRecorder(self)
         self.cr.start_click_listener()
         self.kr = KeyRecorder(self)
@@ -226,12 +222,13 @@ class Sniffer:
         self.sr = ScrollRecorder(self)
         self.sr.start_scroll_listener()
 
-        # I can get this to work, but it blocks the rest of the code from
-        # executing
-        # self.ar = app_recorder.AppRecorder()
-        # self.art = threading.Thread(target=self.ar.start_app_observers)
-        # self.art.start()
+        # I can get this to work, but it blocks the rest of the code from executing
+        # app recording needs a separate thread to listen for events on
+        self.ar = AppRecorder(self)
+        self.art = threading.Thread(target=self.ar.start_app_observers)
+        self.art.start()
 
+        # run the Traces application
         AppHelper.runEventLoop()
 
     def cancel(self):

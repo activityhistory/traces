@@ -18,6 +18,7 @@ from Cocoa import (NSEvent, NSScrollWheel, NSScrollWheelMask)
 
 import config as cfg
 import preferences
+import utils_cocoa
 
 class ScrollRecorder:
 
@@ -41,9 +42,5 @@ class ScrollRecorder:
 
         if event.type() == NSScrollWheel:
         # write JSON object to scrolllog file
-            scrollfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.SCROLLLOG)
-            # TODO may need to check if file is already open using a file lock
-            f = open(scrollfile, 'a')
             text = '{"time": '+ str(cfg.NOW()) + ' , "distance": [' + str(event.deltaX()) + ',' + str(event.deltaY()) + ']}'
-            print >>f, text
-            f.close()
+            utils_cocoa.write_to_file(cfg.SCROLLLOG)

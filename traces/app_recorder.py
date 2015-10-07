@@ -19,42 +19,107 @@ import objc
 
 from AppKit import *
 from Foundation import *
-
 from Quartz import (CFRunLoopRun, kCGWindowListOptionAll,
 					CGWindowListCopyWindowInfo, kCGNullWindowID,
 					kCGWindowListExcludeDesktopElements)
 
-# https://github.com/atheriel/accessibility
-import accessibility as acc
+import accessibility as acc # https://github.com/atheriel/accessibility
+
 import config as cfg
+import utils_cocoa
 
 
 class AppRecorder:
 
-	def __init__(self):
+	def __init__(self, sniffer):
+		self.sniffer = sniffer
 		self.watched = {}
 		self.apps = []
 		self.apps_and_windows = {}
 
+	### Application event callbacks ###
+	def appLaunchCallback_(self, notification):
+		t = cfg.NOW()
+		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		if app.activationPolicy() == 0:
+			p = int(app.processIdentifier())
+			mess = acc.create_application_ref(pid = p )
+			mess.set_callback(self.windowCallback)
+			mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
+						"AXWindowCreated","AXWindowMiniaturized",
+						"AXWindowDeminiaturized")
+			self.watched[p] = mess
+
+			text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + app.localizedName() + '"}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		self.updateWindowList()
+
+	def appTerminateCallback_(self, notification):
+		t = cfg.NOW()
+		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		p = int(app.processIdentifier())
+		if p in self.watched.keys():
+			watcher = self.watched[p]
+			del self.watched[p]
+
+			text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + app.localizedName() + '"}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		self.updateWindowList()
+
+	def appActivateCallback_(self, notification):
+		t = cfg.NOW()
+		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		p = int(app.processIdentifier())
+		if p in self.watched.keys():
+			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		self.updateWindowList()
+
+	def appDeactivateCallback_(self, notification):
+		t = cfg.NOW()
+		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		p = int(app.processIdentifier())
+		if p in self.watched.keys():
+			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + app.localizedName() + '"}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+	def appHideCallback_(self, notification):
+		t = cfg.NOW()
+		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		p = int(app.processIdentifier())
+		if p in self.watched.keys():
+			text = '{"time": '+ str(t) + ' , "type": "Hide", "app": "' + app.localizedName() + '"}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		self.updateWindowList()
+
+	def appUnhideCallback_(self, notification):
+		t = cfg.NOW()
+		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		p = int(app.processIdentifier())
+		if p in self.watched.keys():
+			text = '{"time": '+ str(t) + ' , "type": "Unhide", "app": "' + app.localizedName() + '"}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		self.updateWindowList()
+
+	### Window event callbacks ###
 	def windowCallback(self, **kwargs):
 		t = cfg.NOW()
 		notification_type = kwargs['notification']
 		# remove 'AX' from front of event names before we save that info
 		notification_title = str(kwargs['notification'])[2:-1]
-		print notification_title
 
-		# when miniaturized, we may not be able to get title and position data
+		# when miniaturized, we may not be able to get window title and position data
 		if notification_type == "AXWindowMiniaturized":
 			app_title = kwargs['element']['AXTitle']
-
-			# write to window log about minaturization
-			winfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
-			f = open(winfile, 'a')
 			text = '{"time": '+ str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '" }'
-			print >>f, text
-			f.close()
+			utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
-		# all other events should let us get title dn postiion data
+		# all other events should let us get title and postiion data
 		else:
 			# get the relevant data
 			app_title = kwargs['element']['AXTitle']
@@ -63,21 +128,20 @@ class AppRecorder:
 			size = str(kwargs['element']['AXFocusedWindow']['AXSize'])
 
 			# write to window log file about event
-			winfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
-			f = open(winfile, 'a')
 			text = '{"time": ' + str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
-			print >>f, text
-			f.close()
+			utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
 		# get most recent screen geometry after the change
 		self.updateWindowList()
 
 	def updateWindowList(self):
+		# get a timestamp at the start of call
 		t = cfg.NOW()
-
+		#TODO do I want to recreate this list each time a window event occurs
+		# or do I want to compare a new list to the old list?
 		self.apps_and_windows = {}
 
-		# get app list
+		# get list of applications that show up in the dock
 		workspace = NSWorkspace.sharedWorkspace()
 		activeApps = workspace.runningApplications()
 		regularApps = []
@@ -86,27 +150,32 @@ class AppRecorder:
 				regularApps.append(app)
 
 		# save app info to dictionary
-		# may also want to transform to unicode
+		# may also want to transform the text to unicode
 		for app in regularApps:
 			name = app.localizedName()
-			bundle = app.bundleIdentifier()
+			bundle = app.bundleIdentifier() # unique for each app?
 			active = app.isActive()
+			pid = app.processIdentifier()
 			d = {'name': name, 'bundle': bundle, 'active': active, 'windows':{}}
-			self.apps_and_windows[int(app.processIdentifier())] = d
+			# store app data by pid
+			# note that pids are not consistent (e.g. while an application will
+			# have the same pid whenever it is queried during a session, it will
+			# not necissarily have the same pid across sessions)
+			self.apps_and_windows[int(pid)] = d
 
 			if active:
-				pid = app.processIdentifier()
 				if pid in self.watched.keys():
+					# log that application is active
+					text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
+					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
+					# log information of focused window
 					title = self.watched[pid]['AXFocusedWindow']['AXTitle']
 					position = str(self.watched[pid]['AXFocusedWindow']['AXPosition'])
 					size = str(self.watched[pid]['AXFocusedWindow']['AXSize'])
 
-					winfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
-					f = open(winfile, 'a')
 					text = '{"time": ' + str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
-					print >>f, text
-					f.close()
+					utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
 		# add list of current windows
 		options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
@@ -127,113 +196,19 @@ class AppRecorder:
 				pass
 
 		# write self.apps_and_windows to a geometry file
-		geofile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.GEOLOG)
-		f = open(geofile, 'a')
 		text = '{"time": ' + str(t) + ', "geometry": ' +  str(self.apps_and_windows) + "}"
-		print >>f, text
-		f.close()
+		utils_cocoa.write_to_file(text, cfg.GEOLOG)
 
-	def appLaunchCallback_(self, notification):
-		t = cfg.NOW()
-		app = notification.userInfo()["NSWorkspaceApplicationKey"]
-		if app.activationPolicy() == 0:
-			p = int(app.processIdentifier())
-			mess = acc.create_application_ref(pid = p )
-			mess.set_callback(self.windowCallback)
-			mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
-						"AXWindowCreated","AXWindowMiniaturized",
-						"AXWindowDeminiaturized")
-			self.watched[p] = mess
-
-			appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-			f = open(appfile, 'a')
-			text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + app.localizedName() + '"}'
-			print >>f, text
-			f.close()
-
-		self.updateWindowList()
-
-	def appTerminateCallback_(self, notification):
-		t = cfg.NOW()
-		app = notification.userInfo()["NSWorkspaceApplicationKey"]
-		p = int(app.processIdentifier())
-		if p in self.watched.keys():
-			watcher = self.watched[p]
-			del self.watched[p]
-
-			appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-			f = open(appfile, 'a')
-			text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + app.localizedName() + '"}'
-			print >>f, text
-			f.close()
-
-		self.updateWindowList()
-
-	def appActivateCallback_(self, notification):
-		t = cfg.NOW()
-		app = notification.userInfo()["NSWorkspaceApplicationKey"]
-		p = int(app.processIdentifier())
-		if p in self.watched.keys():
-			appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-			f = open(appfile, 'a')
-			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
-			print >>f, text
-			f.close()
-
-		self.updateWindowList()
-
-	def appDeactivateCallback_(self, notification):
-		t = cfg.NOW()
-		app = notification.userInfo()["NSWorkspaceApplicationKey"]
-		p = int(app.processIdentifier())
-		if p in self.watched.keys():
-			appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-			f = open(appfile, 'a')
-			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + app.localizedName() + '"}'
-			print >>f, text
-			f.close()
-
-	def appHideCallback_(self, notification):
-		t = cfg.NOW()
-		app = notification.userInfo()["NSWorkspaceApplicationKey"]
-		p = int(app.processIdentifier())
-		if p in self.watched.keys():
-			appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-			f = open(appfile, 'a')
-			text = '{"time": '+ str(t) + ' , "type": "Hide", "app": "' + app.localizedName() + '"}'
-			print >>f, text
-			f.close()
-
-		self.updateWindowList()
-
-	def appUnhideCallback_(self, notification):
-		t = cfg.NOW()
-		app = notification.userInfo()["NSWorkspaceApplicationKey"]
-		p = int(app.processIdentifier())
-		if p in self.watched.keys():
-			appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-			f = open(appfile, 'a')
-			text = '{"time": '+ str(t) + ' , "type": "Unhide", "app": "' + app.localizedName() + '"}'
-			print >>f, text
-			f.close()
-
-		self.updateWindowList()
-
+	### Computer sleep/wake callbacks ###
 	def sleepCallback_(self, notification):
 		t = cfg.NOW()
-		recorderfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.RECORDERLOG)
-		f = open(recorderfile, 'a')
 		text = '{"time": '+ str(t) + ' , "type": "Sleep"}'
-		print >>f, text
-		f.close()
+		utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
 	def wakeCallback_(self, notification):
 		t = cfg.NOW()
-		recorderfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.RECORDERLOG)
-		f = open(recorderfile, 'a')
 		text = '{"time": '+ str(t) + ' , "type": "Wake"}'
-		print >>f, text
-		f.close()
+		utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
 		self.updateWindowList()
 
@@ -285,41 +260,43 @@ class AppRecorder:
 		for app in regularApps:
 			try:
 				p = int(app.processIdentifier())
-				mess = acc.create_application_ref(pid = p )
+				mess = acc.create_application_ref(pid=p)
 				mess.set_callback(self.windowCallback)
 				mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
 							"AXWindowCreated","AXWindowMiniaturized",
 							"AXWindowDeminiaturized") # AXMainWindowChanged
+				# need to maintain the 'mess' object otherwise the listener
+				# will be deleted on cleanup
 				self.watched[p] = mess
 				self.apps.append(p)
 
-				# track that these applications are open
-				appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-				f = open(appfile, 'a')
+				# log that the app is open
 				text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": "' + app.localizedName() + '"}'
-				print >>f, text
-				f.close()
+				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
-				if app.isActive():
-
-					f = open(appfile, 'a')
-					text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
-					print >>f, text
-					f.close()
-
-					# TODO make robust to errors
-					title = mess['AXFocusedWindow']['AXTitle']
-					position = str(mess['AXFocusedWindow']['AXPosition'])
-					size = str(mess['AXFocusedWindow']['AXSize'])
-
-					winfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
-					f = open(winfile, 'a')
-					text = '{"time": ' + str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
-					print >>f, text
-					f.close()
+				#TODO may not need this logging here if we can save the information
+				# while calling updateWindowList()
+				# if app.isActive():
+				# 	# log that application is active
+				# 	f = open(appfile, 'a')
+				# 	text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
+				# 	print >>f, text
+				# 	f.close()
+				#
+				# 	# get information from frontmost window
+				# 	title = mess['AXFocusedWindow']['AXTitle']
+				# 	position = str(mess['AXFocusedWindow']['AXPosition'])
+				# 	size = str(mess['AXFocusedWindow']['AXSize'])
+				#
+				# 	# log that frontmost window of active app is active
+				# 	winfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
+				# 	f = open(winfile, 'a')
+				# 	text = '{"time": ' + str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
+				# 	print >>f, text
+				# 	f.close()
 
 			except:
-				print "That didn't work to register a listener"
+				print "Could not register event listener for: " + str(app.localizedName())
 
 		# get inital list of windows
 		self.updateWindowList()
@@ -327,9 +304,8 @@ class AppRecorder:
 		# start event loop to track events from other applications
 		CFRunLoopRun()
 
-
-
-# My First attempt to track accessibility. Opted to use accessiblity module instead
+# My First attempt to track accessibility with Pyobjc bindings
+# Opted to use third party accessiblity module instead
 
 # from HIServices import (AXObserverCreate, AXObserverRef,
 #                         AXObserverAddNotification, kAXWindowMovedNotification,

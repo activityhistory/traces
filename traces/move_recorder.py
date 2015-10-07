@@ -18,6 +18,7 @@ from Cocoa import (NSEvent, NSMouseMoved, NSMouseMovedMask)
 
 import config as cfg
 import preferences
+import utils_cocoa
 
 class MoveRecorder:
 
@@ -37,9 +38,5 @@ class MoveRecorder:
         if event.type() == NSMouseMoved:
             loc = NSEvent.mouseLocation()
             # write JSON object to movelog file
-            movefile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.MOVELOG)
-            # TODO may need to check if file is already open using a file lock
-            f = open(movefile, 'a')
             text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
-            print >>f, text
-            f.close()
+            utils_cocoa.write_to_file(text, cfg.MOVELOG)

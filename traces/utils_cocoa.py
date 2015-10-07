@@ -12,6 +12,9 @@ You should have received a copy of the GNU General Public License
 along with Traces. If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+
+import config as cfg
 
 from AppKit import *
 
@@ -32,3 +35,9 @@ def show_alert(message):
     alert.runModal()
 
     sys.exit()
+
+def write_to_file(text, fi):
+    full_file = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), fi)
+    f = open(full_file, 'a')
+    print >>f, text
+    f.close()

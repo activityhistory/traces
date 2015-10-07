@@ -32,18 +32,6 @@ import data.sqlite.models as models
 from data.sqlite.models import (Click, Keys, Move, Scroll, App, AppEvent, Window,
                     WindowEvent, RecordingEvent, Geometry)
 
-# import mongo.key_parser
-# import mongo.click_parser
-# import mongo.scroll_parser
-# import mongo.move_parser
-# import mongo.app_parser
-
-# import sqlite.key_parser
-# import sqlite.click_parser
-# import sqlite.scroll_parser
-# import sqlite.move_parser
-# import sqlite.app_parser
-
 
 class Storage:
     def __init__(self, activity_tracker):

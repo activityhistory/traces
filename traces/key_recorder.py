@@ -21,6 +21,7 @@ from Cocoa import (NSEvent, NSKeyDown, NSKeyDownMask, NSKeyUp, NSKeyUpMask,
 
 import config as cfg
 import preferences
+import utils_cocoa
 
 
 SKIP_MODIFIERS = {"", "Shift_L", "Control_L", "Super_L", "Alt_L", "Super_R",
@@ -144,9 +145,5 @@ class KeyRecorder:
                 return
 
             # write JSON object to keylog file
-            keyfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.KEYLOG)
-            # TODO may need to check if file is already open using a file lock
-            f = open(keyfile, 'a')
             text = '{"time": '+ str(cfg.NOW()) + ' , "key": "' + string + '" , "modifiers": ' + str(modifiers) + '}'
-            print >>f, text
-            f.close()
+            utils_cocoa.write_to_file(text, cfg.KEYLOG)
