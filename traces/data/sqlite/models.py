@@ -143,7 +143,7 @@ class AppEvent(Core, Base):
     app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
     app = relationship("App", backref=backref('appevents'))
 
-    def __init__(self, time, app_id, event_type):
+    def __init__(self, time, app_id, event):
         self.time = time
         self.event = event
         self.app_id = app_id
@@ -154,16 +154,14 @@ class AppEvent(Core, Base):
 
 class Window(Core, Base):
     title = Column(Unicode, index=True)
-    url = Column(Unicode, index=True)
-
+    
     app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
     app = relationship("App", backref=backref('windows'))
 
-    def __init__(self, time, title, app_id, browser_url):
+    def __init__(self, time, app_id, title):
         self.time = time
-        self.title = title
-        self.url = url
         self.app_id = app_id
+        self.title = title
 
     def __repr__(self):
         return "<Window '%s'>" % (self.title)

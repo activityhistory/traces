@@ -26,6 +26,7 @@ import data.sqlite.key_parser as key_parser
 import data.sqlite.click_parser as click_parser
 import data.sqlite.scroll_parser as scroll_parser
 import data.sqlite.move_parser as move_parser
+import data.sqlite.app_parser as app_parser
 
 import data.sqlite.models as models
 
@@ -82,7 +83,11 @@ class Storage:
         click_parser.parse_clicks(self.session)
         scroll_parser.parse_scrolls(self.session)
         move_parser.parse_moves(self.session)
-        #TODO add app parsing
+        #TODO add recorder parsing
+        app_parser.parse_apps(self.session, self.activity_tracker)
+        app_parser.parse_windows(self.session, self.activity_tracker)
+        #TODO add window and geometry parsing, in app_parser file
+
         self.sqlcommit()
 
     def sqlcommit(self):
@@ -101,6 +106,7 @@ class Storage:
                 utils_cocoa.show_alert("Database operational error. Your storage device may be full. Turning off Selfspy recording.")
                 break
             except:
+                raise
                 print "Rollback database"
                 self.session.rollback()
 

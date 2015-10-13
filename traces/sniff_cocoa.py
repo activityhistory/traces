@@ -31,6 +31,7 @@ import Quartz.CoreGraphics as CG
 
 import config as cfg
 import preferences
+import utils_cocoa
 
 from app_recorder import AppRecorder
 from click_recorder import ClickRecorder
@@ -58,18 +59,16 @@ class Sniffer:
                 self.state = 'pause'
                 self.screenshot = True
                 self.recordingAudio = False
-                self.activity_tracer = None
+                # self.activity_tracer = None
 
             def applicationDidFinishLaunching_(self, notification):
                 print "Traces finished launching..."
 
                 # save recorder turned on event
                 t = cfg.NOW()
-                recorderfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.RECORDERLOG)
-                f = open(recorderfile, 'a')
+
                 text = '{"time": '+ str(t) + ' , "type": "Start Traces"}'
-                print >>f, text
-                f.close()
+                utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
                 # set inital values for the preferences
                 preferences.setInitialPreferenceValues()
@@ -81,34 +80,20 @@ class Sniffer:
                 self.activity_tracker.checkLoops()
 
             def applicationWillTerminate_(self, application):
-                print "Exiting Traces..."
-
-                # save recorder turned on event
                 t = cfg.NOW()
-                recorderfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.RECORDERLOG)
-                f = open(recorderfile, 'a')
+
+                # close all open app and window listeners
+                sc.ar.stop_app_observers()
+
+                # save recorder turned off event
                 text = '{"time": '+ str(t) + ' , "type": "Exit Traces"}'
-                print >>f, text
-                f.close()
-
-                # get list of open applications
-                workspace = NSWorkspace.sharedWorkspace()
-                activeApps = workspace.runningApplications()
-                regularApps = []
-                for app in activeApps:
-                    if app.activationPolicy() == 0:
-                        regularApps.append(app)
-
-                # write a close event for each application
-                for app in regularApps:
-                    appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-                    f = open(appfile, 'a')
-                    text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": "' + app.localizedName() + '"}'
-                    print >>f, text
-                    f.close()
+                utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
                 #TODO tell application to parse logs one last time before quiting
+                sc.activity_tracker.storage.parseToSqlite()
+                sc.activity_tracker.storage.sqlcommit()
 
+                print "Exiting Traces..."
                 sc.cancel()
 
             def toggleLogging_(self, notification):
