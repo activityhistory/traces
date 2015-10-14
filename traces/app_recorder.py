@@ -41,20 +41,13 @@ class AppRecorder:
 		# keep track of screen geometry
 		self.apps_and_windows = {}
 
-		# we cannot directly observe window open, close, active, and deactivate
-		# events like we can for applications, so we need to maintain a list
-		# of open and active windows to compare over time
-		# self.past_windows = {}
-		# self.current_windows = {}
-		# self.last_active_window = None
-		# self.current_active_window = None
-
 
 	### Application event callbacks ###
 	def appLaunchCallback_(self, notification):
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		name = utils_cocoa.ascii_encode(app.localizedName())
 		p = int(app.processIdentifier())
 
 		# create app listener for this app's window events
@@ -67,7 +60,7 @@ class AppRecorder:
 			self.watched[p] = mess
 
 			# log that the application launched
-			text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -77,6 +70,7 @@ class AppRecorder:
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		name = utils_cocoa.ascii_encode(app.localizedName())
 		p = int(app.processIdentifier())
 
 		# let app listener be garbage collected by removing our saved reference to it
@@ -85,7 +79,7 @@ class AppRecorder:
 			# watcher = self.watched[p]
 
 			# log the the application has closed
-			text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -95,11 +89,12 @@ class AppRecorder:
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		name = utils_cocoa.ascii_encode(app.localizedName())
 		p = int(app.processIdentifier())
 
 		# log that the application has become active
 		if p in self.watched.keys():
-			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -109,11 +104,12 @@ class AppRecorder:
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		name = utils_cocoa.ascii_encode(app.localizedName())
 		p = int(app.processIdentifier())
 
 		# log that the application has become inactive
 		if p in self.watched.keys():
-			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -125,11 +121,12 @@ class AppRecorder:
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		name = utils_cocoa.ascii_encode(app.localizedName())
 		p = int(app.processIdentifier())
 
 		# log that the application had been hidden
 		if p in self.watched.keys():
-			text = '{"time": '+ str(t) + ' , "type": "Hide", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Hide", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -139,11 +136,12 @@ class AppRecorder:
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
+		name = utils_cocoa.ascii_encode(app.localizedName())
 		p = int(app.processIdentifier())
 
 		# log that the application had been unhidden
 		if p in self.watched.keys():
-			text = '{"time": '+ str(t) + ' , "type": "Unhide", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Unhide", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -180,6 +178,15 @@ class AppRecorder:
 		self.updateWindowList()
 
 	def updateWindowList(self):
+		"""
+		While updating unicode handling I noticed that getting the title from
+		accessibility via app_title = kwargs['element']['AXTitle'] and getting
+		if from app.localizedName() produce 2 different results. The first gives
+		you a string with unicode characters all handled. The second gives you a
+		unicode string that needs to be converted to ascii. Still trying to Figure
+		out what to do.
+		"""
+
 		# get an early timestamp
 		t = cfg.NOW()
 
@@ -197,7 +204,7 @@ class AppRecorder:
 
 		# save app info to dictionary
 		for app in regularApps:
-			name = app.localizedName()
+			name = utils_cocoa.ascii_encode(app.localizedName())
 			# bundle = app.bundleIdentifier() # unique for each app?
 			active = app.isActive()
 			pid = app.processIdentifier()
@@ -208,8 +215,6 @@ class AppRecorder:
 			if active:
 				mess = self.watched[pid]
 				active_window = mess['AXFocusedWindow']['AXTitle']
-				# position = str(mess['AXFocusedWindow']['AXPosition'])
-				# size = str(mess['AXFocusedWindow']['AXSize'])
 
 		# add list of current windows
 		options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
@@ -219,7 +224,7 @@ class AppRecorder:
 				# get window data
 				owning_app_pid = window['kCGWindowOwnerPID']
 				window_layer = window['kCGWindowLayer']
-				name = window['kCGWindowName']
+				name = utils_cocoa.ascii_encode(window['kCGWindowName'])
 				window_id = window['kCGWindowNumber']
 				bounds = window['kCGWindowBounds']
 				win_bounds = {'width':bounds['Width'], 'height':bounds['Height'], 'x':bounds['X'], 'y':bounds['Y']}
@@ -234,6 +239,7 @@ class AppRecorder:
 					self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
 			except:
 				pass
+				#raise
 
 		# write self.apps_and_windows to a geometry file
 		text = '{"time": ' + str(t) + ', "geometry": ' +  str(self.apps_and_windows) + "}"
@@ -300,6 +306,7 @@ class AppRecorder:
 		for app in regularApps:
 			try:
 				p = int(app.processIdentifier())
+				name = utils_cocoa.ascii_encode(app.localizedName())
 				mess = acc.create_application_ref(pid=p)
 				mess.set_callback(self.windowCallback)
 				mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
@@ -310,14 +317,14 @@ class AppRecorder:
 				self.watched[p] = mess
 
 				# log that the app is open
-				text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": "' + app.localizedName() + '"}'
+				text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": "' + name + '"}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 				#TODO may not need this logging here if we can save the information
 				# while calling updateWindowList()
 				if app.isActive():
 					# log that application is active
-					text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + app.localizedName() + '"}'
+					text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + name + '"}'
 					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 					# # get information from frontmost window
@@ -331,7 +338,7 @@ class AppRecorder:
 
 			except:
 				raise
-				print "Could not register event listener for: " + str(app.localizedName())
+				print "Could not register event listener for: " + str(name)
 
 		# get inital list of windows and add window listeners
 		self.updateWindowList()
@@ -357,14 +364,15 @@ class AppRecorder:
 
         # listen for window events of these applications
 		for app in regularApps:
+			name = utils_cocoa.ascii_encode(app.localizedName())
 			# log that the app recording will stop
-			text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": "' + app.localizedName() + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			#TODO Traces is active on close. Figure out how to track last app deactivate event
 			if app.isActive():
 				# log that application is active
-				text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + app.localizedName() + '"}'
+				text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + name + '"}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 				# # get information from frontmost window
@@ -373,5 +381,5 @@ class AppRecorder:
 				# size = str(mess['AXFocusedWindow']['AXSize'])
 				#
 				# # log that frontmost window of active app is active
-				# text = '{"time": ' + str(t) + ' , "type": "Deactivate", "app": "' + app.localizedName() + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
+				# text = '{"time": ' + str(t) + ' , "type": "Deactivate", "app": "' + name + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
 				# utils_cocoa.write_to_file(text, cfg.WINDOWLOG)

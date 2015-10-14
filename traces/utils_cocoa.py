@@ -14,6 +14,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
+from Foundation import *
 import config as cfg
 
 from AppKit import *
@@ -41,3 +42,7 @@ def write_to_file(text, fi):
     f = open(full_file, 'a')
     print >>f, text
     f.close()
+
+def ascii_encode(text):
+    return text.encode('ascii', 'backslashreplace')
+    return text.dataUsingEncoding_allowLossyConversion_(NSASCIIStringEncoding,True)
