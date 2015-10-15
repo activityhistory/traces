@@ -22,17 +22,15 @@ from models import (App, AppEvent, Window, WindowEvent, Geometry)
 
 
 def parse_apps(session, activity_tracker):
-    # get names of files to read and mongodb collection to write
-    appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
-
+    #TODO see if there is a way to query the database only for a list of app names
     # get a copy of the starting database so we don't have to query it all the time
     apps = session.query(App).all()
     app_names = []
     for a in apps:
         app_names.append(a.name)
 
-    #TODO may be able to query only the window names directly, like we want
     # read the file, write new apps and events to the database
+    appfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.APPLOG)
     if os.path.isfile(appfile):
         f = open(appfile, 'r+')
         lines_to_save = []
@@ -46,7 +44,7 @@ def parse_apps(session, activity_tracker):
                 app_name = text['app']
                 pid = None
 
-                # get pid of app from database, add app if not already there
+                # get pid of app from database, add app to database if not already there
                 if app_name not in app_names:
                     # add app to the database
                     app_to_add = App(t, app_name)
@@ -59,7 +57,7 @@ def parse_apps(session, activity_tracker):
                     for a in apps:
                         app_names.append(a.name)
 
-                pid = app_names.index(app_name) + 1 # add 1 because database id starts at 1 but the array index starts at 0
+                pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
 
                 # add the app event to the database
                 ae = AppEvent(t, pid, event)
@@ -77,10 +75,8 @@ def parse_apps(session, activity_tracker):
         f.truncate()
         f.close()
 
+#TODO cast text to unicode!
 def parse_windows(session, activity_tracker):
-    # get names of file to read
-    windowfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
-
     # get a copy of the starting app database so we don't have to query it all the time
     apps = session.query(App).all()
     app_names = []
@@ -95,6 +91,7 @@ def parse_windows(session, activity_tracker):
 
     # read the file, write lines to database, and save lines that were not
     # written to the database
+    windowfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.WINDOWLOG)
     if os.path.isfile(windowfile):
         f = open(windowfile, 'r+')
         lines_to_save = []
@@ -121,7 +118,7 @@ def parse_windows(session, activity_tracker):
                     for a in apps:
                         app_names.append(a.name)
 
-                pid = app_names.index(app_name) + 1 # add 1 because database id starts at 1 but the array index starts at 0
+                pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
 
                 if window not in window_names:
                     # add app to the database
@@ -135,7 +132,7 @@ def parse_windows(session, activity_tracker):
                     for w in windows:
                         window_names.append(w.name)
 
-                wid = window_names.index(app_name) + 1 # add 1 because database id starts at 1 but the array index starts at 0
+                wid = window_names.index(app_name) + 1 # array starts at 0, database ids a 1
 
                 # add the app event to the database
                 we = WindowEvent(t, wid, event)
