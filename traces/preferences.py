@@ -42,7 +42,8 @@ def setInitialPreferenceValues():
     prefDictionary[u"periodicScreenshots"] = True
     prefDictionary[u"imagePeriodicFrequency"] = 60      # in s
     prefDictionary[u"eventScreenshots"] = True
-    prefDictionary[u"imageEventMin"] = 100              # in ms
+    prefDictionary[u"imageTimeMin"] = 100              # in ms
+    prefDictionary[u"imageTimeMax"] = 1000             # in ms
     prefDictionary[u"keystrokes"] = True
     prefDictionary[u"experienceLoop"] = True
     prefDictionary[u"experienceTime"] = 1800            # in s
