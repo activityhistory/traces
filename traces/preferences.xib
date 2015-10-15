@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
@@ -24,6 +24,7 @@
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Hz-T1-x1c">
                         <rect key="frame" x="18" y="143" width="4" height="17"/>
+                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="yAZ-qB-uKD">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -32,6 +33,7 @@
                     </textField>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lmJ-7z-l7V">
                         <rect key="frame" x="264" y="81" width="119" height="26"/>
+                        <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="esE-bQ-GPh">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -65,6 +67,7 @@
                     </popUpButton>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1s3-g2-KxR">
                         <rect key="frame" x="18" y="87" width="220" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="Ask me to bookmark my activity" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UuK-75-D6D">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -75,6 +78,7 @@
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SRk-Tp-1k3">
                         <rect key="frame" x="18" y="200" width="245" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="Record my activity with screenshots" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="xvG-1l-aM9">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -86,6 +90,7 @@
                     </button>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fol-lv-a1Y">
                         <rect key="frame" x="264" y="196" width="119" height="26"/>
+                        <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="BkZ-rt-qbl">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -97,6 +102,7 @@
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MCx-He-BaE">
                         <rect key="frame" x="264" y="170" width="119" height="26"/>
+                        <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="p5f-OP-xsw">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -111,7 +117,7 @@
                                     <menuItem title="1 min" tag="60" id="9AK-hx-2ds">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="5 min" state="on" tag="300" id="os1-iu-p3n">
+                                    <menuItem title="5 min" tag="300" id="os1-iu-p3n">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="15 min" tag="900" id="bDY-Zj-h49">
@@ -133,6 +139,7 @@
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jag-5S-acr">
                         <rect key="frame" x="264" y="145" width="119" height="26"/>
+                        <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="09X-sw-uCA">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -144,7 +151,7 @@
                                     <menuItem title="250 ms" tag="250" id="gfB-zu-ZS7">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="500 ms" state="on" tag="500" id="tCq-oD-7ED">
+                                    <menuItem title="500 ms" tag="500" id="tCq-oD-7ED">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="1 s" tag="1000" id="uaX-fy-gql">
@@ -168,6 +175,7 @@
                     </popUpButton>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gej-9d-kwU">
                         <rect key="frame" x="59" y="174" width="194" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="once every" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="PZL-HA-Rlp">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -183,6 +191,7 @@
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RPs-fa-HLl">
                         <rect key="frame" x="59" y="149" width="194" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="when I do something, every" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="6Dw-AI-eyE">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -198,6 +207,7 @@
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1fb-Nd-v0y">
                         <rect key="frame" x="18" y="119" width="194" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="Record what I type" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XVh-Re-UO5">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -208,6 +218,7 @@
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fjq-eI-XUi">
                         <rect key="frame" x="18" y="52" width="216" height="17"/>
+                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Delete my recrodings from the last" id="JfQ-PH-Cvr">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -216,6 +227,7 @@
                     </textField>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-Da-zOp">
                         <rect key="frame" x="264" y="47" width="119" height="26"/>
+                        <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="fHE-9R-i1h">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
@@ -236,6 +248,7 @@
                     </popUpButton>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="226-0l-pkz">
                         <rect key="frame" x="260" y="16" width="126" height="32"/>
+                        <animations/>
                         <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PIc-sZ-IdQ">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -245,6 +258,7 @@
                         </connections>
                     </button>
                 </subviews>
+                <animations/>
             </view>
             <point key="canvasLocation" x="285" y="401"/>
         </window>

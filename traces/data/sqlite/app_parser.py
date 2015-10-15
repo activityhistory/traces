@@ -17,8 +17,9 @@ import os
 import ast
 
 import config as cfg
+import utils_cocoa
 
-from models import (App, AppEvent, Window, WindowEvent, Geometry)
+from models import (App, AppEvent, Window, WindowEvent, Geometry, Arrangement)
 
 
 def parse_apps(session, activity_tracker):
@@ -41,7 +42,7 @@ def parse_apps(session, activity_tracker):
                 text = ast.literal_eval(line.rstrip())
                 t = text['time']
                 event = text['type']
-                app_name = text['app']
+                app_name = utils_cocoa.ascii_encode(text['app'])
                 pid = None
 
                 # get pid of app from database, add app to database if not already there
@@ -53,9 +54,7 @@ def parse_apps(session, activity_tracker):
 
                     # update our local app list
                     apps = session.query(App).all()
-                    app_names = []
-                    for a in apps:
-                        app_names.append(a.name)
+                    app_names = [a.name for a in apps]
 
                 pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
 
@@ -66,7 +65,7 @@ def parse_apps(session, activity_tracker):
             except:
                 raise
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
-                lines_to_save.append(text)
+                lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the
         # file and delete the rest of the file
         f.seek(0)
@@ -75,19 +74,14 @@ def parse_apps(session, activity_tracker):
         f.truncate()
         f.close()
 
-#TODO cast text to unicode!
 def parse_windows(session, activity_tracker):
     # get a copy of the starting app database so we don't have to query it all the time
     apps = session.query(App).all()
-    app_names = []
-    for a in apps:
-        app_names.append(a.name)
+    app_names = [a.name for a in apps]
 
     # get a copy of the starting window database so we don't have to query it all the time
     windows = session.query(Window).all()
-    window_names = []
-    for w in windows:
-        window_names.append(w.name)
+    window_names = [w.title for w in windows]
 
     # read the file, write lines to database, and save lines that were not
     # written to the database
@@ -100,23 +94,19 @@ def parse_windows(session, activity_tracker):
                 text = ast.literal_eval(line.rstrip())
                 t = text['time']
                 event = text['type']
-                app_name = text['app']
-                try:
-                    window = text['window']
-                except:
-                    window = None
+                app_name = utils_cocoa.ascii_encode(text['app'])
+                window = utils_cocoa.ascii_encode(text['window'])
 
                 if app_name not in app_names:
                     # add app to the database
                     app_to_add = App(t, app_name)
                     session.add(app_to_add)
+                    #TODO catch if our commit fails
                     activity_tracker.storage.sqlcommit()
 
                     # update our local app list
                     apps = session.query(App).all()
-                    app_names = []
-                    for a in apps:
-                        app_names.append(a.name)
+                    app_names = [a.name for a in apps]
 
                 pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
 
@@ -124,13 +114,12 @@ def parse_windows(session, activity_tracker):
                     # add app to the database
                     app_to_add = Window(t, pid, window)
                     session.add(app_to_add)
+                    #TODO catch if our commit fails
                     activity_tracker.storage.sqlcommit()
 
                     # update our local app list
                     windows = session.query(Window).all()
-                    window_names = []
-                    for w in windows:
-                        window_names.append(w.name)
+                    window_names = [w.title for w in windows]
 
                 wid = window_names.index(app_name) + 1 # array starts at 0, database ids a 1
 
@@ -140,7 +129,7 @@ def parse_windows(session, activity_tracker):
 
             except:
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
-                lines_to_save.append(text)
+                lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the
         # file and delete the rest of the file
         f.seek(0)
@@ -149,24 +138,178 @@ def parse_windows(session, activity_tracker):
         f.truncate()
         f.close()
 
-def parse_geometries(session):
+def parse_geometries(session, activity_tracker):
     # get names of files to read and mongodb collection to write
     geofile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.GEOLOG)
-    geo_collection = db[cfg.GEOCOL]
+    last_arr = {}
 
-    # read the file, write lines to database, and save lines that were not
-    # written to the database
-    # TODO may need to check if file is already open using a file lock
     if os.path.isfile(geofile):
         f = open(geofile, 'r+')
         lines_to_save = []
+
+        # get existing apps from the database
+        apps = session.query(App).all()
+        app_names = [a.name for a in apps]
+
+        # get a copy of the starting window database so we don't have to query it all the time
+        windows = session.query(Window).all()
+        window_names = [w.title for w in windows]
+
         for line in f:
             try:
+                # get data
                 text = ast.literal_eval(line.rstrip())
-                geo_collection.insert_one(text)
+                t = text['time']
+                arrangement = text['geometry']
+
+                # if this is a duplicate of the last arrangement, skip to the next line in the file
+                if arrangement == last_arr:
+                    continue
+
+                # add new arrangement to the database
+                arr_to_add = Arrangement(t, str(arrangement))
+                session.add(arr_to_add)
+
+                # check for new windows opened or activated
+                for app, value in arrangement.iteritems():
+                    app_name = utils_cocoa.ascii_encode(value['name'])
+                    active = value['active']
+                    windows = value['windows']
+
+                    # add new apps to the database, but should not need to to this
+                    if app_name not in app_names:
+                        # add app to the database
+                        app_to_add = App(t, app_name)
+                        session.add(app_to_add)
+                        #TODO catch if our commit fails
+                        activity_tracker.storage.sqlcommit()
+
+                        # update our local app list
+                        apps = session.query(App).all()
+                        app_names = [a.name for a in apps]
+
+                    pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
+
+                    for window, val in windows.iteritems():
+                        # get window information
+                        title = utils_cocoa.ascii_encode(val['name'])
+                        w_active = val['active']
+                        bounds = val['bounds']
+                        x = bounds['x']
+                        y = bounds['y']
+                        w =  bounds['width']
+                        h = bounds['height']
+
+                        # add new windows to the database, but should not need to do this
+                        if title not in window_names:
+                            # add app to the database
+                            app_to_add = Window(t, pid, title)
+                            session.add(app_to_add)
+                            #TODO catch if our commit fails
+                            activity_tracker.storage.sqlcommit()
+
+                            # update our local app list
+                            windows = session.query(Window).all()
+                            window_names = [w.title for w in windows]
+
+                        wid = window_names.index(title) + 1 # array starts at 0, database ids a 1
+
+                        # create open and active events if...
+                        # this app was not even open the last time around
+                        if not app in last_arr:
+                            we = WindowEvent(t, wid, "Open")
+                            session.add(we)
+                            if w_active:
+                                we = WindowEvent(t, wid, "Active")
+                                session.add(we)
+
+                        else:
+                            # or if the window was not present last time
+                            if not window in last_arr[app]['windows']:
+                                we = WindowEvent(t, wid, "Open")
+                                session.add(we)
+                                if w_active:
+                                    we = WindowEvent(t, wid, "Active")
+                                    session.add(we)
+                            else:
+                                print
+                                # or the window was present but not active last time, or had a different name
+                                if w_active and (not last_arr[app]['windows'][window]['active'] or title != utils_cocoa.ascii_encode(last_arr[app]['windows'][window]['name'])):
+                                    we = WindowEvent(t, wid, "Active")
+                                    session.add(we)
+
+                # look now at the last arrangement to see what has close or gone inactive
+                for app, value in last_arr.iteritems():
+                    app_name = utils_cocoa.ascii_encode(value['name'])
+                    active = value['active']
+                    windows = value['windows']
+
+                    if app_name not in app_names:
+                        # add app to the database
+                        app_to_add = App(t, app_name)
+                        session.add(app_to_add)
+                        #TODO catch if our commit fails
+                        activity_tracker.storage.sqlcommit()
+
+                        # update our local app list
+                        apps = session.query(App).all()
+                        app_names = [a.name for a in apps]
+
+                    pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
+
+                    for window, val in windows.iteritems():
+                        # get window information
+                        title = utils_cocoa.ascii_encode(val['name'])
+                        w_active = val['active']
+                        bounds = val['bounds']
+                        x = bounds['x']
+                        y = bounds['y']
+                        w =  bounds['width']
+                        h = bounds['height']
+
+                        if title not in window_names:
+                            # add app to the database
+                            app_to_add = Window(t, pid, title)
+                            session.add(app_to_add)
+                            #TODO catch if our commit fails
+                            activity_tracker.storage.sqlcommit()
+
+                            # update our local app list
+                            windows = session.query(Window).all()
+                            window_names = [w.title for w in windows]
+
+                        wid = window_names.index(title) + 1 # array starts at 0, database ids a 1
+
+                        # create close and inactive events if...
+                        # this app is not longer present
+                        if not app in arrangement:
+                            we = WindowEvent(t, wid, "Close")# create open event
+                            session.add(we)
+                            if w_active:
+                                we = WindowEvent(t, wid, "Inactive")# create open event
+                                session.add(we)
+
+                        else:
+                            # or if the window is not longer present
+                            if not window in arrangement[app]['windows']:
+                                we = WindowEvent(t, wid, "Close")# create open event
+                                session.add(we)
+                                if w_active:
+                                    we = WindowEvent(t, wid, "Inactive")# create open event
+                                    session.add(we)
+                            else:
+                                # or the window is present but no longer active, or has a different name
+                                if w_active and (not arrangement[app]['windows'][window]['active'] or title != utils_cocoa.ascii_encode(arrangement[app]['windows'][window]['name'])):
+                                    we = WindowEvent(t, wid, "Inactive")# create open event
+                                    session.add(we)
+
+                last_arr = arrangement
+
             except:
+                raise
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
-                lines_to_save.append(text)
+                lines_to_save.append(line)
+
         # write lines that did not make it into the database to the start of the
         # file and delete the rest of the file
         f.seek(0)

@@ -86,6 +86,7 @@ class Storage:
         #TODO add recorder parsing
         app_parser.parse_apps(self.session, self.activity_tracker)
         app_parser.parse_windows(self.session, self.activity_tracker)
+        app_parser.parse_geometries(self.session, self.activity_tracker)
         #TODO add window and geometry parsing, in app_parser file
 
         self.sqlcommit()

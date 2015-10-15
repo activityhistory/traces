@@ -154,7 +154,7 @@ class AppEvent(Core, Base):
 
 class Window(Core, Base):
     title = Column(Unicode, index=True)
-    
+
     app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
     app = relationship("App", backref=backref('windows'))
 
@@ -199,6 +199,13 @@ class Geometry(Core, Base):
 
     def __repr__(self):
         return "<Geometry (%d, %d), (%d, %d)>" % (self.x, self.y, self.w, self.h)
+
+class Arrangement(Core, Base):
+    arr = Column(Unicode, nullable=False)
+
+    def __init__(self, time, arr):
+        self.time = time
+        self.arr = arr
 
 
 class RecordingEvent(Core, Base):
