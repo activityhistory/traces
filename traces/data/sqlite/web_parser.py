@@ -25,8 +25,14 @@ from sqlalchemy.orm import mapper, sessionmaker
 This file should scrape Chrome and Safari web histories from their respective
 databases. We can access the Safari database, but the Chrome database is locked
 whenever chrome is open. We need to find a work around, possibly opening in
-read-only? It looks like you can do this in python 3.0, but not sure about 2.7
+read-only? It looks like you can do this in python 3.4.0, but not sure about 2.7
+http://stackoverflow.com/questions/10205744/opening-sqlite3-database-from-python-in-read-only-mode
 """
+
+# Possible workaround for Python 2.7
+# fd = os.open(filename, os.O_RDONLY)
+# c = sqlite3.connect('/dev/fd/%d' % fd)
+# os.close(fd)
 
 class Bookmarks(object):
     pass
