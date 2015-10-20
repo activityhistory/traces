@@ -28,7 +28,7 @@ import data.sqlite.scroll_parser as scroll_parser
 import data.sqlite.move_parser as move_parser
 import data.sqlite.app_parser as app_parser
 import data.sqlite.recorder_parser as recorder_parser
-import data.sqlite.chrome_parser as chrome_parser
+import data.sqlite.web_parser as web_parser
 
 import data.sqlite.models as models
 
@@ -46,7 +46,7 @@ class Storage:
         if cfg.STORAGE == "sqlite":
             try:
                 self.session_maker = models.initialize(self.db_name)
-                self.session = self.session_maker()
+                self.session = self.session_maker()                
 
             except sqlalchemy.exc.OperationalError:
                 # show modal error
@@ -89,7 +89,7 @@ class Storage:
         app_parser.parse_apps(self.session, self.activity_tracker)
         app_parser.parse_windows(self.session, self.activity_tracker)
         app_parser.parse_geometries(self.session, self.activity_tracker)
-        chrome_parser.get_first_url()
+        # TODO add web history scraping here
 
         self.sqlcommit()
 
