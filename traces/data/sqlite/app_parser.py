@@ -63,7 +63,6 @@ def parse_apps(session, activity_tracker):
                 session.add(ae)
 
             except:
-                raise
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the
@@ -94,8 +93,8 @@ def parse_windows(session, activity_tracker):
                 text = ast.literal_eval(line.rstrip())
                 t = text['time']
                 event = text['type']
-                app_name = utils_cocoa.ascii_encode(text['app'])
-                window = utils_cocoa.ascii_encode(text['window'])
+                app_name = text['app']
+                window = text['window']
 
                 if app_name not in app_names:
                     # add app to the database
@@ -121,7 +120,7 @@ def parse_windows(session, activity_tracker):
                     windows = session.query(Window).all()
                     window_names = [w.title for w in windows]
 
-                wid = window_names.index(app_name) + 1 # array starts at 0, database ids a 1
+                wid = window_names.index(window) + 1 # array starts at 0, database ids a 1
 
                 # add the app event to the database
                 we = WindowEvent(t, wid, event)

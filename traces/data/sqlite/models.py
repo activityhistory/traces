@@ -209,10 +209,9 @@ class Arrangement(Core, Base):
 
 
 class RecordingEvent(Core, Base):
-    time = Column(Unicode, index=True)
     event = Column(Unicode, index=True)
 
-    def __init__(self, time, event_type):
+    def __init__(self, time, event):
         self.time = time
         self.event = event
 

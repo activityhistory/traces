@@ -33,11 +33,11 @@ import config as cfg
 import preferences
 import utils_cocoa
 
-from app_recorder import AppRecorder
-from click_recorder import ClickRecorder
-from key_recorder import KeyRecorder
-from move_recorder import MoveRecorder
-from scroll_recorder import ScrollRecorder
+from recorders.app_recorder import AppRecorder
+from recorders.click_recorder import ClickRecorder
+from recorders.key_recorder import KeyRecorder
+from recorders.move_recorder import MoveRecorder
+from recorders.scroll_recorder import ScrollRecorder
 
 
 class Sniffer:

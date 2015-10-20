@@ -31,11 +31,17 @@ def parse_moves(session):
     if os.path.isfile(movefile):
         f = open(movefile, 'r+')
         lines_to_save = []
+        last_location = (0,0)
+
         for line in f:
             try:
                 text = ast.literal_eval(line.rstrip())
-                move = Move(text['time'], text['location'][0], text['location'][1])
+                location = text['location']
+                if location == last_location:
+                    continue
+                move = Move(text['time'], location[0], location[1])
                 session.add(move)
+                last_location = location
             except:
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(text)

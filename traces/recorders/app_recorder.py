@@ -126,7 +126,9 @@ class AppRecorder:
 		# get event info
 		t = cfg.NOW()
 		notification_title = str(kwargs['notification'])[2:-1] # remove 'AX' from front of event names before we save that info
-		app_title = kwargs['element']['AXTitle']
+		# TODO this app title may not match what we get from app.localizedName()
+		# find way to reconcile
+		app_title = utils_cocoa.ascii_encode(kwargs['element']['AXTitle'])
 
 		# when miniaturized, we may not be able to get window title and position data
 		if notification_title == "WindowMiniaturized":
@@ -137,7 +139,7 @@ class AppRecorder:
 		# all other events should let us get title and postiion data
 		else:
 			# get the relevant window data
-			title = kwargs['element']['AXFocusedWindow']['AXTitle']
+			title = utils_cocoa.ascii_encode(kwargs['element']['AXFocusedWindow']['AXTitle'])
 			position = str(kwargs['element']['AXFocusedWindow']['AXPosition'])
 			size = str(kwargs['element']['AXFocusedWindow']['AXSize'])
 

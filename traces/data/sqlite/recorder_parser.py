@@ -18,25 +18,22 @@ import ast
 
 import config as cfg
 
-from models import Click
+from models import RecordingEvent
 
 
-def parse_clicks(session):
-    # get names of files to read and mongodb collection to write
-    clickfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.CLICKLOG)
-
-    # read the file, write lines to database, and save lines that were not
-    # written to the database
-    # TODO may need to check if file is already open using a file lock
-    if os.path.isfile(clickfile):
-        f = open(clickfile, 'r+')
+def parse_recorder(session):
+    # save data
+    recorderfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.RECORDERLOG)
+    if os.path.isfile(recorderfile):
+        f = open(recorderfile, 'r+')
         lines_to_save = []
         for line in f:
             try:
                 text = ast.literal_eval(line.rstrip())
-                click = Click(text['time'], text['button'], text['location'][0], text['location'][1])
-                session.add(click)
+                re = RecordingEvent(text['time'], text['type'])
+                session.add(re)
             except:
+                raise
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(text)
         # write lines that did not make it into the database to the start of the

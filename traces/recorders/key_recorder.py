@@ -134,10 +134,16 @@ class KeyRecorder:
             if flags & (NSShiftKeyMask | NSAlphaShiftKeyMask):
                 modifiers.append('Shift')
 
+            # TODO determine why we have to use keycodes here for enter and
+            # backspace but can rely on the charachter list for the others
             # get the charachter of the pressed key
             character = event.charactersIgnoringModifiers()
             if event.keyCode() is 51:
                 character = "Backspace"
+            elif event.keyCode() is 36:
+                character = "Enter"
+            elif event.keyCode() is 39 and modifiers == ["Shift"]:
+                 character = "\\\""
 
             string = KEYCODES.get(character, character)
 

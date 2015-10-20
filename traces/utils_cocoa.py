@@ -43,6 +43,8 @@ def write_to_file(text, fi):
     print >>f, text
     f.close()
 
+# TODO find a way to not throw away the charachters we cannot recognize
 def ascii_encode(text):
-    return text.encode('ascii', 'backslashreplace')
-    return text.dataUsingEncoding_allowLossyConversion_(NSASCIIStringEncoding,True)
+    return text.encode('ascii', 'replace')
+    # return string.encode('ascii', 'backslashreplace')
+    # return text.dataUsingEncoding_allowLossyConversion_(NSASCIIStringEncoding,True)
