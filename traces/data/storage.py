@@ -37,16 +37,16 @@ from data.sqlite.models import (Click, Keys, Move, Scroll, App, AppEvent, Window
 
 
 class Storage:
-    def __init__(self, activity_tracker):
+    def __init__(self, activity_tracker, t):
         self.db_name = os.path.join(cfg.CURRENT_DIR, cfg.SQLDB)
-        self.last_commit = cfg.NOW()
+        self.last_commit = t
         self.activity_tracker = activity_tracker
 
         # make sql database
         if cfg.STORAGE == "sqlite":
             try:
                 self.session_maker = models.initialize(self.db_name)
-                self.session = self.session_maker()                
+                self.session = self.session_maker()
 
             except sqlalchemy.exc.OperationalError:
                 # show modal error
@@ -90,6 +90,8 @@ class Storage:
         app_parser.parse_windows(self.session, self.activity_tracker)
         app_parser.parse_geometries(self.session, self.activity_tracker)
         # TODO add web history scraping here
+        # web_parser.update_safari_urls(self.last_commit, cfg.NOW())
+        # web_parser.update_chrome_urls(self.last_commit, cfg.NOW())
 
         self.sqlcommit()
 

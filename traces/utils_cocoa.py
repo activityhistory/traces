@@ -48,3 +48,21 @@ def ascii_encode(text):
     return text.encode('ascii', 'replace')
     # return string.encode('ascii', 'backslashreplace')
     # return text.dataUsingEncoding_allowLossyConversion_(NSASCIIStringEncoding,True)
+
+def safari_to_unix(t):
+    # Apple measures time in seconds since 12:00AM Jan 1, 2001 (978307200 seconds after the epoch)
+    return t + 978307200
+
+def unix_to_safari(t):
+    # Apple measures time in seconds since 12:00AM Jan 1, 2001 (978307200 seconds after the epoch)
+    return t - 978307200
+
+def chrome_to_unix(t):
+    # Chrome measures time in 100 nanosecond chunks since  12:00AM Jan 1, 1601
+    # there are 11,644,473,600 seconds between start of Chrome time and epoch time
+    return t / 1000000 - 11644473600
+
+def unix_to_chrome(t):
+    # Chrome measures time in 100 nanosecond chunks since  12:00AM Jan 1, 1601
+    # there are 11,644,473,600 seconds between start of Chrome time and epoch time
+    return (t + 11644473600)*1000000

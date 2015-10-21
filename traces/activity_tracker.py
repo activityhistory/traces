@@ -117,6 +117,6 @@ class ActivityTracker:
         self.sniffer = sniffer.Sniffer(self)
 
         # create object to manage database storage
-        self.storage = Storage(self)
+        self.storage = Storage(self, cfg.NOW())
 
         self.sniffer.run()

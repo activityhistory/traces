@@ -16,6 +16,8 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 import os
 import ast
 
+import utils_cocoa
+
 import sqlite3
 
 from sqlalchemy import create_engine, MetaData, Table
@@ -25,14 +27,16 @@ from sqlalchemy.orm import mapper, sessionmaker
 This file should scrape Chrome and Safari web histories from their respective
 databases. We can access the Safari database, but the Chrome database is locked
 whenever chrome is open. We need to find a work around, possibly opening in
-read-only? It looks like you can do this in python 3.4.0, but not sure about 2.7
+read-only? It looks like you can do read-only in python 3.4.0, but not 2.7:
 http://stackoverflow.com/questions/10205744/opening-sqlite3-database-from-python-in-read-only-mode
-"""
 
-# Possible workaround for Python 2.7
-# fd = os.open(filename, os.O_RDONLY)
-# c = sqlite3.connect('/dev/fd/%d' % fd)
-# os.close(fd)
+This site includes a possible workaround for Python 2.7
+    fd = os.open(filename, os.O_RDONLY)
+    c = sqlite3.connect('/dev/fd/%d' % fd)
+    os.close(fd)
+
+This sometimes seems to work for me, but not consistently.
+"""
 
 class Bookmarks(object):
     pass
@@ -82,3 +86,33 @@ def get_first_safari_url():
     c = conn.cursor()
     c.execute("SELECT * FROM history_items")
     print c.fetchone()
+    conn.close()
+
+def update_safari_urls(start_time, end_time):
+    start = utils_cocoa.unix_to_safari(start_time)
+    end = utils_cocoa.unix_to_safari(end_time)
+
+    filename = os.path.expanduser('~/Library/Safari/History.db')
+    conn = sqlite3.connect(filename)
+    c = conn.cursor()
+    #TODO add a sql left join here to get url data
+    v = c.execute("SELECT * FROM history_visits where visit_time BETWEEN %d and %d" % (start, end))
+    print v.fetchall()
+    conn.close()
+
+def update_chrome_urls(start_time, end_time):
+    # open the database in read-only mode
+    # http://stackoverflow.com/questions/10205744/opening-sqlite3-database-from-python-in-read-only-mode
+    start = utils_cocoa.unix_to_chrome(start_time)
+    end = utils_cocoa.unix_to_chrome(end_time)
+
+    filename = os.path.expanduser('~/Library/Application Support/Google/Chrome/Default/History')
+    fd = os.open(filename, os.O_RDONLY)
+    conn = sqlite3.connect('/dev/fd/%d' % fd)
+
+    c = conn.cursor()
+    c.execute("SELECT * FROM visits WHERE visit_time BETWEEN " + str(start) +" AND " + str(end))
+    print c.fetchall()
+    os.close(fd)
+
+    # get datetimes that we want to query
