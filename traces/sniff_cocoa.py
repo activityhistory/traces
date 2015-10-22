@@ -39,6 +39,8 @@ from recorders.key_recorder import KeyRecorder
 from recorders.move_recorder import MoveRecorder
 from recorders.scroll_recorder import ScrollRecorder
 
+from experience import ExperienceController
+
 
 class Sniffer:
     def __init__(self, activity_tracker):
@@ -127,9 +129,13 @@ class Sniffer:
                 # needed to show window on top of other applications
                 sc.app.activateIgnoringOtherApps_(True)
 
+            def showExperience_(self, notification):
+                print "Showing Experience Sampling Window on Request..."
+                ExperienceController.show(sc)
+
             # could possibly do this in XCode, but creating by code works too
             def createStatusMenu(self):
-                NSLog("Creating app menu")
+                print "Creating app menu"
                 statusbar = NSStatusBar.systemStatusBar()
 
                 # Create the statusbar item
@@ -172,6 +178,9 @@ class Sniffer:
                 self.menu.addItem_(menuitem)
 
                 menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Preferences...', 'showPreferences:', '')
+                self.menu.addItem_(menuitem)
+
+                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Leave a message', 'showExperience:', '')
                 self.menu.addItem_(menuitem)
 
                 menuitem = NSMenuItem.separatorItem()

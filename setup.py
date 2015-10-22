@@ -12,7 +12,8 @@ OPTIONS = {
 DATA_FILES = ['./assets/clock.png',
               './assets/clock_grey.png',
               './assets/cursor.png',
-              './traces/preferences.xib']
+              './traces/preferences.xib',
+              './traces/experience.xib']
 
 setup(
     name="Traces",

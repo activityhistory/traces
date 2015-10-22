@@ -144,6 +144,8 @@ class KeyRecorder:
                 character = "Enter"
             elif event.keyCode() is 39 and modifiers == ["Shift"]:
                  character = "\\\""
+            elif event.keyCode() is 46 and modifiers == ["Cmd", "Shift"]:
+                self.sniffer.delegate.showExperience_("Fake Notification")
 
             string = KEYCODES.get(character, character)
 

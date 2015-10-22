@@ -207,6 +207,9 @@ class Arrangement(Core, Base):
         self.time = time
         self.arr = arr
 
+    def __repr__(self):
+        return "<Arrangement '%s' >" % self.arr
+
 
 class RecordingEvent(Core, Base):
     event = Column(Unicode, index=True)
@@ -218,6 +221,15 @@ class RecordingEvent(Core, Base):
     def __repr__(self):
         return "<Recording '%s' >" % self.event
 
+class Experience(Core, Base):
+    text = Column(Unicode)
+
+    def __init__(self, time, text):
+        self.time = time
+        self.text = text
+
+    def __repr__(self):
+        return "<Experience '%s' >" % self.text
 
 
 # class Website(Core, Base):

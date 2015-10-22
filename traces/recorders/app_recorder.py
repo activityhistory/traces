@@ -282,6 +282,7 @@ class AppRecorder:
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			except:
+				raise
 				print "Could not create event listener for application: " + str(name)
 
 		# get inital list of windows and add window listeners
