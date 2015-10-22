@@ -34,11 +34,6 @@ class ScrollRecorder:
         event_screenshots = preferences.getValueForPreference('eventScreenshots')
         if event_screenshots:
             self.sniffer.activity_tracker.take_screenshot()
-            # print "trying to take event triggered screenshot"
-            # how do I call this? need a way to reference the correct object
-            # may need to make this a recording object that can store a variables
-            # or does saving things in config work?
-            # activity_tracker.take_screenshot()
 
         if event.type() == NSScrollWheel:
         # write JSON object to scrolllog file

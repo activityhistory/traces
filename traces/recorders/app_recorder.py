@@ -27,6 +27,7 @@ import accessibility as acc # https://github.com/atheriel/accessibility
 
 import config as cfg
 import utils_cocoa
+import preferences
 
 
 class AppRecorder:
@@ -61,6 +62,11 @@ class AppRecorder:
 			# log that the application launched
 			text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+			# take a screenshot
+			eventScreenshots = preferences.getValueForPreference('eventScreenshots')
+			if eventScreenshots:
+				self.sniffer.activity_tracker.take_screenshot()
 
 		# check if the screen geometry changed and update active window
 		self.updateWindowList()
@@ -97,6 +103,11 @@ class AppRecorder:
 			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
+		# take screenshot
+		eventScreenshots = preferences.getValueForPreference('eventScreenshots')
+		if eventScreenshots:
+			self.sniffer.activity_tracker.take_screenshot()
+
 		# check if the screen geometry changed and update active window
 		self.updateWindowList()
 
@@ -129,6 +140,11 @@ class AppRecorder:
 		# TODO this app title may not match what we get from app.localizedName()
 		# find way to reconcile
 		app_title = utils_cocoa.ascii_encode(kwargs['element']['AXTitle'])
+
+		# take screenshot
+		eventScreenshots = preferences.getValueForPreference('eventScreenshots')
+		if eventScreenshots:
+			self.sniffer.activity_tracker.take_screenshot()
 
 		# when miniaturized, we may not be able to get window title and position data
 		if notification_title == "WindowMiniaturized":
@@ -220,6 +236,11 @@ class AppRecorder:
 		t = cfg.NOW()
 		text = '{"time": '+ str(t) + ' , "type": "Wake"}'
 		utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
+
+		# take a screenshot
+		eventScreenshots = preferences.getValueForPreference('eventScreenshots')
+		if eventScreenshots:
+			self.sniffer.activity_tracker.take_screenshot()
 
 		# get updated list of applications and windows
 		self.updateWindowList()

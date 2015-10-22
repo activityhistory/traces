@@ -58,18 +58,9 @@ class PreferencesController(NSWindowController):
     screenshotSizeMenu = IBOutlet()
     # clearDataPopup = IBOutlet()
 
-    # dynamic review table
-    # list = [{'checked':False, 'image':'', 'app_name':'First App', 'windows':[{'checked':False, 'window_name':'Window 1', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''},{'checked':False, 'window_name':'Window 2', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Second App', 'windows':[{'checked':False, 'window_name':'Window 4', 'image':''},{'checked':False, 'window_name':'Window 5', 'image':''},{'checked':False, 'window_name':'Window 6', 'image':''}]},{'checked':False, 'image':'', 'app_name':'Third App', 'windows':[{'checked':False, 'window_name':'Window 7', 'image':''},{'checked':False, 'window_name':'Window 8', 'image':''},{'checked':False, 'window_name':'Window 9', 'image':''}]}]
-    # window_list = [{'checked':False, 'window_name':'Window 10', 'image':''},{'checked':False, 'window_name':'Window 11', 'image':''},{'checked':False, 'window_name':'Window 12', 'image':''}]
-    # NSMutableDictionary = objc.lookUpClass('NSMutableDictionary')
-    # NSNumber = objc.lookUpClass('NSNumber')
-    # apps = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in list]
-    # windows = [ NSMutableDictionary.dictionaryWithDictionary_(x) for x in window_list]
     sniffer = None
 
-
     # handle changes to the preferences
-    # TODO enable pausing screenshots
     @IBAction
     def changeScreenshot_(self,sender):
         screenshots = getValueForPreference('screenshots')

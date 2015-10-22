@@ -117,41 +117,45 @@ class KeyRecorder:
         NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 
     def key_handler(self, event):
-        event_screenshots = preferences.getValueForPreference('eventScreenshots')
-        if event_screenshots:
-            self.sniffer.activity_tracker.take_screenshot()
+        record_keystrokes = preferences.getValueForPreference('keystrokes')
+        if record_keystrokes:
+            event_screenshots = preferences.getValueForPreference('eventScreenshots')
+            if event_screenshots:
+                self.sniffer.activity_tracker.take_screenshot()
 
-        if event.type() == NSKeyDown:
-            # get the modifier keys that were depressed when this key was pressed
-            flags = event.modifierFlags()
-            modifiers = []  # OS X api doesn't care it if is left or right
-            if flags & NSControlKeyMask:
-                modifiers.append('Ctrl')
-            if flags & NSAlternateKeyMask:
-                modifiers.append('Alt')
-            if flags & NSCommandKeyMask:
-                modifiers.append('Cmd')
-            if flags & (NSShiftKeyMask | NSAlphaShiftKeyMask):
-                modifiers.append('Shift')
+            if event.type() == NSKeyDown:
+                # get the modifier keys that were depressed when this key was pressed
+                flags = event.modifierFlags()
+                modifiers = []  # OS X api doesn't care it if is left or right
+                if flags & NSControlKeyMask:
+                    modifiers.append('Ctrl')
+                if flags & NSAlternateKeyMask:
+                    modifiers.append('Alt')
+                if flags & NSCommandKeyMask:
+                    modifiers.append('Cmd')
+                if flags & (NSShiftKeyMask | NSAlphaShiftKeyMask):
+                    modifiers.append('Shift')
 
-            # TODO determine why we have to use keycodes here for enter and
-            # backspace but can rely on the charachter list for the others
-            # get the charachter of the pressed key
-            character = event.charactersIgnoringModifiers()
-            if event.keyCode() is 51:
-                character = "Backspace"
-            elif event.keyCode() is 36:
-                character = "Enter"
-            elif event.keyCode() is 39 and modifiers == ["Shift"]:
-                 character = "\\\""
-            elif event.keyCode() is 46 and modifiers == ["Cmd", "Shift"]:
-                self.sniffer.delegate.showExperience_("Fake Notification")
+                # TODO determine why we have to use keycodes here for enter and
+                # backspace but can rely on the charachter list for the others
+                # get the charachter of the pressed key
+                character = event.charactersIgnoringModifiers()
+                if event.keyCode() is 51:
+                    character = "Backspace"
+                elif event.keyCode() is 36:
+                    character = "Enter"
+                elif event.keyCode() is 39 and modifiers == ["Shift"]:
+                    character = "\\\""
+                elif event.keyCode() is 42 and modifiers != ["Shift"]:
+                    character = "\\\\"
+                elif event.keyCode() is 46 and modifiers == ["Cmd", "Shift"]:
+                    self.sniffer.delegate.showExperience_("Fake Notification")
 
-            string = KEYCODES.get(character, character)
+                string = KEYCODES.get(character, character)
 
-            if string in SKIP_MODIFIERS:
-                return
+                if string in SKIP_MODIFIERS:
+                    return
 
-            # write JSON object to keylog file
-            text = '{"time": '+ str(cfg.NOW()) + ' , "key": "' + string + '" , "modifiers": ' + str(modifiers) + '}'
-            utils_cocoa.write_to_file(text, cfg.KEYLOG)
+                # write JSON object to keylog file
+                text = '{"time": '+ str(cfg.NOW()) + ' , "key": "' + string + '" , "modifiers": ' + str(modifiers) + '}'
+                utils_cocoa.write_to_file(text, cfg.KEYLOG)

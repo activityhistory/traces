@@ -65,9 +65,11 @@ class ActivityTracker:
     def run_screenshot_loop(self):
         # take a screenshot if computer is idle and appropriate amount of time has passed
         screenshot_time_max = preferences.getValueForPreference('imageTimeMax')
+        periodic = preferences.getValueForPreference('periodicScreenshots')
         time_since_last_screenshot = cfg.NOW() - self.last_screenshot
         if (time_since_last_screenshot > screenshot_time_max):
-            self.take_screenshot()
+            if periodic:
+                self.take_screenshot()
             time_since_last_screenshot = 0.0
         sleep_time = screenshot_time_max - time_since_last_screenshot + 0.001 # add a milisecond for good measure
         self.screenshotTimer = threading.Timer(sleep_time,self.run_screenshot_loop)

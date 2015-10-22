@@ -31,7 +31,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lmJ-7z-l7V">
+                    <popUpButton hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lmJ-7z-l7V">
                         <rect key="frame" x="264" y="81" width="119" height="26"/>
                         <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="esE-bQ-GPh">
@@ -65,7 +65,7 @@
                             <binding destination="bq4-b7-72c" name="selectedTag" keyPath="values.experienceTime" id="yBN-ho-Mxf"/>
                         </connections>
                     </popUpButton>
-                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1s3-g2-KxR">
+                    <button hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1s3-g2-KxR">
                         <rect key="frame" x="18" y="87" width="220" height="18"/>
                         <animations/>
                         <buttonCell key="cell" type="check" title="Ask me to bookmark my activity" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UuK-75-D6D">
@@ -206,7 +206,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1fb-Nd-v0y">
-                        <rect key="frame" x="18" y="119" width="194" height="18"/>
+                        <rect key="frame" x="18" y="119" width="143" height="18"/>
                         <animations/>
                         <buttonCell key="cell" type="check" title="Record what I type" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XVh-Re-UO5">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -216,7 +216,7 @@
                             <binding destination="bq4-b7-72c" name="value" keyPath="values.keystrokes" id="Io0-x5-cDU"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fjq-eI-XUi">
+                    <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fjq-eI-XUi">
                         <rect key="frame" x="18" y="52" width="216" height="17"/>
                         <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Delete my recrodings from the last" id="JfQ-PH-Cvr">
@@ -225,7 +225,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-Da-zOp">
+                    <popUpButton hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-Da-zOp">
                         <rect key="frame" x="264" y="47" width="119" height="26"/>
                         <animations/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="fHE-9R-i1h">
@@ -246,7 +246,7 @@
                             </menu>
                         </popUpButtonCell>
                     </popUpButton>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="226-0l-pkz">
+                    <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="226-0l-pkz">
                         <rect key="frame" x="260" y="16" width="126" height="32"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PIc-sZ-IdQ">

@@ -137,5 +137,5 @@ class Storage:
         #     if f[0:19] > delete_from_time.strftime("%y%m%d-%H%M%S%f") or  minutes_to_delete == -1 :
         #         os.remove(os.path.join(screenshot_directory,f))
 
-        # print "You asked to delete the last " + text + " of your history"
+        # print "Deleted last " + text + " of your history"
         pass
