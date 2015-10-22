@@ -6,48 +6,124 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ExperienceController">
             <connections>
+                <outlet property="deleteAudioButton" destination="3Kv-B7-OWx" id="J2V-GY-UCd"/>
                 <outlet property="experienceText" destination="qXd-hh-Kfk" id="4aN-ll-L0f"/>
+                <outlet property="playAudioButton" destination="dG4-fN-Uhv" id="SDf-KJ-Dk5"/>
+                <outlet property="progressBar" destination="L1z-wW-zIf" id="feC-Zb-KCa"/>
+                <outlet property="recordButton" destination="GUO-QJ-kj6" id="mWx-5i-pok"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="im7-GL-Hlu"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Selfspy" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+        <window title="Leave a message" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="398" height="91"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <rect key="contentRect" x="196" y="240" width="398" height="154"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="398" height="91"/>
+                <rect key="frame" x="0.0" y="0.0" width="398" height="154"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qXd-hh-Kfk">
-                        <rect key="frame" x="20" y="49" width="358" height="22"/>
+                    <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qs1-Uz-Fmj">
+                        <rect key="frame" x="13" y="10" width="372" height="138"/>
                         <animations/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="Whats up?" drawsBackground="YES" id="CnD-Jl-5h8">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cT8-GG-44U">
-                        <rect key="frame" x="14" y="13" width="370" height="32"/>
-                        <animations/>
-                        <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BW4-jd-qgk">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                            <string key="keyEquivalent" base64-UTF8="YES">
+                        <font key="font" metaFont="system"/>
+                        <tabViewItems>
+                            <tabViewItem label="Text" identifier="1" id="udF-6o-pLk">
+                                <view key="view" ambiguous="YES" id="Uii-Iy-mkj">
+                                    <rect key="frame" x="10" y="33" width="352" height="92"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qXd-hh-Kfk">
+                                            <rect key="frame" x="17" y="67" width="318" height="22"/>
+                                            <animations/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="Whats up?" drawsBackground="YES" id="CnD-Jl-5h8">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cT8-GG-44U">
+                                            <rect key="frame" x="11" y="31" width="330" height="32"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BW4-jd-qgk">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                                <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
-                        </buttonCell>
-                        <connections>
-                            <action selector="recordText:" target="-2" id="KDt-f6-bDD"/>
-                        </connections>
-                    </button>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="recordText:" target="-2" id="KDt-f6-bDD"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <animations/>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Audio" identifier="2" id="Dxf-OZ-7S5">
+                                <view key="view" id="hmb-16-vlY">
+                                    <rect key="frame" x="10" y="33" width="352" height="92"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GUO-QJ-kj6">
+                                            <rect key="frame" x="11" y="61" width="330" height="32"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="push" title="Record" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nlF-Ra-poU">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="toggleAudioRecording:" target="-2" id="95w-YL-3cu"/>
+                                            </connections>
+                                        </button>
+                                        <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dG4-fN-Uhv">
+                                            <rect key="frame" x="11" y="28" width="163" height="32"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="push" title="Play" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Og0-CI-0LZ">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="toggleAudioPlay:" target="-2" id="GwH-S6-sYC"/>
+                                            </connections>
+                                        </button>
+                                        <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Kv-B7-OWx">
+                                            <rect key="frame" x="174" y="28" width="167" height="32"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2Ev-cB-hf6">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="deleteAudio:" target="-2" id="hbq-aC-sm1"/>
+                                            </connections>
+                                        </button>
+                                        <progressIndicator hidden="YES" wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="L1z-wW-zIf">
+                                            <rect key="frame" x="17" y="8" width="318" height="20"/>
+                                            <animations/>
+                                        </progressIndicator>
+                                    </subviews>
+                                    <animations/>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Video" identifier="" id="WDO-nS-yd4">
+                                <view key="view" id="eyF-Yt-x0C">
+                                    <rect key="frame" x="10" y="33" width="352" height="92"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <animations/>
+                                </view>
+                            </tabViewItem>
+                        </tabViewItems>
+                    </tabView>
                 </subviews>
                 <animations/>
             </view>
-            <point key="canvasLocation" x="543" y="233.5"/>
+            <connections>
+                <outlet property="initialFirstResponder" destination="qXd-hh-Kfk" id="a6f-WR-6U8"/>
+            </connections>
+            <point key="canvasLocation" x="543" y="265"/>
         </window>
     </objects>
 </document>
