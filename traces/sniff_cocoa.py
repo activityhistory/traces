@@ -165,9 +165,9 @@ class Sniffer:
                 self.menu.setAutoenablesItems_(False)
 
                 if NSUserDefaultsController.sharedUserDefaultsController().values().valueForKey_('recording'):
-                    menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Pause Recording', 'toggleLogging:', '')
+                    menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Pause Recording', 'toggleLogging:', 'r')
                 else:
-                    menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Start Recording', 'toggleLogging:', '')
+                    menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Start Recording', 'toggleLogging:', 'r')
                 #menuitem.setEnabled_(False)
                 self.menu.addItem_(menuitem)
                 self.loggingMenuItem = menuitem
@@ -178,16 +178,17 @@ class Sniffer:
                 menuitem = NSMenuItem.separatorItem()
                 self.menu.addItem_(menuitem)
 
-                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Preferences...', 'showPreferences:', '')
+                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Preferences...', 'showPreferences:', ',')
                 self.menu.addItem_(menuitem)
 
-                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Leave a message', 'showExperience:', '')
+                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Leave a message', 'showExperience:', 'm')
+                menuitem.setKeyEquivalentModifierMask_(NSShiftKeyMask + NSCommandKeyMask)
                 self.menu.addItem_(menuitem)
 
                 menuitem = NSMenuItem.separatorItem()
                 self.menu.addItem_(menuitem)
 
-                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Quit Traces', 'terminate:', '')
+                menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Quit Traces', 'terminate:', 'q')
                 self.menu.addItem_(menuitem)
 
                 # Bind it to the status item
