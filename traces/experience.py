@@ -60,6 +60,47 @@ class ExperienceController(NSWindowController):
         self.expController.close()
 
     @IBAction
+    def toggleAudioRecording_(self, sender):
+        if self.recordingAudio:
+            self.recordingAudio = False
+            print "Stop audio message"
+
+            # get the right name for our audio file
+            dt = datetime.now().strftime("%y%m%d-%H%M%S%f")
+            audioName = str(os.path.join(cfg.CURRENT_DIR, "audio/")) + dt + '.m4a'
+            self.audio_file = audioName
+            audioName = string.replace(audioName, "/", ":")
+            audioName = audioName[1:]
+
+            # start the audio recording
+            s = NSAppleScript.alloc().initWithSource_("set filePath to \"" + audioName + "\" \n set placetosaveFile to a reference to file filePath \n tell application \"QuickTime Player\" \n set mydocument to document 1 \n tell document 1 \n stop \n end tell \n set newRecordingDoc to first document whose name = \"untitled\" \n export newRecordingDoc in placetosaveFile using settings preset \"Audio Only\" \n close newRecordingDoc without saving \n quit \n end tell")
+            s.executeAndReturnError_(None)
+
+            # log the experience in our table
+            t = cfg.NOW()
+            e = Experience(t, dt + '.m4a')
+            self.sniffer.activity_tracker.storage.session.add(e)
+            # may not need to commit here, but could wait till next round of parsing
+            self.sniffer.activity_tracker.storage.sqlcommit()
+
+            # reset controls
+            self.expController.recordButton.setTitle_("Record")
+            self.expController.recordButton.setEnabled_(False)
+            self.expController.playAudioButton.setHidden_(False)
+            self.expController.deleteAudioButton.setHidden_(False)
+            self.expController.progressBar.setHidden_(False)
+
+        else:
+            self.recordingAudio = True
+            print "Start audio message"
+
+            s = NSAppleScript.alloc().initWithSource_("tell application \"QuickTime Player\" \n set new_recording to (new audio recording) \n tell new_recording \n start \n end tell \n tell application \"System Events\" \n set visible of process \"QuickTime Player\" to false \n repeat until visible of process \"QuickTime Player\" is false \n end repeat \n end tell \n end tell")
+            s.executeAndReturnError_(None)
+
+            self.expController.recordButton.setTitle_("Stop Recording")
+            # TODO change button color to red while recording
+
+    @IBAction
     def toggleAudioPlay_(self, sender):
         if self.playingAudio:
             self.stopAudioPlay()
@@ -102,7 +143,6 @@ class ExperienceController(NSWindowController):
         s = NSAppleScript.alloc().initWithSource_("tell application \"QuickTime Player\" \n stop the front document \n close the front document \n end tell")
         s.executeAndReturnError_(None)
 
-
     @IBAction
     def deleteAudio_(self, sender):
         if (self.audio_file != '') & (self.audio_file != None) :
@@ -115,47 +155,6 @@ class ExperienceController(NSWindowController):
         self.expController.playAudioButton.setHidden_(True)
         self.expController.deleteAudioButton.setHidden_(True)
         self.expController.progressBar.setHidden_(True)
-
-    @IBAction
-    def toggleAudioRecording_(self, sender):
-        if self.recordingAudio:
-            self.recordingAudio = False
-            print "Stop audio message"
-
-            # get the right name for our audio file
-            dt = datetime.now().strftime("%y%m%d-%H%M%S%f")
-            audioName = str(os.path.join(cfg.CURRENT_DIR, "audio/")) + dt + '.m4a'
-            self.audio_file = audioName
-            audioName = string.replace(audioName, "/", ":")
-            audioName = audioName[1:]
-
-            # start the audio recording
-            s = NSAppleScript.alloc().initWithSource_("set filePath to \"" + audioName + "\" \n set placetosaveFile to a reference to file filePath \n tell application \"QuickTime Player\" \n set mydocument to document 1 \n tell document 1 \n stop \n end tell \n set newRecordingDoc to first document whose name = \"untitled\" \n export newRecordingDoc in placetosaveFile using settings preset \"Audio Only\" \n close newRecordingDoc without saving \n quit \n end tell")
-            s.executeAndReturnError_(None)
-
-            # log the experience in our table
-            t = cfg.NOW()
-            e = Experience(t, dt + '.m4a')
-            self.sniffer.activity_tracker.storage.session.add(e)
-            # may not need to commit here, but could wait till next round of parsing
-            self.sniffer.activity_tracker.storage.sqlcommit()
-
-            # reset controls
-            self.expController.recordButton.setTitle_("Record")
-            self.expController.recordButton.setEnabled_(False)
-            self.expController.playAudioButton.setHidden_(False)
-            self.expController.deleteAudioButton.setHidden_(False)
-            self.expController.progressBar.setHidden_(False)
-
-        else:
-            self.recordingAudio = True
-            print "Start audio message"
-
-            s = NSAppleScript.alloc().initWithSource_("tell application \"QuickTime Player\" \n set new_recording to (new audio recording) \n tell new_recording \n start \n end tell \n tell application \"System Events\" \n set visible of process \"QuickTime Player\" to false \n repeat until visible of process \"QuickTime Player\" is false \n end repeat \n end tell \n end tell")
-            s.executeAndReturnError_(None)
-
-            self.expController.recordButton.setTitle_("Stop Recording")
-            # TODO change button color to red while recording
 
     # override window close to track when users close the experience window
     def overrideClose(self):

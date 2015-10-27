@@ -200,6 +200,7 @@ class Geometry(Core, Base):
     def __repr__(self):
         return "<Geometry (%d, %d), (%d, %d)>" % (self.x, self.y, self.w, self.h)
 
+
 class Arrangement(Core, Base):
     arr = Column(Unicode, nullable=False)
 
@@ -221,6 +222,7 @@ class RecordingEvent(Core, Base):
     def __repr__(self):
         return "<Recording '%s' >" % self.event
 
+
 class Experience(Core, Base):
     text = Column(Unicode)
 
@@ -231,6 +233,20 @@ class Experience(Core, Base):
     def __repr__(self):
         return "<Experience '%s' >" % self.text
 
+
+class Clipboard(Core, Base):
+    text = Column(Unicode)
+    url = Column(Unicode)
+    image = Column(Unicode)
+
+    def __init__(self, time, text, url, image):
+        self.time = time
+        self.text = text
+        self.url = url
+        self.image = image
+
+    def __repr__(self):
+        return "<Clipboard '%s' >" % self.text
 
 # class Website(Core, Base):
 #     url = Column(Unicode, index=True)

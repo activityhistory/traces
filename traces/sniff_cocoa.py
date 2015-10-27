@@ -38,6 +38,7 @@ from recorders.click_recorder import ClickRecorder
 from recorders.key_recorder import KeyRecorder
 from recorders.move_recorder import MoveRecorder
 from recorders.scroll_recorder import ScrollRecorder
+from recorders.clipboard_recorder import ClipboardRecorder
 
 from experience import ExperienceController
 
@@ -215,6 +216,9 @@ class Sniffer:
         self.mr.start_move_listener()
         self.sr = ScrollRecorder(self)
         self.sr.start_scroll_listener()
+        self.clr = ClipboardRecorder(self)
+        # may not need to start a loop, checking clipboard on click and Cmd + C
+        # self.clr.start_clipboard_loop()
 
         # I can get this to work, but it blocks the rest of the code from executing
         # app recording needs a separate thread to listen for events on

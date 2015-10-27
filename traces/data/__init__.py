@@ -35,6 +35,12 @@ def createDataDirectories(d):
     except OSError:
         pass
 
+    # clipboard images
+    try:
+        os.makedirs(os.path.join(d, 'clipboard'))
+    except OSError:
+        pass
+
     # audio directory
     try:
         os.makedirs(os.path.join(d, 'audio'))

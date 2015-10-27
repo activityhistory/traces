@@ -18,24 +18,23 @@ import ast
 
 import config as cfg
 
-from models import Click
+from models import Clipboard
 
 
-def parse_clicks(session):
+def parse_clips(session):
     # get names of files to read and mongodb collection to write
-    clickfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.CLICKLOG)
+    clipfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.CLIPLOG)
 
     # read the file, write lines to database, and save lines that were not
     # written to the database
-    # TODO may need to check if file is already open using a file lock
-    if os.path.isfile(clickfile):
-        f = open(clickfile, 'r+')
+    if os.path.isfile(clipfile):
+        f = open(clipfile, 'r+')
         lines_to_save = []
         for line in f:
             try:
                 text = ast.literal_eval(line.rstrip())
-                click = Click(text['time'], text['button'], text['location'][0], text['location'][1])
-                session.add(click)
+                clip = Clipboard(text['time'], text['text'], text['url'], text['image'])
+                session.add(clip)
             except:
                 print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)

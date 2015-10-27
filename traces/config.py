@@ -21,6 +21,7 @@ VOLUMES = '/Volumes'
 RECORDERLOG = 'recorder.log'
 APPLOG = 'app.log'
 CLICKLOG = 'click.log'
+CLIPLOG = 'clip.log'
 GEOLOG = 'geometry.log'
 KEYLOG = 'key.log'
 MOVELOG = 'move.log'
@@ -52,3 +53,4 @@ CURRENT_DIR = None
 # times
 NOW = time.time
 PARSEDELAY = 15
+CLIPDELAY = 1

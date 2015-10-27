@@ -47,6 +47,9 @@ class ClickRecorder:
         if event_screenshots:
             self.sniffer.activity_tracker.take_screenshot()
 
+        # check if the clipboard has updated
+        self.sniffer.clr.get_clipboard_contents()
+
         # get data ready to write
         loc = NSEvent.mouseLocation()
         click_type = "Unknown"

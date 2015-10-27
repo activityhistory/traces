@@ -24,6 +24,7 @@ import preferences
 
 import data.sqlite.key_parser as key_parser
 import data.sqlite.click_parser as click_parser
+import data.sqlite.clip_parser as clip_parser
 import data.sqlite.scroll_parser as scroll_parser
 import data.sqlite.move_parser as move_parser
 import data.sqlite.app_parser as app_parser
@@ -33,7 +34,7 @@ import data.sqlite.web_parser as web_parser
 import data.sqlite.models as models
 
 from data.sqlite.models import (Click, Keys, Move, Scroll, App, AppEvent, Window,
-                    WindowEvent, RecordingEvent, Geometry)
+                    WindowEvent, RecordingEvent, Geometry, Clipboard)
 
 
 class Storage:
@@ -83,6 +84,7 @@ class Storage:
     def parseToSqlite(self):
         key_parser.parse_keys(self.session)
         click_parser.parse_clicks(self.session)
+        clip_parser.parse_clips(self.session)
         scroll_parser.parse_scrolls(self.session)
         move_parser.parse_moves(self.session)
         recorder_parser.parse_recorder(self.session)
