@@ -44,6 +44,7 @@ class AppRecorder:
 
 ### Application event callbacks ###
 	def appLaunchCallback_(self, notification):
+		recording = preferences.getValueForPreference('recording')
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
@@ -59,9 +60,10 @@ class AppRecorder:
 						"AXWindowDeminiaturized")
 			self.watched[pid] = mess
 
-			# log that the application launched
-			text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + name + '"}'
-			utils_cocoa.write_to_file(text, cfg.APPLOG)
+			if recording:
+				# log that the application launched
+				text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + name + '"}'
+				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			# take a screenshot
 			eventScreenshots = preferences.getValueForPreference('eventScreenshots')
@@ -72,6 +74,8 @@ class AppRecorder:
 		self.updateWindowList()
 
 	def appTerminateCallback_(self, notification):
+		recording = preferences.getValueForPreference('recording')
+
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
@@ -84,14 +88,17 @@ class AppRecorder:
 			del self.watched[pid]
 			# watcher = self.watched[p]
 
-			# log the the application has closed
-			text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + name + '"}'
-			utils_cocoa.write_to_file(text, cfg.APPLOG)
+			if recording:
+				# log the the application has closed
+				text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + name + '"}'
+				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
 		self.updateWindowList()
 
 	def appActivateCallback_(self, notification):
+		recording = preferences.getValueForPreference('recording')
+
 		# get event info
 		t = cfg.NOW()
 		app = notification.userInfo()["NSWorkspaceApplicationKey"]
@@ -99,7 +106,7 @@ class AppRecorder:
 		pid = int(app.processIdentifier())
 
 		# log that the application has become active
-		if pid in self.watched.keys():
+		if pid in self.watched.keys() and recording:
 			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
@@ -112,6 +119,8 @@ class AppRecorder:
 		self.updateWindowList()
 
 	def appDeactivateCallback_(self, notification):
+		recording = preferences.getValueForPreference('recording')
+
 		# get event info
 		t = cfg.NOW()
 
@@ -124,7 +133,7 @@ class AppRecorder:
 		pid = int(app.processIdentifier())
 
 		# log that the application has become inactive
-		if pid in self.watched.keys():
+		if pid in self.watched.keys() and recording:
 			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + name + '"}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
@@ -134,108 +143,116 @@ class AppRecorder:
 ### Window event callbacks ###
 	#TODO make function more robust so it does not fail if some of the accessibility data is not available
 	def windowCallback(self, **kwargs):
-		# get event info
-		t = cfg.NOW()
-		notification_title = str(kwargs['notification'])[2:-1] # remove 'AX' from front of event names before we save that info
-		# TODO this app title may not match what we get from app.localizedName()
-		# find way to reconcile
-		app_title = utils_cocoa.ascii_encode(kwargs['element']['AXTitle'])
+		recording = preferences.getValueForPreference('recording')
+		if recording:
+			# get event info
+			t = cfg.NOW()
+			notification_title = str(kwargs['notification'])[2:-1] # remove 'AX' from front of event names before we save that info
+			# TODO this app title may not match what we get from app.localizedName()
+			# find way to reconcile
+			app_title = utils_cocoa.ascii_encode(kwargs['element']['AXTitle'])
 
-		# take screenshot
-		eventScreenshots = preferences.getValueForPreference('eventScreenshots')
-		if eventScreenshots:
-			self.sniffer.activity_tracker.take_screenshot()
+			# take screenshot
+			eventScreenshots = preferences.getValueForPreference('eventScreenshots')
+			if eventScreenshots:
+				self.sniffer.activity_tracker.take_screenshot()
 
-		# when miniaturized, we may not be able to get window title and position data
-		if notification_title == "WindowMiniaturized":
-			# write to window log file about event
-			text = '{"time": '+ str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '" }'
-			utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
+			# when miniaturized, we may not be able to get window title and position data
+			if notification_title == "WindowMiniaturized":
+				# write to window log file about event
+				text = '{"time": '+ str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '" }'
+				utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
-		# all other events should let us get title and postiion data
-		else:
-			# get the relevant window data
-			title = utils_cocoa.ascii_encode(kwargs['element']['AXFocusedWindow']['AXTitle'])
-			position = str(kwargs['element']['AXFocusedWindow']['AXPosition'])
-			size = str(kwargs['element']['AXFocusedWindow']['AXSize'])
+			# all other events should let us get title and postiion data
+			else:
+				# get the relevant window data
+				title = utils_cocoa.ascii_encode(kwargs['element']['AXFocusedWindow']['AXTitle'])
+				position = str(kwargs['element']['AXFocusedWindow']['AXPosition'])
+				size = str(kwargs['element']['AXFocusedWindow']['AXSize'])
 
-			# write to window log file about event
-			text = '{"time": ' + str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
-			utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
+				# write to window log file about event
+				text = '{"time": ' + str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
+				utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
-		# get most recent screen geometry and update active window
-		self.updateWindowList()
+			# get most recent screen geometry and update active window
+			self.updateWindowList()
 
 	def updateWindowList(self):
 		# get an early timestamp
+		recording = preferences.getValueForPreference('recording')
 		t = cfg.NOW()
 
-		# clear our past geometry and active window
-		self.apps_and_windows = {}
-		active_window = None
+		if recording:
+			# clear our past geometry and active window
+			self.apps_and_windows = {}
+			active_window = None
 
-		# get list of applications that show up in the dock
-		workspace = NSWorkspace.sharedWorkspace()
-		activeApps = workspace.runningApplications()
-		regularApps = []
-		for app in activeApps:
-			if app.activationPolicy() == 0:
-				regularApps.append(app)
+			# get list of applications that show up in the dock
+			workspace = NSWorkspace.sharedWorkspace()
+			activeApps = workspace.runningApplications()
+			regularApps = []
+			for app in activeApps:
+				if app.activationPolicy() == 0:
+					regularApps.append(app)
 
-		# save app info to dictionary
-		for app in regularApps:
-			name = utils_cocoa.ascii_encode(app.localizedName())
-			active = app.isActive()
-			pid = app.processIdentifier()
-			d = {'name': name, 'active': active, 'windows':{}}
-			self.apps_and_windows[int(pid)] = d # store app data by pid
+			# save app info to dictionary
+			for app in regularApps:
+				name = utils_cocoa.ascii_encode(app.localizedName())
+				active = app.isActive()
+				pid = app.processIdentifier()
+				d = {'name': name, 'active': active, 'windows':{}}
+				self.apps_and_windows[int(pid)] = d # store app data by pid
 
-			# get title of the active window if possible
-			if active:
+				# get title of the active window if possible
+				if active:
+					try:
+						mess = self.watched[pid]
+						active_window = mess['AXFocusedWindow']['AXTitle']
+					except:
+						pass
+
+			# add list of current windows
+			options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
+			windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID)
+			for window in windows:
 				try:
-					mess = self.watched[pid]
-					active_window = mess['AXFocusedWindow']['AXTitle']
+					# get window data
+					owning_app_pid = window['kCGWindowOwnerPID']
+					window_layer = window['kCGWindowLayer']
+					name = utils_cocoa.ascii_encode(window['kCGWindowName'])
+					window_id = window['kCGWindowNumber']
+					bounds = window['kCGWindowBounds']
+					win_bounds = {'width':bounds['Width'], 'height':bounds['Height'], 'x':bounds['X'], 'y':bounds['Y']}
+					active = False
+					if window['kCGWindowName'] == active_window:
+						active = True
+
+					# unless it has a name and is on the top layer, we don't count it
+					if owning_app_pid in self.apps_and_windows and window_layer == 0 and name:
+						# add window data to the app_window dictionary
+						window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
+						self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
 				except:
 					pass
 
-		# add list of current windows
-		options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
-		windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID)
-		for window in windows:
-			try:
-				# get window data
-				owning_app_pid = window['kCGWindowOwnerPID']
-				window_layer = window['kCGWindowLayer']
-				name = utils_cocoa.ascii_encode(window['kCGWindowName'])
-				window_id = window['kCGWindowNumber']
-				bounds = window['kCGWindowBounds']
-				win_bounds = {'width':bounds['Width'], 'height':bounds['Height'], 'x':bounds['X'], 'y':bounds['Y']}
-				active = False
-				if window['kCGWindowName'] == active_window:
-					active = True
-
-				# unless it has a name and is on the top layer, we don't count it
-				if owning_app_pid in self.apps_and_windows and window_layer == 0 and name:
-					# add window data to the app_window dictionary
-					window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
-					self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
-			except:
-				pass
-
-		# write self.apps_and_windows to a geometry file
-		text = '{"time": ' + str(t) + ', "geometry": ' +  str(self.apps_and_windows) + "}"
-		utils_cocoa.write_to_file(text, cfg.GEOLOG)
+			# write self.apps_and_windows to a geometry file
+			text = '{"time": ' + str(t) + ', "geometry": ' +  str(self.apps_and_windows) + "}"
+			utils_cocoa.write_to_file(text, cfg.GEOLOG)
 
 ### Computer sleep/wake callbacks ###
 	def sleepCallback_(self, notification):
-		t = cfg.NOW()
-		text = '{"time": '+ str(t) + ' , "type": "Sleep"}'
-		utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
+		recording = preferences.getValueForPreference('recording')
+		if recording:
+			t = cfg.NOW()
+			text = '{"time": '+ str(t) + ' , "type": "Sleep"}'
+			utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
 	def wakeCallback_(self, notification):
-		t = cfg.NOW()
-		text = '{"time": '+ str(t) + ' , "type": "Wake"}'
-		utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
+		recording = preferences.getValueForPreference('recording')
+		if recording:
+			t = cfg.NOW()
+			text = '{"time": '+ str(t) + ' , "type": "Wake"}'
+			utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
 		# take a screenshot
 		eventScreenshots = preferences.getValueForPreference('eventScreenshots')
@@ -247,6 +264,7 @@ class AppRecorder:
 
 ### Manager the event listeners ###
 	def start_app_observers(self):
+		recording = preferences.getValueForPreference('recording')
         # prompt user to grant accessibility access to Traces, if not already granted
 		acc.is_enabled()
 
@@ -298,9 +316,10 @@ class AppRecorder:
 							"AXWindowDeminiaturized") # AXMainWindowChanged
 				self.watched[p] = mess # we need to maintain the listener or it will be deleted on cleanup
 
-				# log that the app is open
-				text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": "' + name + '"}'
-				utils_cocoa.write_to_file(text, cfg.APPLOG)
+				if recording:
+					# log that the app is open
+					text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": "' + name + '"}'
+					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			except:
 				raise
@@ -313,6 +332,7 @@ class AppRecorder:
 		CFRunLoopRun()
 
 	def stop_app_observers(self):
+		recording = preferences.getValueForPreference('recording')
 		t = cfg.NOW()
 
         # get workspace and list of all applications
@@ -322,15 +342,16 @@ class AppRecorder:
 		# let app observers be garabage collected
 		self.watched = {}
 
-        # prune list of applications to apps that appear in the dock
-		regularApps = []
-		for app in activeApps:
-			if app.activationPolicy() == 0:
-				regularApps.append(app)
+		if recording:
+	        # prune list of applications to apps that appear in the dock
+			regularApps = []
+			for app in activeApps:
+				if app.activationPolicy() == 0:
+					regularApps.append(app)
 
-        # listen for window events of these applications
-		for app in regularApps:
-			name = utils_cocoa.ascii_encode(app.localizedName())
-			# log that the app recording will stop
-			text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": "' + name + '"}'
-			utils_cocoa.write_to_file(text, cfg.APPLOG)
+	        # listen for window events of these applications
+			for app in regularApps:
+				name = utils_cocoa.ascii_encode(app.localizedName())
+				# log that the app recording will stop
+				text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": "' + name + '"}'
+				utils_cocoa.write_to_file(text, cfg.APPLOG)

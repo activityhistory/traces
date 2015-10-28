@@ -56,7 +56,7 @@ class PreferencesController(NSWindowController):
     # outlets for UI elements
     screenshotSizePopup = IBOutlet()
     screenshotSizeMenu = IBOutlet()
-    # clearDataPopup = IBOutlet()
+    clearDataPopup = IBOutlet()
 
     sniffer = None
 
@@ -65,14 +65,10 @@ class PreferencesController(NSWindowController):
     def changeScreenshot_(self,sender):
         screenshots = getValueForPreference('screenshots')
         periodic = getValueForPreference('periodicScreenshots')
-        if recording and periodic:
+        if screenshots and periodic:
             self.sniffer.activity_tracker.startLoops()
-        elif not recording and periodic:
+        elif not screenshots or not periodic:
             self.sniffer.activity_tracker.stopLoops()
-
-    # @IBAction
-    # def changeScreenshotSize_(self,sender):
-    #     print "You asked to pause screenshots. THis function is not enabled now"
 
     @IBAction
     def changePeriodicScreenshots_(self,sender):
@@ -84,16 +80,7 @@ class PreferencesController(NSWindowController):
 
     @IBAction
     def changePeriodicRate_(self,sender):
-        # restart the loop to reflect the current rate
         self.sniffer.activity_tracker.restartScreenshotLoop()
-
-    # @IBAction
-    # def changeEventScreenshots_(self,sender):
-    #     print "You asked us to start/stop the event screenshots"
-    #
-    # @IBAction
-    # def changeEventRate_(self,sender):
-    #     print "You asked us to change the event rate"
 
     @IBAction
     def changeKeystrokeRecording_(self,sender):
@@ -138,12 +125,14 @@ class PreferencesController(NSWindowController):
             NSUserDefaultsController.sharedUserDefaultsController().defaults().setInteger_forKey_(nativeHeight,'imageSize')
             self.prefController.screenshotSizePopup.selectItemWithTag_(nativeHeight)
 
-    def show(self):
+    def show(self, sniffer):
         try:
             if self.prefController:
                 self.prefController.close()
         except:
             pass
+
+        self.sniffer = sniffer
 
         # open window from NIB file, show front and center
         self.prefController = PreferencesController.alloc().initWithWindowNibName_("preferences")
@@ -154,6 +143,8 @@ class PreferencesController(NSWindowController):
 
 
         # NSNotificationCenter.defaultCenter().postNotificationName_object_('makeAppActive',self)
+
+        self.sniffer.app.activateIgnoringOtherApps_(True)
 
         # make window close on Cmd-w
         self.prefController.window().standardWindowButton_(NSWindowCloseButton).setKeyEquivalentModifierMask_(NSCommandKeyMask)

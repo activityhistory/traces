@@ -31,11 +31,13 @@ class ScrollRecorder:
 
     # TODO add tracking of duration of scroll
     def scroll_handler(self, event):
+        recording = preferences.getValueForPreference('recording')
         event_screenshots = preferences.getValueForPreference('eventScreenshots')
         if event_screenshots:
             self.sniffer.activity_tracker.take_screenshot()
 
-        if event.type() == NSScrollWheel:
-        # write JSON object to scrolllog file
-            text = '{"time": '+ str(cfg.NOW()) + ' , "distance": [' + str(event.deltaX()) + ',' + str(event.deltaY()) + ']}'
-            utils_cocoa.write_to_file(text, cfg.SCROLLLOG)
+        if recording:
+            if event.type() == NSScrollWheel:
+            # write JSON object to scrolllog file
+                text = '{"time": '+ str(cfg.NOW()) + ' , "distance": [' + str(event.deltaX()) + ',' + str(event.deltaY()) + ']}'
+                utils_cocoa.write_to_file(text, cfg.SCROLLLOG)

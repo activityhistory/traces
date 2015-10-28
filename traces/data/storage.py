@@ -14,6 +14,8 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
+import datetime
+
 import pymongo
 import sqlalchemy
 
@@ -32,9 +34,8 @@ import data.sqlite.recorder_parser as recorder_parser
 import data.sqlite.web_parser as web_parser
 
 import data.sqlite.models as models
-
 from data.sqlite.models import (Click, Keys, Move, Scroll, App, AppEvent, Window,
-                    WindowEvent, RecordingEvent, Geometry, Clipboard)
+                    WindowEvent, RecordingEvent, Geometry, Clipboard, Arrangement)
 
 
 class Storage:
@@ -92,8 +93,6 @@ class Storage:
         app_parser.parse_windows(self.session, self.activity_tracker)
         app_parser.parse_geometries(self.session, self.activity_tracker)
         # TODO add web history scraping here
-        # web_parser.update_safari_urls(self.last_commit, cfg.NOW())
-        # web_parser.update_chrome_urls(self.last_commit, cfg.NOW())
 
         self.sqlcommit()
 
@@ -117,27 +116,64 @@ class Storage:
                 print "Rollback database"
                 self.session.rollback()
 
-    # TODO make this os agnostic, and make it work for MongoDB
-    # TODO figure out way to pass number of minutes to this method
     def clearData(self):
-        # minutes_to_delete = notification.object().clearDataPopup.selectedItem().tag()
-        # text = notification.object().clearDataPopup.selectedItem().title()
-        #
-        # if minutes_to_delete == -1:
-        #     delete_from_time = datetime.datetime.min
-        # else:
-        #     delta = datetime.timedelta(minutes=minutes_to_delete)
-        #     now = datetime.datetime.now()
-        #     delete_from_time = now - delta
-        #
-        # # delete data from all tables
-        #
-        # screenshot_directory = os.path.expanduser(os.path.join(cfg.CURRENT_DIR,"screenshots"))
-        # screenshot_files = os.listdir(screenshot_directory)
-        #
-        # for f in screenshot_files:
-        #     if f[0:19] > delete_from_time.strftime("%y%m%d-%H%M%S%f") or  minutes_to_delete == -1 :
-        #         os.remove(os.path.join(screenshot_directory,f))
+        minutes_to_delete = self.activity_tracker.sniffer.delegate.prefContr.clearDataPopup.selectedItem().tag()
+        text = self.activity_tracker.sniffer.delegate.prefContr.clearDataPopup.selectedItem().title()
 
-        # print "Deleted last " + text + " of your history"
-        pass
+        if minutes_to_delete == -1:
+            delete_from_time = datetime.datetime.min
+            delete_from_time_unix = 0
+        else:
+            delta = datetime.timedelta(minutes=minutes_to_delete)
+            now = datetime.datetime.now()
+            delete_from_time = now - delta
+
+            now_unix = cfg.NOW()
+            delete_from_time_unix = now_unix - 60*minutes_to_delete
+
+
+        # delete screenshots
+        screenshot_directory = os.path.expanduser(os.path.join(cfg.CURRENT_DIR,"screenshots"))
+        screenshot_files = os.listdir(screenshot_directory)
+        for f in screenshot_files:
+            if f[0:19] > delete_from_time.strftime("%y%m%d-%H%M%S%f"):
+                os.remove(os.path.join(screenshot_directory,f))
+
+        # delete clipboard images
+        clipboard_directory = os.path.expanduser(os.path.join(cfg.CURRENT_DIR,"clipboard"))
+        clipboard_files = os.listdir(clipboard_directory)
+        for f in clipboard_files:
+            if f[0:19] > delete_from_time.strftime("%y%m%d-%H%M%S%f"):
+                os.remove(os.path.join(clipboard_directory,f))
+
+        # delete audio files
+        audio_directory = os.path.expanduser(os.path.join(cfg.CURRENT_DIR,"audio"))
+        audio_files = os.listdir(audio_directory)
+        for f in audio_files:
+            if f[0:19] > delete_from_time.strftime("%y%m%d-%H%M%S%f"):
+                os.remove(os.path.join(audio_directory,f))
+
+        # delete log files, since they only have the last 5 seconds of data,
+        # we don't need to check if the data is later than the delete_from_time
+        logs = os.listdir(cfg.CURRENT_DIR)
+        for l in logs:
+            if l[-4:] == ".log":
+                os.remove(os.path.join(cfg.CURRENT_DIR,l))
+
+        # delete data from all database tables
+        # may be a cleaner way to iterate through this given the table names
+        self.session.query(App).filter(App.time > delete_from_time_unix).delete()
+        self.session.query(AppEvent).filter(AppEvent.time > delete_from_time_unix).delete()
+        self.session.query(Arrangement).filter(Arrangement.time > delete_from_time_unix).delete()
+        self.session.query(Click).filter(Click.time > delete_from_time_unix).delete()
+        self.session.query(Clipboard).filter(Clipboard.time > delete_from_time_unix).delete()
+        self.session.query(Experience).filter(Experience.time > delete_from_time_unix).delete()
+        self.session.query(Geometry).filter(Geometry.time > delete_from_time_unix).delete()
+        self.session.query(Keys).filter(Keys.time > delete_from_time_unix).delete()
+        self.session.query(Move).filter(Move.time > delete_from_time_unix).delete()
+        self.session.query(RecordingEvent).filter(RecordingEvent.time > delete_from_time_unix).delete()
+        self.session.query(Scroll).filter(Scroll.time > delete_from_time_unix).delete()
+        self.session.query(Window).filter(Window.time > delete_from_time_unix).delete()
+        self.session.query(WindowEvent).filter(WindowEvent.time > delete_from_time_unix).delete()
+
+        print "Deleted last " + text + " of your history"

@@ -124,11 +124,7 @@ class Sniffer:
 
             def showPreferences_(self, notification):
                 NSLog("Showing Preference Window...")
-                prefContr = preferences.PreferencesController.show()
-                prefContr.sniffer = sc
-
-                # needed to show window on top of other applications
-                sc.app.activateIgnoringOtherApps_(True)
+                self.prefContr = preferences.PreferencesController.show(sc)
 
             def showExperience_(self, notification):
                 print "Showing Experience Sampling Window on Request..."
@@ -220,6 +216,9 @@ class Sniffer:
         self.clr = ClipboardRecorder(self)
         # may not need to start a loop, checking clipboard on click and Cmd + C
         # self.clr.start_clipboard_loop()
+
+        #TODO add file system tracking
+        # https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/FSEvents_ProgGuide/UsingtheFSEventsFramework/UsingtheFSEventsFramework.html
 
         # I can get this to work, but it blocks the rest of the code from executing
         # app recording needs a separate thread to listen for events on

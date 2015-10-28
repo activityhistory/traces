@@ -31,12 +31,14 @@ class MoveRecorder:
 
     # TODO add tracking of duration of the move
     def move_handler(self, event):
+        recording = preferences.getValueForPreference('recording')
         event_screenshots = preferences.getValueForPreference('eventScreenshots')
         if event_screenshots:
             self.sniffer.activity_tracker.take_screenshot()
 
-        if event.type() == NSMouseMoved:
-            loc = NSEvent.mouseLocation()
-            # write JSON object to movelog file
-            text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
-            utils_cocoa.write_to_file(text, cfg.MOVELOG)
+        if recording:
+            if event.type() == NSMouseMoved:
+                loc = NSEvent.mouseLocation()
+                # write JSON object to movelog file
+                text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
+                utils_cocoa.write_to_file(text, cfg.MOVELOG)

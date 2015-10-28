@@ -43,31 +43,33 @@ class ClickRecorder:
         NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.click_handler)
 
     def click_handler(self, event):
+        recording = preferences.getValueForPreference('recording')
         event_screenshots = preferences.getValueForPreference('eventScreenshots')
         if event_screenshots:
             self.sniffer.activity_tracker.take_screenshot()
 
-        # check if the clipboard has updated
-        self.sniffer.clr.get_clipboard_contents()
+        if recording:
+            # check if the clipboard has updated
+            self.sniffer.clr.get_clipboard_contents()
 
-        # get data ready to write
-        loc = NSEvent.mouseLocation()
-        click_type = "Unknown"
-        if event.type() == NSLeftMouseDown:
-            click_type = "Left"
-        elif event.type() == NSRightMouseDown:
-            click_type = "Right"
+            # get data ready to write
+            loc = NSEvent.mouseLocation()
+            click_type = "Unknown"
+            if event.type() == NSLeftMouseDown:
+                click_type = "Left"
+            elif event.type() == NSRightMouseDown:
+                click_type = "Right"
 
-        # Testing that we can get information for the window that was clicked on
-        # can extrapolate this to any event, like scrolling and keystrokes
-        # num = event.windowNumber()
-        # options = kCGWindowListOptionOnScreenAboveWindow + kCGWindowListOptionIncludingWindow + kCGWindowListExcludeDesktopElements
-        # windowList = CGWindowListCopyWindowInfo(options, num)
-        # event_window = (d for d in windowList if d["kCGWindowNumber"] == num).next()
-        # print event_window['kCGWindowBounds']
-        # print event_window['kCGWindowOwnerName']
-        # print event_window['kCGWindowName'].encode('utf-8').strip()
+            # Testing that we can get information for the window that was clicked on
+            # can extrapolate this to any event, like scrolling and keystrokes
+            # num = event.windowNumber()
+            # options = kCGWindowListOptionOnScreenAboveWindow + kCGWindowListOptionIncludingWindow + kCGWindowListExcludeDesktopElements
+            # windowList = CGWindowListCopyWindowInfo(options, num)
+            # event_window = (d for d in windowList if d["kCGWindowNumber"] == num).next()
+            # print event_window['kCGWindowBounds']
+            # print event_window['kCGWindowOwnerName']
+            # print event_window['kCGWindowName'].encode('utf-8').strip()
 
-        # write JSON object to clicklog file
-        text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
-        utils_cocoa.write_to_file(text, cfg.CLICKLOG)
+            # write JSON object to clicklog file
+            text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
+            utils_cocoa.write_to_file(text, cfg.CLICKLOG)

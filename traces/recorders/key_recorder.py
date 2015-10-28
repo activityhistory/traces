@@ -117,8 +117,9 @@ class KeyRecorder:
         NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 
     def key_handler(self, event):
+        recording = preferences.getValueForPreference('recording')
         record_keystrokes = preferences.getValueForPreference('keystrokes')
-        if record_keystrokes:
+        if recording and record_keystrokes:
             event_screenshots = preferences.getValueForPreference('eventScreenshots')
             if event_screenshots:
                 self.sniffer.activity_tracker.take_screenshot()

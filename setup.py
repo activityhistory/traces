@@ -27,6 +27,5 @@ setup(
         "pyobjc-core",
         "pyobjc-framework-Cocoa",
         "pyobjc-framework-Quartz",
-        "pymongo",
     ]
 )

@@ -77,11 +77,12 @@ class ActivityTracker:
 
     def take_screenshot(self):
       # check screenshot preferences
+      recording = preferences.getValueForPreference('recording')
       screenshots_active = preferences.getValueForPreference('screenshots')
       screenshot_time_min = preferences.getValueForPreference('imageTimeMin') / 1000.0
 
       # take a screenshot if preferences allow
-      if (screenshots_active
+      if (screenshots_active and recording
         and (cfg.NOW() - self.last_screenshot) > screenshot_time_min) :
           try:
               # get filename
@@ -102,7 +103,6 @@ class ActivityTracker:
 
     # TODO make it easier for others to add parser files for extensions
     def parseLogs(self):
-        print "Parsing log files."
         self.storage.parseLogs()
 
         self.last_parse = cfg.NOW()
