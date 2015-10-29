@@ -41,6 +41,7 @@ from recorders.scroll_recorder import ScrollRecorder
 from recorders.clipboard_recorder import ClipboardRecorder
 
 from experience import ExperienceController
+from preferences import PreferencesController
 
 
 class Sniffer:
@@ -62,7 +63,6 @@ class Sniffer:
                 self.state = 'pause'
                 self.screenshot = True
                 self.recordingAudio = False
-                # self.activity_tracer = None
 
             def applicationDidFinishLaunching_(self, notification):
                 print "Traces finished launching..."
@@ -76,7 +76,7 @@ class Sniffer:
                 # set inital values for the preferences
                 preferences.setInitialPreferenceValues()
 
-                # create status-bar drop-down menu
+                # create status-bar menu
                 self.createStatusMenu()
 
                 # start loops to take screenshots and parse log files
@@ -123,14 +123,12 @@ class Sniffer:
                     self.statusitem.setImage_(self.iconGray)
 
             def showPreferences_(self, notification):
-                NSLog("Showing Preference Window...")
-                self.prefContr = preferences.PreferencesController.show(sc)
+                self.prefContr = PreferencesController.show(sc)
 
             def showExperience_(self, notification):
-                print "Showing Experience Sampling Window on Request..."
                 ExperienceController.show(sc)
 
-            # could possibly do this in XCode, but creating by code works too
+            # could do this in Interface BUilder, but creating here works too
             def createStatusMenu(self):
                 print "Creating app menu"
                 statusbar = NSStatusBar.systemStatusBar()
@@ -214,17 +212,14 @@ class Sniffer:
         self.sr = ScrollRecorder(self)
         self.sr.start_scroll_listener()
         self.clr = ClipboardRecorder(self)
-        # may not need to start a loop, checking clipboard on click and Cmd + C
-        # self.clr.start_clipboard_loop()
-
-        #TODO add file system tracking
-        # https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/FSEvents_ProgGuide/UsingtheFSEventsFramework/UsingtheFSEventsFramework.html
-
-        # I can get this to work, but it blocks the rest of the code from executing
-        # app recording needs a separate thread to listen for events on
+        # AppRecorder starts accessibility listeners that need to be on a
+        # separate thread
         self.ar = AppRecorder(self)
         self.art = threading.Thread(target=self.ar.start_app_observers)
         self.art.start()
+
+        #TODO add file system tracking
+        # https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/FSEvents_ProgGuide/UsingtheFSEventsFramework/UsingtheFSEventsFramework.html
 
         # run the Traces application
         AppHelper.runEventLoop()
@@ -247,6 +242,7 @@ class Sniffer:
           CG.kCGWindowImageDefault
         )
 
+        # get all the image size information
         scr = NSScreen.screens()
         xmin = 0
         ymin = 0

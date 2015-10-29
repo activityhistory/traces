@@ -86,8 +86,14 @@ class ActivityTracker:
         and (cfg.NOW() - self.last_screenshot) > screenshot_time_min) :
           try:
               # get filename
-              folder = os.path.join(cfg.CURRENT_DIR,"screenshots")
               filename = datetime.datetime.now().strftime("%y%m%d-%H%M%S%f")
+              y = filename[0:2]
+              m = filename[2:4]
+              d = filename[4:6]
+              h = filename[7:9]
+              folder = os.path.join(cfg.CURRENT_DIR,"screenshots",y,m,d,h)
+              if not os.path.exists(folder):
+                  os.makedirs(folder)
               path = os.path.join(folder,""+filename+".jpg")
 
               # take screenshot
@@ -101,7 +107,6 @@ class ActivityTracker:
             self.screenshotTimer.cancel()
         self.run_screenshot_loop()
 
-    # TODO make it easier for others to add parser files for extensions
     def parseLogs(self):
         self.storage.parseLogs()
 
@@ -110,9 +115,9 @@ class ActivityTracker:
         self.parseTimer.start()
 
     # not sure if we need this helper function in this file
-    def clearData(self):
-        self.storage.clearData()
-        print "You asked to delete history"
+    # def clearData(self):
+    #     self.storage.clearData()
+    #     print "You asked to delete history"
 
     def run(self):
         # hook up the sniffer
