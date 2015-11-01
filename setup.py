@@ -7,6 +7,7 @@ from setuptools import setup
 
 OPTIONS = {
           'iconfile':'assets/clock.icns',
+          'includes' : ['sqlalchemy.dialects.sqlite']
           }
 
 DATA_FILES = ['./assets/clock.png',
@@ -27,5 +28,7 @@ setup(
         "pyobjc-core",
         "pyobjc-framework-Cocoa",
         "pyobjc-framework-Quartz",
+        "pymongo",
+        "sqlalchemy",
     ]
 )
