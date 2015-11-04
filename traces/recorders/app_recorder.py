@@ -62,7 +62,7 @@ class AppRecorder:
 
 			if recording:
 				# log that the application launched
-				text = '{"time": '+ str(t) + ' , "type": "Launch", "app": "' + name + '"}'
+				text = '{"time": '+ str(t) + ' , "type": "Launch", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			# take a screenshot
@@ -90,7 +90,7 @@ class AppRecorder:
 
 			if recording:
 				# log the the application has closed
-				text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + name + '"}'
+				text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -107,7 +107,7 @@ class AppRecorder:
 
 		# log that the application has become active
 		if pid in self.watched.keys() and recording:
-			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": "' + name + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": ' + name + '}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# take screenshot
@@ -134,7 +134,7 @@ class AppRecorder:
 
 		# log that the application has become inactive
 		if pid in self.watched.keys() and recording:
-			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": "' + name + '"}'
+			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": ' + name + '}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -160,7 +160,7 @@ class AppRecorder:
 			# when miniaturized, we may not be able to get window title and position data
 			if notification_title == "WindowMiniaturized":
 				# write to window log file about event
-				text = '{"time": '+ str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '" }'
+				text = '{"time": '+ str(t) + ' , "type": "' + notification_title + '", "app": ' + app_title + '}'
 				utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
 			# all other events should let us get title and postiion data
@@ -171,7 +171,7 @@ class AppRecorder:
 				size = str(kwargs['element']['AXFocusedWindow']['AXSize'])
 
 				# write to window log file about event
-				text = '{"time": ' + str(t) + ' , "type": "' + notification_title + '", "app": "' + app_title + '", "window": "' + title + '", "position": ' + position + ' , "size": ' + size +' }'
+				text = '{"time": ' + str(t) + ' , "type": "' + notification_title + '", "app": ' + app_title + ', "window": ' + title + ', "position": ' + position + ' , "size": ' + size +' }'
 				utils_cocoa.write_to_file(text, cfg.WINDOWLOG)
 
 			# get most recent screen geometry and update active window
@@ -197,7 +197,7 @@ class AppRecorder:
 
 			# save app info to dictionary
 			for app in regularApps:
-				name = utils_cocoa.ascii_encode(app.localizedName())
+				name = utils_cocoa.ascii_encode(app.localizedName())[1:-1]
 				active = app.isActive()
 				pid = app.processIdentifier()
 				d = {'name': name, 'active': active, 'windows':{}}
@@ -207,7 +207,10 @@ class AppRecorder:
 				if active:
 					try:
 						mess = self.watched[pid]
-						active_window = mess['AXFocusedWindow']['AXTitle']
+						active_window = utils_cocoa.ascii_encode(mess['AXFocusedWindow']['AXTitle'])[1:-1]
+						# print "Active Window:"
+						# print active_window
+						# print type(active_window)
 					except:
 						pass
 
@@ -219,16 +222,20 @@ class AppRecorder:
 					# get window data
 					owning_app_pid = window['kCGWindowOwnerPID']
 					window_layer = window['kCGWindowLayer']
-					name = utils_cocoa.ascii_encode(window['kCGWindowName'])
+					name = utils_cocoa.ascii_encode(window['kCGWindowName'])[1:-1]
 					window_id = window['kCGWindowNumber']
 					bounds = window['kCGWindowBounds']
 					win_bounds = {'width':bounds['Width'], 'height':bounds['Height'], 'x':bounds['X'], 'y':bounds['Y']}
 					active = False
-					if window['kCGWindowName'] == active_window:
+					if utils_cocoa.ascii_encode(window['kCGWindowName'])[1:-1] == active_window:
+						print window['kCGWindowName']
+						print "We found the active window!"
 						active = True
 
 					# unless it has a name and is on the top layer, we don't count it
 					if owning_app_pid in self.apps_and_windows and window_layer == 0 and name:
+						# print window['kCGWindowName']
+						# print type(window['kCGWindowName'])
 						# add window data to the app_window dictionary
 						window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
 						self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
@@ -318,7 +325,7 @@ class AppRecorder:
 
 				if recording:
 					# log that the app is open
-					text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": "' + name + '"}'
+					text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": ' + name + '}'
 					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			except:
@@ -353,5 +360,5 @@ class AppRecorder:
 			for app in regularApps:
 				name = utils_cocoa.ascii_encode(app.localizedName())
 				# log that the app recording will stop
-				text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": "' + name + '"}'
+				text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)

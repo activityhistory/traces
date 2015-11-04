@@ -42,7 +42,7 @@ def parse_apps(session, activity_tracker):
                 text = ast.literal_eval(line.rstrip())
                 t = text['time']
                 event = text['type']
-                app_name = utils_cocoa.ascii_encode(text['app'])
+                app_name = text['app']
                 pid = None
 
                 # get pid of app from database, add app to database if not already there
@@ -63,7 +63,7 @@ def parse_apps(session, activity_tracker):
                 session.add(ae)
 
             except:
-                print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
+                print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the
         # file and delete the rest of the file
@@ -127,7 +127,7 @@ def parse_windows(session, activity_tracker):
                 session.add(we)
 
             except:
-                print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
+                print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the
         # file and delete the rest of the file
@@ -171,7 +171,7 @@ def parse_geometries(session, activity_tracker):
 
                 # check for new windows opened or activated
                 for app, value in arrangement.iteritems():
-                    app_name = utils_cocoa.ascii_encode(value['name'])
+                    app_name = value['name']
                     active = value['active']
                     windows = value['windows']
 
@@ -191,7 +191,7 @@ def parse_geometries(session, activity_tracker):
 
                     for window, val in windows.iteritems():
                         # get window information
-                        title = utils_cocoa.ascii_encode(val['name'])
+                        title = val['name']
                         w_active = val['active']
                         bounds = val['bounds']
                         x = bounds['x']
@@ -233,13 +233,13 @@ def parse_geometries(session, activity_tracker):
                             else:
                                 print
                                 # or the window was present but not active last time, or had a different name
-                                if w_active and (not last_arr[app]['windows'][window]['active'] or title != utils_cocoa.ascii_encode(last_arr[app]['windows'][window]['name'])):
+                                if w_active and (not last_arr[app]['windows'][window]['active'] or title != last_arr[app]['windows'][window]['name']):
                                     we = WindowEvent(t, wid, "Active")
                                     session.add(we)
 
                 # look now at the last arrangement to see what has close or gone inactive
                 for app, value in last_arr.iteritems():
-                    app_name = utils_cocoa.ascii_encode(value['name'])
+                    app_name = value['name']
                     active = value['active']
                     windows = value['windows']
 
@@ -258,7 +258,7 @@ def parse_geometries(session, activity_tracker):
 
                     for window, val in windows.iteritems():
                         # get window information
-                        title = utils_cocoa.ascii_encode(val['name'])
+                        title = val['name']
                         w_active = val['active']
                         bounds = val['bounds']
                         x = bounds['x']
@@ -298,7 +298,7 @@ def parse_geometries(session, activity_tracker):
                                     session.add(we)
                             else:
                                 # or the window is present but no longer active, or has a different name
-                                if w_active and (not arrangement[app]['windows'][window]['active'] or title != utils_cocoa.ascii_encode(arrangement[app]['windows'][window]['name'])):
+                                if w_active and (not arrangement[app]['windows'][window]['active'] or title != arrangement[app]['windows'][window]['name']):
                                     we = WindowEvent(t, wid, "Inactive")# create open event
                                     session.add(we)
 
@@ -306,7 +306,7 @@ def parse_geometries(session, activity_tracker):
 
             except:
                 raise
-                print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
+                print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)
 
         # write lines that did not make it into the database to the start of the

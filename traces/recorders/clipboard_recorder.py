@@ -13,6 +13,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import os
+import json
 import threading
 import datetime
 
@@ -83,6 +84,10 @@ class ClipboardRecorder:
                         path = os.path.join(folder,""+filename+".jpg")
                         image.writeToFile_atomically_(path ,False)
 
+                    # clean up text and url
+                    text = json.dumps(text)
+                    url = json.dumps(url)
+
                     # save to a clipboard file
-                    tex = '{"time": '+ str(cfg.NOW()) + ' , "text": "' + text + '" , "url": "' + url + '" , "image": "' + path + '"}'
+                    tex = '{"time": '+ str(cfg.NOW()) + ' , "text": ' + text + ' , "url": ' + url + ' , "image": "' + path + '"}'
                     utils_cocoa.write_to_file(tex, cfg.CLIPLOG)
