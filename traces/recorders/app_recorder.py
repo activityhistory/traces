@@ -208,9 +208,6 @@ class AppRecorder:
 					try:
 						mess = self.watched[pid]
 						active_window = utils_cocoa.ascii_encode(mess['AXFocusedWindow']['AXTitle'])[1:-1]
-						# print "Active Window:"
-						# print active_window
-						# print type(active_window)
 					except:
 						pass
 
@@ -228,8 +225,6 @@ class AppRecorder:
 					win_bounds = {'width':bounds['Width'], 'height':bounds['Height'], 'x':bounds['X'], 'y':bounds['Y']}
 					active = False
 					if utils_cocoa.ascii_encode(window['kCGWindowName'])[1:-1] == active_window:
-						print window['kCGWindowName']
-						print "We found the active window!"
 						active = True
 
 					# unless it has a name and is on the top layer, we don't count it
