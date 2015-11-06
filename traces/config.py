@@ -27,6 +27,7 @@ KEYLOG = 'key.log'
 MOVELOG = 'move.log'
 SCROLLLOG = 'scroll.log'
 WINDOWLOG = 'window.log'
+TABLOG = 'tab.log'
 
 # set storage to "mongo" to use mongodb
 # set storage to "sqlite" to use sqlite
@@ -43,6 +44,7 @@ KEYCOL = "keys"
 MOVECOL = "moves"
 SCROLLCOL = "scrolls"
 WINDOWCOL = 'windows'
+TABCOL = 'tabs'
 
 # data directories
 LOCAL_DIR = '~/.traces'
