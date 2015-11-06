@@ -253,14 +253,15 @@ class Tab(Core, Base):
     url = Column(Unicode)
     tabId = Column(Integer)
 
-    def __init__(self, time, tabId, title, url):
+    def __init__(self, time, tabId, title, url, event):
         self.time = time
         self.tabId = tabId
         self.title = title
         self.url = url
+        self.event = event
 
     def __repr__(self):
-        return "<Tab '%s' - '%s >" % (self.url, self.title)
+        return "<Tab '%s' - '%s' %s>" % (self.url, self.title, self.event)
 
 # class Website(Core, Base):
 #     url = Column(Unicode, index=True)

@@ -12,19 +12,8 @@ You should have received a copy of the GNU General Public License
 along with Traces. If not, see <http://www.gnu.org/licenses/>.
 """
 
-
-import os
-import sys
-import objc
-
-from AppKit import *
 from Foundation import *
 from ScriptingBridge import *
-from Quartz import (CFRunLoopRun, kCGWindowListOptionAll,
-					CGWindowListCopyWindowInfo, kCGNullWindowID,
-					kCGWindowListExcludeDesktopElements)
-
-import accessibility as acc # https://github.com/atheriel/accessibility
 
 import config as cfg
 import utils_cocoa
@@ -65,8 +54,8 @@ class WebRecorder:
 			# take screenshot
 			eventScreenshots = preferences.getValueForPreference('eventScreenshots')
 			if eventScreenshots:
-				ar.sniffer.activity_tracker.take_screenshot()
-			
+				self.AppRecorder.sniffer.activity_tracker.take_screenshot()
+
 			# write to browser log file about event
 			for tab in closedTabs:
 				text = '{"time": ' + str(t) + ' , "tabId": "' + str(tab) + '", "event": "Closed"' +' }'

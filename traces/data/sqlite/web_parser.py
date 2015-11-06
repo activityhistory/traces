@@ -132,7 +132,7 @@ def parse_tabs(session):
       for line in f:
           try:
               text = ast.literal_eval(line.rstrip())
-              tab = Tab(text['time'], text['title'], text['url'])
+              tab = Tab(text['time'], text['title'], text['url'], text['event'])
               session.add(tab)
           except:
               print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
