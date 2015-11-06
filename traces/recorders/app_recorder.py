@@ -25,6 +25,7 @@ from Quartz import (CFRunLoopRun, kCGWindowListOptionAll,
 
 import accessibility as acc # https://github.com/atheriel/accessibility
 
+from web_recorder import WebRecorder
 import config as cfg
 import utils_cocoa
 import preferences
@@ -41,6 +42,9 @@ class AppRecorder:
 
 		# keep track of screen geometry
 		self.apps_and_windows = {}
+
+		# subclass definitions
+		self.wr = WebRecorder(self)
 
 ### Application event callbacks ###
 	def appLaunchCallback_(self, notification):
@@ -92,6 +96,9 @@ class AppRecorder:
 				# log the the application has closed
 				text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": "' + name + '"}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+			if utils_cocoa.ascii_encode(app.localizedName()) == "Google Chrome":
+				wr.closeChrome()
 
 		# check if the screen geometry changed and update active window
 		self.updateWindowList()
@@ -201,6 +208,8 @@ class AppRecorder:
 				active = app.isActive()
 				pid = app.processIdentifier()
 				d = {'name': name, 'active': active, 'windows':{}}
+				if name == "Google Chrome":
+					d['browser'] = True
 				self.apps_and_windows[int(pid)] = d # store app data by pid
 
 				# get title of the active window if possible
@@ -232,6 +241,8 @@ class AppRecorder:
 						# add window data to the app_window dictionary
 						window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
 						self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
+						if d['browser']:
+							self.apps_and_windows[owning_app_pid] = wr.getTabs(self.apps_and_windows[owning_app_pid])
 				except:
 					pass
 
@@ -309,12 +320,20 @@ class AppRecorder:
 			try:
 				p = int(app.processIdentifier())
 				name = utils_cocoa.ascii_encode(app.localizedName())
-				mess = acc.create_application_ref(pid=p)
-				mess.set_callback(self.windowCallback)
-				mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
+				if name != "Google Chrome":
+					mess = acc.create_application_ref(pid=p)
+					mess.set_callback(self.windowCallback)
+					mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
 							"AXWindowCreated","AXWindowMiniaturized",
 							"AXWindowDeminiaturized") # AXMainWindowChanged
-				self.watched[p] = mess # we need to maintain the listener or it will be deleted on cleanup
+					self.watched[p] = mess # we need to maintain the listener or it will be deleted on cleanup
+				else:
+					mess = acc.create_application_ref(pid=p)
+					mess.set_callback(self.wr.chromeCallback)
+					mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
+							"AXWindowCreated","AXWindowMiniaturized",
+							"AXWindowDeminiaturized","AXMenuItemSelected", "AXTitleChanged") # AXMainWindowChanged
+					self.watched[p] = mess # we need to maintain the listener or it will be deleted on cleanup
 
 				if recording:
 					# log that the app is open

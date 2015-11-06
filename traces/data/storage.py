@@ -79,6 +79,7 @@ class Storage:
           data.mongo.app_parser.parse_apps(db)
           data.mongo.app_parser.parse_windows(db)
           data.mongo.app_parser.parse_geometries(db)
+					# data.mongo.app_parser.parse_tabs(db)
       except:
           print "Had an issue parsing to MongoDB"
 
@@ -92,6 +93,7 @@ class Storage:
         app_parser.parse_apps(self.session, self.activity_tracker)
         app_parser.parse_windows(self.session, self.activity_tracker)
         app_parser.parse_geometries(self.session, self.activity_tracker)
+        web_parser.parse_tabs(self.session)
         # TODO add web history scraping here
 
         self.sqlcommit()

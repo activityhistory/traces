@@ -248,6 +248,20 @@ class Clipboard(Core, Base):
     def __repr__(self):
         return "<Clipboard '%s' >" % self.text
 
+class Tab(Core, Base):
+    title = Column(Unicode)
+    url = Column(Unicode)
+    tabId = Column(Integer)
+
+    def __init__(self, time, tabId, title, url):
+        self.time = time
+        self.tabId = tabId
+        self.title = title
+        self.url = url
+
+    def __repr__(self):
+        return "<Tab '%s' - '%s >" % (self.url, self.title)
+
 # class Website(Core, Base):
 #     url = Column(Unicode, index=True)
 #
