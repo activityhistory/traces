@@ -5,4 +5,4 @@ pyobjc-framework-CoreLocation==2.5.1
 pyobjc-framework-LaunchServices==2.5.1
 sqlalchemy==1.0.8
 setuptools==18.0.1_0
-accessibility
+accessibility==0.4.0

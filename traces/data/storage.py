@@ -16,7 +16,7 @@ import os
 import sys
 import datetime
 
-import pymongo
+# import pymongo
 import sqlalchemy
 
 import config as cfg
@@ -61,27 +61,28 @@ class Storage:
     def parseLogs(self):
         print "parsing logs"
         if (cfg.STORAGE is "mongo"):
-            self.parseToMongo()
+            print "Sorry storing data via MongoDB has not been implemented for Traces yet"
+            # self.parseToMongo()
         else:
             self.parseToSqlite()
             # raise Exception("No database defined")
 
-    def parseToMongo(self):
-      # open database server
-      client = pymongo.MongoClient()
-      db = client[cfg.DB]
-      try:
-          # parse all the relevant log files
-          data.mongo.key_parser.parse_keys(db)
-          data.mongo.click_parser.parse_clicks(db)
-          data.mongo.scroll_parser.parse_scrolls(db)
-          data.mongo.move_parser.parse_moves(db)
-          data.mongo.app_parser.parse_apps(db)
-          data.mongo.app_parser.parse_windows(db)
-          data.mongo.app_parser.parse_geometries(db)
-					# data.mongo.app_parser.parse_tabs(db)
-      except:
-          print "Had an issue parsing to MongoDB"
+    # def parseToMongo(self):
+    #   # open database server
+    #   client = pymongo.MongoClient()
+    #   db = client[cfg.DB]
+    #   try:
+    #       # parse all the relevant log files
+    #       data.mongo.key_parser.parse_keys(db)
+    #       data.mongo.click_parser.parse_clicks(db)
+    #       data.mongo.scroll_parser.parse_scrolls(db)
+    #       data.mongo.move_parser.parse_moves(db)
+    #       data.mongo.app_parser.parse_apps(db)
+    #       data.mongo.app_parser.parse_windows(db)
+    #       data.mongo.app_parser.parse_geometries(db)
+	# 				# data.mongo.app_parser.parse_tabs(db)
+    #   except:
+    #       print "Had an issue parsing to MongoDB"
 
     def parseToSqlite(self):
         key_parser.parse_keys(self.session)
