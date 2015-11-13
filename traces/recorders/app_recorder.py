@@ -235,13 +235,17 @@ class AppRecorder:
 					active = False
 					if utils_cocoa.ascii_encode(window['kCGWindowName'])[1:-1] == active_window:
 						active = True
+					on_screen = False
+					if 'kCGWindowIsOnscreen' in window.keys():
+						on_screen = window['kCGWindowIsOnscreen']
+
 
 					# unless it has a name and is on the top layer, we don't count it
 					if owning_app_pid in self.apps_and_windows and window_layer == 0 and name:
 						# print window['kCGWindowName']
 						# print type(window['kCGWindowName'])
 						# add window data to the app_window dictionary
-						window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
+						window_dict = {'name': name, 'bounds': win_bounds, 'active': active, 'onscreen': on_screen}
 						self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
 						if d['browser']:
 							self.apps_and_windows[owning_app_pid] = wr.getTabs(self.apps_and_windows[owning_app_pid])

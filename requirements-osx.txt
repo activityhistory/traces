@@ -3,6 +3,7 @@ pyobjc-framework-Quartz==2.5.1
 pyobjc-framework-Cocoa==2.5.1
 pyobjc-framework-CoreLocation==2.5.1
 pyobjc-framework-LaunchServices==2.5.1
+pyobjc-framework-ScriptingBridge==3.0.4
 sqlalchemy==1.0.8
 setuptools==18.0.1_0
 accessibility==0.4.0

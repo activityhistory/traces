@@ -154,6 +154,10 @@ def parse_geometries(session, activity_tracker):
         windows = session.query(Window).all()
         window_names = [w.title for w in windows]
 
+        # get a copy of the starting geometry database so we don't have to query it all the time
+        geometries = session.query(Geometry).all()
+        geometry_dicts = [[g.x, g.y, g.w, g.h] for g in geometries]
+
         for line in f:
             try:
                 # get data
@@ -164,10 +168,6 @@ def parse_geometries(session, activity_tracker):
                 # if this is a duplicate of the last arrangement, skip to the next line in the file
                 if arrangement == last_arr:
                     continue
-
-                # add new arrangement to the database
-                arr_to_add = Arrangement(t, str(arrangement))
-                session.add(arr_to_add)
 
                 # check for new windows opened or activated
                 for app, value in arrangement.iteritems():
@@ -188,16 +188,17 @@ def parse_geometries(session, activity_tracker):
                         app_names = [a.name for a in apps]
 
                     pid = app_names.index(app_name) + 1 # array starts at 0, database ids a 1
+                    value['pid'] = pid
 
                     for window, val in windows.iteritems():
                         # get window information
                         title = val['name']
                         w_active = val['active']
                         bounds = val['bounds']
-                        x = bounds['x']
-                        y = bounds['y']
-                        w =  bounds['width']
-                        h = bounds['height']
+                        x = int(bounds['x'])
+                        y = int(bounds['y'])
+                        width =  int(bounds['width'])
+                        height = int(bounds['height'])
 
                         # add new windows to the database, but should not need to do this
                         if title not in window_names:
@@ -207,11 +208,26 @@ def parse_geometries(session, activity_tracker):
                             #TODO catch if our commit fails
                             activity_tracker.storage.sqlcommit()
 
-                            # update our local app list
+                            # update our local window list
                             windows = session.query(Window).all()
                             window_names = [w.title for w in windows]
 
                         wid = window_names.index(title) + 1 # array starts at 0, database ids a 1
+                        val['wid'] = wid
+
+                        # add new geometries to the database
+                        gd = [x, y, width, height]
+                        if gd not in geometry_dicts:
+                            ge = Geometry(t, x, y, width, height)
+                            session.add(ge)
+                            activity_tracker.storage.sqlcommit()
+
+                            # update our local geomery list
+                            geometries = session.query(Geometry).all()
+                            geometry_dicts = [[g.x, g.y, g.w, g.h] for g in geometries]
+
+                        gid = geometry_dicts.index(gd) + 1 # array starts at 0, database ids a 1
+                        val['gid'] = gid
 
                         # create open and active events if...
                         # this app was not even open the last time around
@@ -231,11 +247,14 @@ def parse_geometries(session, activity_tracker):
                                     we = WindowEvent(t, wid, "Active")
                                     session.add(we)
                             else:
-                                print
                                 # or the window was present but not active last time, or had a different name
                                 if w_active and (not last_arr[app]['windows'][window]['active'] or title != last_arr[app]['windows'][window]['name']):
                                     we = WindowEvent(t, wid, "Active")
                                     session.add(we)
+
+                # add new arrangement to the database
+                arr_to_add = Arrangement(t, str(arrangement))
+                session.add(arr_to_add)
 
                 # look now at the last arrangement to see what has close or gone inactive
                 for app, value in last_arr.iteritems():
