@@ -1,18 +1,18 @@
 ### What is Traces?
-Traces is a Mac OS X daemon that continuously monitors and stores what you are doing on your computer. This includes clicks, keystrokes, apps used, windows used, and regular screenshots. We are working on visualizing this data to make it easier to review your activity history to gain insights about your work patterns and make it easier to resume suspended work. The core logic of Traces is written in python so you can more easily add additional tracking modules and retool it to record on other operating systems.
+Traces is a Mac OS X daemon that continuously monitors and records your computer activity. This includes tracking clicks, keystrokes, apps, windows, and taking regular screenshots. We are currently developing visualizations of this data to make it easier to see work patterns and resume suspended activities. Traces is written in python so you can easily add additional modules.
 
 This project was inspired by [Selfspy](https://github.com/gurgeh/selfspy) and [Burrito](https://github.com/pgbovine/burrito/).
 
 ### Installing Traces
 We regularly compile Traces into a Mac OS X app. Go to the [Releases](https://github.com/activityhistory/traces/releases) page to download the most recent release.
 
-Since Traces takes regular screenshots it can fill your hard drive pretty quickly. We recommend setting your Data storage to an external drive, such as a USB key or SD card. Simply copy the `traces.cfg` file to the root of your desired data storage volume and mount the device onto your computer. Traces will recognize the volume and save its data there.
+Traces takes regular screenshots and can fill your hard drive pretty quickly. We recommend setting your Data storage to an external drive, such as a USB key or SD card. To do this, copy the `traces.cfg` file to the root of your desired data storage volume and mount the device onto your computer. The next time you start Traces, it will recognize the volume and save its data there.
 
-To install manually on OSX 10.10 you should do the following:
+To install Traces manually on OSX you should:
 
 1. Clone the repository from Github (git clone git://github.com/activityhistory/traces) or click on the Download link on http://github.com/activityhistory/traces/ to get the latest Python source.
 
-2. If you do not have xcode installed, install it now. Make sure you agree to its license agreement (e.g. by starting xcode.) Also make sure you have xcode command line tools installed.
+2. Install xcode if you have not done so already. Make sure you agree to its license agreement (i.e. by starting xcode). Also make sure you have xcode command line tools installed.
 
 3. Python should come with your OSX installation but if you do not already have it installed, install Python now.
 
@@ -24,4 +24,4 @@ Report any issues here:
 https://github.com/activityhistory/traces/issues
 
 #### Running on OS X
-To use the full capabilities of Traces in OS X, you need to grant it Accessibility access. This lets it keep track of the applications and windows you use. You can grant this access in `System Preferences > Privacy > Accessibility`.
+To use the full capabilities of Traces in OSX, you need to grant it Accessibility access. This lets it keep track your keystrokes, applications, and windows. You can grant Accessibility access in `System Preferences > Privacy > Accessibility`.

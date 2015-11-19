@@ -18,7 +18,7 @@ import ast
 
 import config as cfg
 
-from models import Click
+from models import Click, AppEvent, WindowEvent
 
 
 def parse_clicks(session):
@@ -34,9 +34,17 @@ def parse_clicks(session):
         for line in f:
             try:
                 text = ast.literal_eval(line.rstrip())
-                click = Click(text['time'], text['button'], text['location'][0], text['location'][1])
+
+                # get active app and window at time of event
+                app = session.query(AppEvent).filter(AppEvent.event=="Activate", AppEvent.time<=text['time']).order_by(AppEvent.time.desc()).first()
+                window = session.query(WindowEvent).filter(WindowEvent.event=="Active", WindowEvent.time <= text['time']).order_by(WindowEvent.time.desc()).first()
+                pid = app.app_id if app else 0
+                wid = window.window_id if window else 0
+
+                click = Click(text['time'], text['button'], text['location'][0], text['location'][1], pid, wid)
                 session.add(click)
             except:
+                raise
                 print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the

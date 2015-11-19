@@ -43,6 +43,19 @@ class ClickRecorder:
         NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.click_handler)
 
     def click_handler(self, event):
+        # not returning a valid object, only None
+        # print event.window()
+
+        # Testing that we can get information for the window that was clicked on
+        # can extrapolate this to any event, like scrolling and keystrokes
+        # num = event.windowNumber()
+        # options = kCGWindowListOptionOnScreenAboveWindow + kCGWindowListOptionIncludingWindow + kCGWindowListExcludeDesktopElements
+        # windowList = CGWindowListCopyWindowInfo(options, num)
+        # event_window = (d for d in windowList if d["kCGWindowNumber"] == num).next()
+        # print event_window['kCGWindowBounds']
+        # print event_window['kCGWindowOwnerName']
+        # print event_window['kCGWindowName'].encode('utf-8').strip()
+
         recording = preferences.getValueForPreference('recording')
         event_screenshots = preferences.getValueForPreference('eventScreenshots')
         if event_screenshots:
@@ -59,16 +72,6 @@ class ClickRecorder:
                 click_type = "Left"
             elif event.type() == NSRightMouseDown:
                 click_type = "Right"
-
-            # Testing that we can get information for the window that was clicked on
-            # can extrapolate this to any event, like scrolling and keystrokes
-            # num = event.windowNumber()
-            # options = kCGWindowListOptionOnScreenAboveWindow + kCGWindowListOptionIncludingWindow + kCGWindowListExcludeDesktopElements
-            # windowList = CGWindowListCopyWindowInfo(options, num)
-            # event_window = (d for d in windowList if d["kCGWindowNumber"] == num).next()
-            # print event_window['kCGWindowBounds']
-            # print event_window['kCGWindowOwnerName']
-            # print event_window['kCGWindowName'].encode('utf-8').strip()
 
             # write JSON object to clicklog file
             text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'

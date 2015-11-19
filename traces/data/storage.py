@@ -60,42 +60,22 @@ class Storage:
 
     def parseLogs(self):
         print "parsing logs"
-        if (cfg.STORAGE is "mongo"):
-            print "Sorry storing data via MongoDB has not been implemented for Traces yet"
-            # self.parseToMongo()
-        else:
-            self.parseToSqlite()
-            # raise Exception("No database defined")
-
-    # def parseToMongo(self):
-    #   # open database server
-    #   client = pymongo.MongoClient()
-    #   db = client[cfg.DB]
-    #   try:
-    #       # parse all the relevant log files
-    #       data.mongo.key_parser.parse_keys(db)
-    #       data.mongo.click_parser.parse_clicks(db)
-    #       data.mongo.scroll_parser.parse_scrolls(db)
-    #       data.mongo.move_parser.parse_moves(db)
-    #       data.mongo.app_parser.parse_apps(db)
-    #       data.mongo.app_parser.parse_windows(db)
-    #       data.mongo.app_parser.parse_geometries(db)
-	# 				# data.mongo.app_parser.parse_tabs(db)
-    #   except:
-    #       print "Had an issue parsing to MongoDB"
+        self.parseToSqlite()
+        # raise Exception("No database defined")
 
     def parseToSqlite(self):
-        key_parser.parse_keys(self.session)
-        click_parser.parse_clicks(self.session)
-        clip_parser.parse_clips(self.session)
-        scroll_parser.parse_scrolls(self.session)
-        move_parser.parse_moves(self.session)
-        recorder_parser.parse_recorder(self.session)
+        # do the app parsing first so later events can read the active app
         app_parser.parse_apps(self.session, self.activity_tracker)
         app_parser.parse_windows(self.session, self.activity_tracker)
         app_parser.parse_geometries(self.session, self.activity_tracker)
-        web_parser.parse_tabs(self.session)
+        click_parser.parse_clicks(self.session)
+        clip_parser.parse_clips(self.session)
+        key_parser.parse_keys(self.session)
+        move_parser.parse_moves(self.session)
+        recorder_parser.parse_recorder(self.session)
+        scroll_parser.parse_scrolls(self.session)
         # TODO add web history scraping here
+        web_parser.parse_tabs(self.session)
 
         self.sqlcommit()
 
@@ -164,7 +144,7 @@ class Storage:
                 os.remove(os.path.join(cfg.CURRENT_DIR,l))
 
         # delete data from all database tables
-        # may be a cleaner way to iterate through this given the table names
+        # TODO may be a cleaner way to iterate through this given the table names
         self.session.query(App).filter(App.time > delete_from_time_unix).delete()
         self.session.query(AppEvent).filter(AppEvent.time > delete_from_time_unix).delete()
         self.session.query(Arrangement).filter(Arrangement.time > delete_from_time_unix).delete()

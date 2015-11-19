@@ -12,12 +12,17 @@ You should have received a copy of the GNU General Public License
 along with Traces. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from AppKit import NSWorkspace, NSApp
 import os
 
 from Cocoa import (NSEvent, NSKeyDown, NSKeyDownMask, NSKeyUp, NSKeyUpMask,
                    NSFlagsChanged, NSFlagsChangedMask, NSAlternateKeyMask,
                    NSCommandKeyMask, NSControlKeyMask, NSShiftKeyMask,
                    NSAlphaShiftKeyMask)
+
+# from Quartz import (CFRunLoopRun, kCGWindowListOptionAll,
+# 					CGWindowListCopyWindowInfo, kCGNullWindowID,
+# 					kCGWindowListExcludeDesktopElements)
 
 import config as cfg
 import preferences
@@ -117,6 +122,10 @@ class KeyRecorder:
         NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 
     def key_handler(self, event):
+        # neither of these is returning a valid value, just None and 0
+        # print event.window()
+        # print event.windowNumber()
+
         recording = preferences.getValueForPreference('recording')
         record_keystrokes = preferences.getValueForPreference('keystrokes')
         if recording and record_keystrokes:
@@ -125,6 +134,30 @@ class KeyRecorder:
                 self.sniffer.activity_tracker.take_screenshot()
 
             if event.type() == NSKeyDown:
+                # get list of applications that show up in the dock
+                # workspace = NSWorkspace.sharedWorkspace()
+                # activeApps = workspace.runningApplications()
+                # app_name = ""
+                # window_name = ""
+                # for app in activeApps:
+                #     if app.isActive():
+                #         app_name = app.localizedName()
+                #         # print type(app)
+                #         # window_name = app.windows()
+                #         # print app_name
+                #         # print window_name
+                #
+                # options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
+                # windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID)
+                # print windows[0].keys()
+                # for window in windows:
+                # activeApp = utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName'])
+                # not working because I'm not calling it on the app itself
+                # print NSApp.keyWindow()
+
+                # print utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication().keys())
+                # keyWindow = utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication().keyWindow())
+
                 # get the modifier keys that were depressed when this key was pressed
                 flags = event.modifierFlags()
                 modifiers = []  # OS X api doesn't care it if is left or right

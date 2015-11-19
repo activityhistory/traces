@@ -114,11 +114,6 @@ class ActivityTracker:
         self.parseTimer = threading.Timer(cfg.PARSEDELAY, self.parseLogs)
         self.parseTimer.start()
 
-    # not sure if we need this helper function in this file
-    # def clearData(self):
-    #     self.storage.clearData()
-    #     print "You asked to delete history"
-
     def run(self):
         # hook up the sniffer
         self.sniffer = sniffer.Sniffer(self)

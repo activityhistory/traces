@@ -50,22 +50,22 @@ class Click(Core, Base):
     x = Column(Integer, nullable=False)
     y = Column(Integer, nullable=False)
 
-    # app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
-    # app = relationship("App", backref=backref('clicks'))
-    #
-    # window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
-    # window = relationship("Window", backref=backref('clicks'))
+    app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
+    app = relationship("App", backref=backref('clicks'))
+
+    window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
+    window = relationship("Window", backref=backref('clicks'))
     #
     # geometry_id = Column(Integer, ForeignKey('geometry.id'), nullable=False)
     # geometry = relationship("Geometry", backref=backref('clicks'))
 
-    def __init__(self, time, button, x, y): #app_id, window_id, geometry_id):
+    def __init__(self, time, button, x, y, app_id, window_id): #geometry_id):
         self.time = time
         self.button = button
         self.x = x
         self.y = y
-        # self.app_id = app_id
-        # self.window_id = window_id
+        self.app_id = app_id
+        self.window_id = window_id
         # self.geometry_id = geometry_id
 
     def __repr__(self):
@@ -76,24 +76,24 @@ class Keys(Core, Base):
     key = Column(Unicode, index=True)
     modifiers = Column(Unicode, index=True)
 
-    # app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
-    # app = relationship("App", backref=backref('keys'))
-    #
-    # window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
-    # window = relationship("Window", backref=backref('keys'))
-    #
+    app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
+    app = relationship("App", backref=backref('keys'))
+
+    window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
+    window = relationship("Window", backref=backref('keys'))
+
     # geometry_id = Column(Integer, ForeignKey('geometry.id'), nullable=False)
     # geometry = relationship("Geometry", backref=backref('keys'))
 
-    def __init__(self, time, key, modifiers): #, app_id, window_id, geometry_id):
-
+    def __init__(self, time, key, modifiers, app_id, window_id): #, geometry_id):
         self.time = time
         self.key = key
         self.modifiers = modifiers
-        # self.started = started
-        # self.app_id = app_id
-        # self.window_id = window_id
+        self.app_id = app_id
+        self.window_id = window_id
         # self.geometry_id = geometry_id
+        # self.started = started
+
 
     def __repr__(self):
         return "<Key %s>" % self.key
@@ -117,10 +117,18 @@ class Scroll(Core, Base):
     x = Column(Integer, nullable=False)
     y = Column(Integer, nullable=False)
 
-    def __init__(self, time, x, y):
+    app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
+    app = relationship("App", backref=backref('scroll'))
+
+    window_id = Column(Integer, ForeignKey('window.id'), nullable=False)
+    window = relationship("Window", backref=backref('scroll'))
+
+    def __init__(self, time, x, y, app_id, window_id):
         self.time = time
         self.x = x
         self.y = y
+        self.app_id = app_id
+        self.window_id = window_id
 
     def __repr__(self):
         return "<%d Scroll (%d, %d)>" % (self.x, self.y)
