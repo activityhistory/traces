@@ -97,8 +97,8 @@ class AppRecorder:
 				text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
-			if utils_cocoa.ascii_encode(app.localizedName()) == "Google Chrome":
-				wr.closeChrome()
+			if utils_cocoa.ascii_encode(app.localizedName()) == "\"Google Chrome\"":
+				self.wr.closeChrome()
 
 		# check if the screen geometry changed and update active window
 		self.updateWindowList()
@@ -208,7 +208,7 @@ class AppRecorder:
 				active = app.isActive()
 				pid = app.processIdentifier()
 				d = {'name': name, 'active': active, 'windows':{}}
-				if name == "Google Chrome":
+				if name == "\"Google Chrome\"":
 					d['browser'] = True
 				self.apps_and_windows[int(pid)] = d # store app data by pid
 
@@ -244,7 +244,7 @@ class AppRecorder:
 						window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
 						self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
 						if d['browser']:
-							self.apps_and_windows[owning_app_pid] = wr.getTabs(self.apps_and_windows[owning_app_pid])
+							self.apps_and_windows[owning_app_pid] = self.wr.getTabs(self.apps_and_windows[owning_app_pid])
 				except:
 					pass
 
@@ -322,7 +322,7 @@ class AppRecorder:
 			try:
 				p = int(app.processIdentifier())
 				name = utils_cocoa.ascii_encode(app.localizedName())
-				if name != "Google Chrome":
+				if name != "\"Google Chrome\"":
 					mess = acc.create_application_ref(pid=p)
 					mess.set_callback(self.windowCallback)
 					mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
