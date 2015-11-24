@@ -19,7 +19,7 @@ import json
 
 import config as cfg
 
-from models import Keys
+from models import Keys, AppEvent, WindowEvent
 
 
 def parse_keys(session):
@@ -35,7 +35,14 @@ def parse_keys(session):
         for line in f:
             try:
                 text = ast.literal_eval(line.rstrip())
-                key = Keys(text['time'], text['key'], json.dumps(text['modifiers']))
+
+                # get active app and window at time of event
+                app = session.query(AppEvent).filter(AppEvent.event=="Activate", AppEvent.time<=text['time']).order_by(AppEvent.time.desc()).first()
+                window = session.query(WindowEvent).filter(WindowEvent.event=="Active", WindowEvent.time <= text['time']).order_by(WindowEvent.time.desc()).first()
+                pid = app.app_id if app else 0
+                wid = window.window_id if window else 0
+
+                key = Keys(text['time'], text['key'], json.dumps(text['modifiers']), pid, wid)
                 session.add(key)
             except:
                 print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."

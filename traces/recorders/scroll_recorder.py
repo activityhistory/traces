@@ -39,5 +39,5 @@ class ScrollRecorder:
         if recording:
             if event.type() == NSScrollWheel:
             # write JSON object to scrolllog file
-                text = '{"time": '+ str(cfg.NOW()) + ' , "distance": [' + str(event.deltaX()) + ',' + str(event.deltaY()) + ']}'
+                text = '{"time": '+ str(cfg.NOW()) + ' , "distance": [' + str(event.deltaX()) + ',' + str(event.deltaY()) + '], "window_number": ' + str(event.windowNumber()) + '}'
                 utils_cocoa.write_to_file(text, cfg.SCROLLLOG)

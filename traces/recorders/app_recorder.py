@@ -229,22 +229,31 @@ class AppRecorder:
 					owning_app_pid = window['kCGWindowOwnerPID']
 					window_layer = window['kCGWindowLayer']
 					name = utils_cocoa.ascii_encode(window['kCGWindowName'])[1:-1]
-					window_id = window['kCGWindowNumber']
+					# window_id = window['kCGWindowNumber']
+					window_id = str(window['kCGWindowNumber'])
+					if window_id[-1] == "L":
+						window_id = window_id[0:-1]
+					window_id = int(window_id)
 					bounds = window['kCGWindowBounds']
 					win_bounds = {'width':bounds['Width'], 'height':bounds['Height'], 'x':bounds['X'], 'y':bounds['Y']}
 					active = False
 					if utils_cocoa.ascii_encode(window['kCGWindowName'])[1:-1] == active_window:
 						active = True
+					on_screen = False
+					if 'kCGWindowIsOnscreen' in window.keys():
+						on_screen = window['kCGWindowIsOnscreen']
+
 
 					# unless it has a name and is on the top layer, we don't count it
 					if owning_app_pid in self.apps_and_windows and window_layer == 0 and name:
 						# print window['kCGWindowName']
 						# print type(window['kCGWindowName'])
 						# add window data to the app_window dictionary
-						window_dict = {'name': name, 'bounds': win_bounds, 'active': active}
+						window_dict = {'name': name, 'bounds': win_bounds, 'active': active, 'onscreen': on_screen}
 						self.apps_and_windows[owning_app_pid]['windows'][window_id] = window_dict
-						if d['browser']:
-							self.apps_and_windows[owning_app_pid] = self.wr.getTabs(self.apps_and_windows[owning_app_pid])
+						if "browser" in d.keys():
+							if d['browser']:
+								self.apps_and_windows[owning_app_pid] = wr.getTabs(self.apps_and_windows[owning_app_pid])
 				except:
 					pass
 
