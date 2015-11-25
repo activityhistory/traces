@@ -57,12 +57,20 @@ class AppRecorder:
 
 		# create app listener for this app's window events
 		if app.activationPolicy() == 0:
-			mess = acc.create_application_ref(pid = pid)
-			mess.set_callback(self.windowCallback)
-			mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
+			if name != "\"Google Chrome\"":
+				mess = acc.create_application_ref(pid = pid)
+				mess.set_callback(self.windowCallback)
+				mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
+							"AXWindowCreated","AXWindowMiniaturized",
+							"AXWindowDeminiaturized")
+				self.watched[pid] = mess
+			else:
+				mess = acc.create_application_ref(pid = pid)
+				mess.set_callback(self.wr.chromeCallback)
+				mess.watch("AXMoved", "AXWindowResized", "AXFocusedWindowChanged",
 						"AXWindowCreated","AXWindowMiniaturized",
-						"AXWindowDeminiaturized")
-			self.watched[pid] = mess
+						"AXWindowDeminiaturized","AXMenuItemSelected", "AXTitleChanged")
+				self.watched[pid] = mess
 
 			if recording:
 				# log that the application launched
