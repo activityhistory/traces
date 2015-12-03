@@ -14,6 +14,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 
 
 import os
+import copy
 import ast
 
 import config as cfg
@@ -127,6 +128,7 @@ def parse_windows(session, activity_tracker):
                 session.add(we)
 
             except:
+                raise
                 print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(line)
         # write lines that did not make it into the database to the start of the
@@ -141,6 +143,7 @@ def parse_geometries(session, activity_tracker):
     # get names of files to read and mongodb collection to write
     geofile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.GEOLOG)
     last_arr = {}
+    # check if db file and arrangment table, get the last record
 
     if os.path.isfile(geofile):
         f = open(geofile, 'r+')
@@ -168,6 +171,8 @@ def parse_geometries(session, activity_tracker):
                 # if this is a duplicate of the last arrangement, skip to the next line in the file
                 if arrangement == last_arr:
                     continue
+
+                last_arr = copy.deepcopy(arrangement)
 
                 # check for new windows opened or activated
                 for app, value in arrangement.iteritems():
@@ -321,7 +326,7 @@ def parse_geometries(session, activity_tracker):
                                     we = WindowEvent(t, wid, "Inactive")# create open event
                                     session.add(we)
 
-                last_arr = arrangement
+
 
             except:
                 raise

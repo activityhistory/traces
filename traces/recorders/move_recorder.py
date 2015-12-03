@@ -40,5 +40,5 @@ class MoveRecorder:
             if event.type() == NSMouseMoved:
                 loc = NSEvent.mouseLocation()
                 # write JSON object to movelog file
-                text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
+                text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(int(loc.x)) + ',' + str(int(loc.y)) + ']}'
                 utils_cocoa.write_to_file(text, cfg.MOVELOG)

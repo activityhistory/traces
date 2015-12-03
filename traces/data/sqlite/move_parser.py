@@ -32,16 +32,20 @@ def parse_moves(session):
         f = open(movefile, 'r+')
         lines_to_save = []
         last_location = (0,0)
+        last_time = 0.0
 
         for line in f:
             try:
                 text = ast.literal_eval(line.rstrip())
+                time = text['time']
                 location = text['location']
-                if location == last_location:
+                # throttle mouse tracking to 10Hz
+                if location == last_location or time-last_time < 0.1:
                     continue
-                move = Move(text['time'], location[0], location[1])
+                move = Move(time, location[0], location[1])
                 session.add(move)
                 last_location = location
+                last_time = time
             except:
                 print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
                 lines_to_save.append(text)

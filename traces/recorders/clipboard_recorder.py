@@ -51,7 +51,9 @@ class ClipboardRecorder:
         if recording:
             clip = NSPasteboard.generalPasteboard()
             count =  clip.changeCount()
-            if count != self.last_count:
+            if self.last_count == None:
+                self.last_count = count
+            elif count != self.last_count:
                 self.last_count = count
                 text = ""
                 url = ""
