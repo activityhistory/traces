@@ -111,8 +111,10 @@ class Sniffer:
                 #change text and enabled status of screenshot menu item
                 if recording:
                   self.loggingMenuItem.setTitle_("Pause Recording")
+                  sc.ar.unpause_app_observers()
                 else:
                   self.loggingMenuItem.setTitle_("Start Recording")
+                  sc.ar.pause_app_observers()
                 self.changeIcon()
 
             def changeIcon(self):

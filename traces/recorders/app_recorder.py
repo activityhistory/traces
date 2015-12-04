@@ -19,9 +19,9 @@ import objc
 
 from AppKit import *
 from Foundation import *
-from Quartz import (CFRunLoopRun, kCGWindowListOptionAll,
-					CGWindowListCopyWindowInfo, kCGNullWindowID,
-					kCGWindowListExcludeDesktopElements)
+from Quartz import (CFRunLoopRun, CFRunLoopStop, CFRunLoopGetCurrent,
+					kCGWindowListOptionAll, CGWindowListCopyWindowInfo,
+					kCGNullWindowID, kCGWindowListExcludeDesktopElements)
 
 import accessibility as acc # https://github.com/atheriel/accessibility
 
@@ -74,7 +74,7 @@ class AppRecorder:
 
 			if recording:
 				# log that the application launched
-				text = '{"time": '+ str(t) + ' , "type": "Launch", "app": ' + name + '}'
+				text = '{"time": '+ str(t) + ' , "type": "Open", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			# take a screenshot
@@ -102,7 +102,7 @@ class AppRecorder:
 
 			if recording:
 				# log the the application has closed
-				text = '{"time": '+ str(t) + ' , "type": "Terminate", "app": ' + name + '}'
+				text = '{"time": '+ str(t) + ' , "type": "Close", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			if utils_cocoa.ascii_encode(app.localizedName()) == "\"Google Chrome\"":
@@ -122,7 +122,7 @@ class AppRecorder:
 
 		# log that the application has become active
 		if pid in self.watched.keys() and recording:
-			text = '{"time": '+ str(t) + ' , "type": "Activate", "app": ' + name + '}'
+			text = '{"time": '+ str(t) + ' , "type": "Active", "app": ' + name + '}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# take screenshot
@@ -149,7 +149,7 @@ class AppRecorder:
 
 		# log that the application has become inactive
 		if pid in self.watched.keys() and recording:
-			text = '{"time": '+ str(t) + ' , "type": "Deactivate", "app": ' + name + '}'
+			text = '{"time": '+ str(t) + ' , "type": "Inactive", "app": ' + name + '}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 		# check if the screen geometry changed and update active window
@@ -356,7 +356,11 @@ class AppRecorder:
 
 				if recording:
 					# log that the app is open
-					text = '{"time": '+ str(t) + ' , "type": "Launch: Recording Started", "app": ' + name + '}'
+					text = '{"time": '+ str(t) + ' , "type": "Open: Recording Started", "app": ' + name + '}'
+					utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+				if app.isActive():
+					text = '{"time": '+ str(t) + ' , "type": "Active: Recording Started", "app": ' + name + '}'
 					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			except:
@@ -380,16 +384,68 @@ class AppRecorder:
 		# let app observers be garabage collected
 		self.watched = {}
 
-		if recording:
+		#if recording:
 	        # prune list of applications to apps that appear in the dock
-			regularApps = []
-			for app in activeApps:
-				if app.activationPolicy() == 0:
-					regularApps.append(app)
+		regularApps = []
+		for app in activeApps:
+			if app.activationPolicy() == 0:
+				regularApps.append(app)
 
-	        # listen for window events of these applications
-			for app in regularApps:
-				name = utils_cocoa.ascii_encode(app.localizedName())
-				# log that the app recording will stop
-				text = '{"time": '+ str(t) + ' , "type": "Terminate: Recording Stopped", "app": ' + name + '}'
+        # listen for window events of these applications
+		for app in regularApps:
+			name = utils_cocoa.ascii_encode(app.localizedName())
+			# log that the app recording will stop
+			text = '{"time": '+ str(t) + ' , "type": "Close: Recording Stopped", "app": ' + name + '}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+			if app.isActive():
+				text = '{"time": '+ str(t) + ' , "type": "Inactive: Recording Stopped", "app": ' + name + '}'
+				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+	def pause_app_observers(self):
+		t = cfg.NOW()
+
+        # get workspace and list of all applications
+		workspace = NSWorkspace.sharedWorkspace()
+		activeApps = workspace.runningApplications()
+
+	    # prune list of applications to apps that appear in the dock
+		regularApps = []
+		for app in activeApps:
+			if app.activationPolicy() == 0:
+				regularApps.append(app)
+
+        # listen for window events of these applications
+		for app in regularApps:
+			name = utils_cocoa.ascii_encode(app.localizedName())
+			# log that the app recording will stop
+			text = '{"time": '+ str(t) + ' , "type": "Close: Recording Paused", "app": ' + name + '}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+			if app.isActive():
+				text = '{"time": '+ str(t) + ' , "type": "Inactive: Recording Paused", "app": ' + name + '}'
+				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+	def unpause_app_observers(self):
+		t = cfg.NOW()
+
+        # get workspace and list of all applications
+		workspace = NSWorkspace.sharedWorkspace()
+		activeApps = workspace.runningApplications()
+
+	    # prune list of applications to apps that appear in the dock
+		regularApps = []
+		for app in activeApps:
+			if app.activationPolicy() == 0:
+				regularApps.append(app)
+
+        # listen for window events of these applications
+		for app in regularApps:
+			name = utils_cocoa.ascii_encode(app.localizedName())
+			# log that the app recording will stop
+			text = '{"time": '+ str(t) + ' , "type": "Open: Recording Unpaused", "app": ' + name + '}'
+			utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+			if app.isActive():
+				text = '{"time": '+ str(t) + ' , "type": "Active: Recording Unpaused", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
