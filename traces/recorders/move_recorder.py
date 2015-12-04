@@ -14,7 +14,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
-from Cocoa import (NSEvent, NSMouseMoved, NSMouseMovedMask)
+from Cocoa import (NSEvent, NSMouseMoved, NSMouseMovedMask, NSScreen)
 
 import config as cfg
 import preferences
@@ -39,6 +39,20 @@ class MoveRecorder:
         if recording:
             if event.type() == NSMouseMoved:
                 loc = NSEvent.mouseLocation()
+
+                # get all the image size information
+                scr = NSScreen.screens()
+                xmin = 0
+                ymin = 0
+                for s in scr:
+                    if s.frame().origin.x < xmin:
+                        xmin = s.frame().origin.x
+                    if s.frame().origin.y < ymin:
+                        ymin = s.frame().origin.y
+
+                x = int(loc.x) - xmin
+                y = int(loc.y) - ymin
+
                 # write JSON object to movelog file
-                text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(int(loc.x)) + ',' + str(int(loc.y)) + ']}'
+                text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(x) + ',' + str(y) + ']}'
                 utils_cocoa.write_to_file(text, cfg.MOVELOG)

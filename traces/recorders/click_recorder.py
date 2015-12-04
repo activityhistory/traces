@@ -16,7 +16,7 @@ import os
 
 from Cocoa import (NSEvent, NSLeftMouseUp, NSLeftMouseDown, NSLeftMouseUpMask,
                     NSLeftMouseDownMask, NSRightMouseUp, NSRightMouseDown,
-                    NSRightMouseUpMask, NSRightMouseDownMask)
+                    NSRightMouseUpMask, NSRightMouseDownMask, NSScreen)
 
 import config as cfg
 import preferences
@@ -52,6 +52,19 @@ class ClickRecorder:
 
             # get data ready to write
             loc = NSEvent.mouseLocation()
+            scr = NSScreen.screens()
+            xmin = 0
+            ymin = 0
+            for s in scr:
+                if s.frame().origin.x < xmin:
+                    xmin = s.frame().origin.x
+                if s.frame().origin.y < ymin:
+                    ymin = s.frame().origin.y
+
+            x = int(loc.x) - xmin
+            y = int(loc.y) - ymin
+
+            #get click type
             click_type = "Unknown"
             if event.type() == NSLeftMouseDown:
                 click_type = "Left"
@@ -59,5 +72,5 @@ class ClickRecorder:
                 click_type = "Right"
 
             # write JSON object to clicklog file
-            text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(int(loc.x)) + ',' + str(int(loc.y)) + ']}'
+            text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(x) + ',' + str(y) + ']}'
             utils_cocoa.write_to_file(text, cfg.CLICKLOG)

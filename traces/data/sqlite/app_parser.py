@@ -247,10 +247,7 @@ def parse_geometries(session, activity_tracker):
 
                         # create open and active events if...
                         # this app was not even open the last time around
-                        print app
-                        print last_arr.keys()
                         if not app in last_arr:
-                            print "window was not open last time"
                             we = WindowEvent(t, wid, "Open")
                             session.add(we)
                             if w_active:
@@ -260,7 +257,6 @@ def parse_geometries(session, activity_tracker):
                         else:
                             # or if the window was not present last time
                             if not window in last_arr[app]['windows']:
-                                print "Window was not present last time"
                                 we = WindowEvent(t, wid, "Open")
                                 session.add(we)
                                 if w_active:
