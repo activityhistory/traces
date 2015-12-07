@@ -25,6 +25,8 @@ from Quartz import (CFRunLoopRun, CFRunLoopStop, CFRunLoopGetCurrent,
 
 import accessibility as acc # https://github.com/atheriel/accessibility
 
+from data.sqlite.models import AppEvent
+
 from web_recorder import WebRecorder
 import config as cfg
 import utils_cocoa
@@ -77,10 +79,15 @@ class AppRecorder:
 				text = '{"time": '+ str(t) + ' , "type": "Open", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
 
-			# take a screenshot
-			eventScreenshots = preferences.getValueForPreference('eventScreenshots')
-			if eventScreenshots:
-				self.sniffer.activity_tracker.take_screenshot()
+				# log that application is active
+				if app.isActive():
+					text = '{"time": '+ str(t) + ' , "type": "Active", "app": ' + name + '}'
+					utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+				# take a screenshot
+				eventScreenshots = preferences.getValueForPreference('eventScreenshots')
+				if eventScreenshots:
+					self.sniffer.activity_tracker.take_screenshot()
 
 		# check if the screen geometry changed and update active window
 		self.updateWindowList()
@@ -104,6 +111,10 @@ class AppRecorder:
 				# log the the application has closed
 				text = '{"time": '+ str(t) + ' , "type": "Close", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+				#TODO throw app deactivate event when active application terminates?
+				# would have to tell what app this is, and if it was the most
+				# previously active app
 
 			if utils_cocoa.ascii_encode(app.localizedName()) == "\"Google Chrome\"":
 				self.wr.closeChrome()
@@ -356,11 +367,11 @@ class AppRecorder:
 
 				if recording:
 					# log that the app is open
-					text = '{"time": '+ str(t) + ' , "type": "Open: Recording Started", "app": ' + name + '}'
+					text = '{"time": '+ str(t) + ' , "type": "Open", "app": ' + name + '}'
 					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 				if app.isActive():
-					text = '{"time": '+ str(t) + ' , "type": "Active: Recording Started", "app": ' + name + '}'
+					text = '{"time": '+ str(t) + ' , "type": "Active", "app": ' + name + '}'
 					utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			except:
@@ -384,23 +395,27 @@ class AppRecorder:
 		# let app observers be garabage collected
 		self.watched = {}
 
-		#if recording:
+		if recording:
 	        # prune list of applications to apps that appear in the dock
-		regularApps = []
-		for app in activeApps:
-			if app.activationPolicy() == 0:
-				regularApps.append(app)
+			regularApps = []
+			for app in activeApps:
+				if app.activationPolicy() == 0:
+					regularApps.append(app)
 
-        # listen for window events of these applications
-		for app in regularApps:
-			name = utils_cocoa.ascii_encode(app.localizedName())
-			# log that the app recording will stop
-			text = '{"time": '+ str(t) + ' , "type": "Close: Recording Stopped", "app": ' + name + '}'
-			utils_cocoa.write_to_file(text, cfg.APPLOG)
-
-			if app.isActive():
-				text = '{"time": '+ str(t) + ' , "type": "Inactive: Recording Stopped", "app": ' + name + '}'
+	        # listen for window events of these applications
+			for app in regularApps:
+				name = utils_cocoa.ascii_encode(app.localizedName())
+				# log that the app recording will stop
+				text = '{"time": '+ str(t) + ' , "type": "Close", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+				if app.isActive():
+					text = '{"time": '+ str(t) + ' , "type": "Inactive", "app": ' + name + '}'
+					utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+			# write a blank line to the geometry table to close out all windows
+			text = '{"time": ' + str(t) + ', "geometry": {} }'
+			utils_cocoa.write_to_file(text, cfg.GEOLOG)
 
 	def pause_app_observers(self):
 		t = cfg.NOW()
@@ -419,12 +434,16 @@ class AppRecorder:
 		for app in regularApps:
 			name = utils_cocoa.ascii_encode(app.localizedName())
 			# log that the app recording will stop
-			text = '{"time": '+ str(t) + ' , "type": "Close: Recording Paused", "app": ' + name + '}'
+			text = '{"time": '+ str(t) + ' , "type": "Close", "app": ' + name + '}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			if app.isActive():
-				text = '{"time": '+ str(t) + ' , "type": "Inactive: Recording Paused", "app": ' + name + '}'
+				text = '{"time": '+ str(t) + ' , "type": "Inactive", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		# write a blank line to the geometry table to close out all windows
+		text = '{"time": ' + str(t) + ', "geometry": {} }'
+		utils_cocoa.write_to_file(text, cfg.GEOLOG)
 
 	def unpause_app_observers(self):
 		t = cfg.NOW()
@@ -443,9 +462,12 @@ class AppRecorder:
 		for app in regularApps:
 			name = utils_cocoa.ascii_encode(app.localizedName())
 			# log that the app recording will stop
-			text = '{"time": '+ str(t) + ' , "type": "Open: Recording Unpaused", "app": ' + name + '}'
+			text = '{"time": '+ str(t) + ' , "type": "Open", "app": ' + name + '}'
 			utils_cocoa.write_to_file(text, cfg.APPLOG)
 
 			if app.isActive():
-				text = '{"time": '+ str(t) + ' , "type": "Active: Recording Unpaused", "app": ' + name + '}'
+				text = '{"time": '+ str(t) + ' , "type": "Active", "app": ' + name + '}'
 				utils_cocoa.write_to_file(text, cfg.APPLOG)
+
+		# check if the screen geometry changed and update active window
+		self.updateWindowList()

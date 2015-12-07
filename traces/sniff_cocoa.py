@@ -70,7 +70,7 @@ class Sniffer:
                 # save recorder turned on event
                 t = cfg.NOW()
 
-                text = '{"time": '+ str(t) + ' , "type": "Start Traces"}'
+                text = '{"time": '+ str(t) + ' , "type": "Start"}'
                 utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
                 # set inital values for the preferences
@@ -89,7 +89,7 @@ class Sniffer:
                 sc.ar.stop_app_observers()
 
                 # save recorder turned off event
-                text = '{"time": '+ str(t) + ' , "type": "Exit Traces"}'
+                text = '{"time": '+ str(t) + ' , "type": "Exit"}'
                 utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
 
                 #TODO tell application to parse logs one last time before quiting
@@ -101,6 +101,7 @@ class Sniffer:
 
             def toggleLogging_(self, notification):
                 print "Toggle Recording"
+                t = cfg.NOW()
 
                 recording = preferences.getValueForPreference('recording')
                 recording = not recording
@@ -112,9 +113,13 @@ class Sniffer:
                 if recording:
                   self.loggingMenuItem.setTitle_("Pause Recording")
                   sc.ar.unpause_app_observers()
+                  text = '{"time": '+ str(t) + ' , "type": "Unpause"}'
+                  utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
                 else:
                   self.loggingMenuItem.setTitle_("Start Recording")
                   sc.ar.pause_app_observers()
+                  text = '{"time": '+ str(t) + ' , "type": "Pause"}'
+                  utils_cocoa.write_to_file(text, cfg.RECORDERLOG)
                 self.changeIcon()
 
             def changeIcon(self):
