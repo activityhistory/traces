@@ -36,7 +36,7 @@ def parse_clicks(session):
                 text = ast.literal_eval(line.rstrip())
 
                 # get active app and window at time of event
-                app = session.query(AppEvent).filter(AppEvent.event=="Activate", AppEvent.time<=text['time']).order_by(AppEvent.time.desc()).first()
+                app = session.query(AppEvent).filter(AppEvent.event=="Active", AppEvent.time<=text['time']).order_by(AppEvent.time.desc()).first()
                 window = session.query(WindowEvent).filter(WindowEvent.event=="Active", WindowEvent.time <= text['time']).order_by(WindowEvent.time.desc()).first()
                 pid = app.app_id if app else 0
                 wid = window.window_id if window else 0
