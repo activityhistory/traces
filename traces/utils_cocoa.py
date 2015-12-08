@@ -68,3 +68,11 @@ def unix_to_chrome(t):
     # Chrome measures time in 100 nanosecond chunks since  12:00AM Jan 1, 1601
     # there are 11,644,473,600 seconds between start of Chrome time and epoch time
     return (t + 11644473600)*1000000
+
+def firefox_to_unix(t):
+    # Firefox measures time in microseconds since epoch time
+    return t / 1000000.
+
+def unix_to_firefox(t):
+    # Firefox measures time in microseconds since epoch time
+    return t * 1000000.

@@ -29,6 +29,7 @@ class WebRecorder:
 		self.AppRecorder = AppRecorder
 		self.tabList = {}
 		self.lastSafariTime = None
+		self.lastFirefoxTime = None
 	
 	def chromeCallback(self, **kwargs):
 		recording = preferences.getValueForPreference('recording')
@@ -92,7 +93,7 @@ class WebRecorder:
 			c = conn.cursor()
 			c.execute("SELECT visit_time, title, url FROM history_visits LEFT JOIN history_items ON history_visits.history_item == history_items.id where visit_time > " + str(self.lastSafariTime))
 
-			# looks like safari writes every ~10 seconds so offset by 10. Add an extra 9.9 for roundoff issues
+			# looks like safari writes every ~10 seconds so offset by 10. Add an extra 0.1 sec for roundoff issues
 			safariTimeOffset = int(utils_cocoa.unix_to_safari(cfg.NOW())) - 9.9
 			if self.lastSafariTime < safariTimeOffset:
 				self.lastSafariTime = safariTimeOffset
@@ -110,7 +111,47 @@ class WebRecorder:
 			self.lastSafariTime = None
 
 	def firefoxCallback(self, **kwargs):
-		print 'ff'
+		recording = preferences.getValueForPreference('recording')
+		if recording:
+			print 'FIREFOX CALLBACK'
+
+			notification_title = str(kwargs['notification'])[2:]
+
+			if notification_title != "MenuItemSelected" and notification_title != "TitleChanged":
+				self.AppRecorder.windowCallback(**kwargs)
+
+			if self.lastFirefoxTime == None:
+				self.lastFirefoxTime = int(utils_cocoa.unix_to_firefox(cfg.NOW()))
+				return
+
+			profiles = []
+			profFile = open(os.path.expanduser('~/Library/Application Support/Firefox/profiles.ini'))
+			for line in profFile:
+				if line[:5] == 'Path=':
+					profiles.append(line[5:-1])
+			for profile in profiles:
+				conn = sqlite3.connect(os.path.expanduser('~/Library/Application Support/Firefox/' + profile + '/places.sqlite'))
+				c = conn.cursor()
+				c.execute("SELECT visit_date, title, url FROM moz_historyvisits LEFT JOIN moz_places ON moz_historyvisits.place_id == moz_places.id where visit_date > " + str(self.lastFirefoxTime))
+
+				# offset by 10. Add an extra 0.1 sec for roundoff issues
+				ffTimeOffset = int(utils_cocoa.unix_to_firefox(cfg.NOW())) - 9.9
+				if self.lastFirefoxTime < ffTimeOffset:
+					self.lastFirefoxTime = ffTimeOffset
+
+				for entry in c.fetchall():
+					print '143'
+					print entry
+					url = entry[2]
+					title = entry[1]
+					time = entry[0]
+					if self.lastFirefoxTime < time:
+						self.lastFirefoxTime = time
+					text = '{"time": ' + str(utils_cocoa.firefox_to_unix(time)) + ', "browser": "Firefox", "url": "' + str(url) + '", "title": "' + str(title) + '", "event": ' + '"Opened"' +' }'
+					utils_cocoa.write_to_file(text, cfg.URLLOG)
+
+		if not recording:
+			self.lastFirefoxTime = None
 
 	def getTabs(self, windowList):
 		windowList['tabs'] = {}
