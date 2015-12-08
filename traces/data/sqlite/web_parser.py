@@ -23,7 +23,7 @@ import sqlite3
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
-from models import Tab
+from models import URL
 
 """
 This file should scrape Chrome and Safari web histories from their respective
@@ -119,21 +119,21 @@ def update_chrome_urls(start_time, end_time):
 
     # get datetimes that we want to query
 
-def parse_tabs(session):
+def parse_urls(session):
   # get name of file to read
-  tabfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.TABLOG)
+  urlfile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.URLLOG)
 
   # read the file, write lines to database, and save lines that were not
   # written to the database
   # TODO may need to check if file is already open using a file lock
-  if os.path.isfile(tabfile):
-      f = open(tabfile, 'r+')
+  if os.path.isfile(urlfile):
+      f = open(urlfile, 'r+')
       lines_to_save = []
       for line in f:
+          text = ast.literal_eval(line.rstrip())
           try:
-              text = ast.literal_eval(line.rstrip())
-              tab = Tab(text['time'], text['title'], text['url'], text['event'])
-              session.add(tab)
+              url = URL(text['time'], text['browser'], text['title'], text['url'], text['event'])
+              session.add(url)
           except:
               print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
               lines_to_save.append(text)

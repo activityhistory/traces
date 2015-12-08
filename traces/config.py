@@ -27,7 +27,7 @@ KEYLOG = 'key.log'
 MOVELOG = 'move.log'
 SCROLLLOG = 'scroll.log'
 WINDOWLOG = 'window.log'
-TABLOG = 'tab.log'
+URLLOG = 'url.log'
 
 # set storage to "mongo" to use mongodb
 # set storage to "sqlite" to use sqlite

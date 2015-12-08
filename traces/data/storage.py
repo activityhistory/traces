@@ -75,7 +75,7 @@ class Storage:
         recorder_parser.parse_recorder(self.session)
         scroll_parser.parse_scrolls(self.session)
         # TODO add web history scraping here
-        web_parser.parse_tabs(self.session)
+        web_parser.parse_urls(self.session)
 
         self.sqlcommit()
 
