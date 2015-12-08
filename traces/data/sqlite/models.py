@@ -256,14 +256,15 @@ class Clipboard(Core, Base):
     def __repr__(self):
         return "<Clipboard '%s' >" % self.text
 
-class Tab(Core, Base):
+class URL(Core, Base):
     title = Column(Unicode)
     url = Column(Unicode)
-    tabId = Column(Integer)
+    event = Column(Unicode)
+    browser = Column(Unicode)
 
-    def __init__(self, time, tabId, title, url, event):
+    def __init__(self, time, browser, title, url, event):
         self.time = time
-        self.tabId = tabId
+        self.browser = browser
         self.title = title
         self.url = url
         self.event = event
