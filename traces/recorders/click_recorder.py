@@ -16,7 +16,7 @@ import os
 
 from Cocoa import (NSEvent, NSLeftMouseUp, NSLeftMouseDown, NSLeftMouseUpMask,
                     NSLeftMouseDownMask, NSRightMouseUp, NSRightMouseDown,
-                    NSRightMouseUpMask, NSRightMouseDownMask)
+                    NSRightMouseUpMask, NSRightMouseDownMask, NSScreen)
 
 import config as cfg
 import preferences
@@ -36,26 +36,11 @@ class ClickRecorder:
 
     def start_click_listener(self):
         mask = (NSLeftMouseDownMask
-                | NSRightMouseDownMask)
-                # | NSLeftMouseUpMask
-                # | NSRightMouseUpMask)
+                | NSRightMouseDownMask) # | NSLeftMouseUpMask | NSRightMouseUpMask)
 
         NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.click_handler)
 
     def click_handler(self, event):
-        # not returning a valid object, only None
-        # print event.window()
-
-        # Testing that we can get information for the window that was clicked on
-        # can extrapolate this to any event, like scrolling and keystrokes
-        # num = event.windowNumber()
-        # options = kCGWindowListOptionOnScreenAboveWindow + kCGWindowListOptionIncludingWindow + kCGWindowListExcludeDesktopElements
-        # windowList = CGWindowListCopyWindowInfo(options, num)
-        # event_window = (d for d in windowList if d["kCGWindowNumber"] == num).next()
-        # print event_window['kCGWindowBounds']
-        # print event_window['kCGWindowOwnerName']
-        # print event_window['kCGWindowName'].encode('utf-8').strip()
-
         recording = preferences.getValueForPreference('recording')
         event_screenshots = preferences.getValueForPreference('eventScreenshots')
         if event_screenshots:
@@ -67,6 +52,19 @@ class ClickRecorder:
 
             # get data ready to write
             loc = NSEvent.mouseLocation()
+            scr = NSScreen.screens()
+            xmin = 0
+            ymin = 0
+            for s in scr:
+                if s.frame().origin.x < xmin:
+                    xmin = s.frame().origin.x
+                if s.frame().origin.y < ymin:
+                    ymin = s.frame().origin.y
+
+            x = int(loc.x) - xmin
+            y = int(loc.y) - ymin
+
+            #get click type
             click_type = "Unknown"
             if event.type() == NSLeftMouseDown:
                 click_type = "Left"
@@ -74,5 +72,5 @@ class ClickRecorder:
                 click_type = "Right"
 
             # write JSON object to clicklog file
-            text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(loc.x) + ',' + str(loc.y) + ']}'
+            text = '{"time": '+ str(cfg.NOW()) + ' , "button": "' + click_type + '", "location": [' + str(x) + ',' + str(y) + ']}'
             utils_cocoa.write_to_file(text, cfg.CLICKLOG)

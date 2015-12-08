@@ -135,8 +135,8 @@ def parse_urls(session):
               url = URL(unicode(text['time']), unicode(text['browser']), unicode(text['title']), unicode(text['url']), unicode(text['event']))
               session.add(url)
           except:
-              print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
-              lines_to_save.append(text)
+              print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
+              lines_to_save.append(line)
       # write lines that did not make it into the database to the start of the
       # file and delete the rest of the file
       f.seek(0)
