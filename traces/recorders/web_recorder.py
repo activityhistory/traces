@@ -153,21 +153,10 @@ class WebRecorder:
 		if not recording:
 			self.lastFirefoxTime = None
 
-	def getTabs(self, windowList):
-		windowList['tabs'] = {}
-		Chrome = SBApplication.applicationWithBundleIdentifier_("com.google.Chrome")
-		windows = Chrome.windows()
-		
-		for window in windows:
-		  tabs = window.tabs()
-		  windowList['tabs'][window.id()] = []
-		  for tab in tabs:
-				windowList['tabs'][window.id()].append(str(tab.title()))
-
 	def closeChrome(self):
 		for tabId, tabInfo in self.tabList.iteritems():
 			event = 'Closed'
-			text = '{"time": ' + str(t) + ' , "tabId": "' + str(tabId) + '", "title": "' + tabInfo['title'] + '", "url": ' + tabInfo['url'] + '", "event": ' + event +' }'
+			text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Closed"' +' }'
 			utils_cocoa.write_to_file(text, cfg.URLLOG)
 		
 		self.tabList = {}
