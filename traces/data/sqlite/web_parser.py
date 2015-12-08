@@ -132,7 +132,7 @@ def parse_urls(session):
       for line in f:
           text = ast.literal_eval(line.rstrip())
           try:
-              url = URL(text['time'], text['browser'], text['title'], text['url'], text['event'])
+              url = URL(unicode(text['time']), unicode(text['browser']), unicode(text['title']), unicode(text['url']), unicode(text['event']))
               session.add(url)
           except:
               print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
