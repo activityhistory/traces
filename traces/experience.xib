@@ -20,7 +20,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="398" height="154"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="398" height="154"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -32,11 +32,11 @@
                         <tabViewItems>
                             <tabViewItem label="Text" identifier="1" id="udF-6o-pLk">
                                 <view key="view" id="Uii-Iy-mkj">
-                                    <rect key="frame" x="10" y="33" width="176" height="0.0"/>
+                                    <rect key="frame" x="10" y="33" width="352" height="92"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qXd-hh-Kfk">
-                                            <rect key="frame" x="17" y="-25" width="318" height="22"/>
+                                            <rect key="frame" x="17" y="67" width="318" height="22"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="Whats up?" drawsBackground="YES" id="CnD-Jl-5h8">
                                                 <font key="font" metaFont="system"/>
@@ -45,7 +45,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cT8-GG-44U">
-                                            <rect key="frame" x="11" y="-61" width="330" height="32"/>
+                                            <rect key="frame" x="11" y="31" width="330" height="32"/>
                                             <animations/>
                                             <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BW4-jd-qgk">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -63,7 +63,7 @@ DQ
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="Audio" identifier="2" id="Dxf-OZ-7S5">
-                                <view key="view" id="hmb-16-vlY">
+                                <view key="view" ambiguous="YES" id="hmb-16-vlY">
                                     <rect key="frame" x="10" y="33" width="352" height="92"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -104,23 +104,6 @@ DQ
                                             <rect key="frame" x="17" y="8" width="318" height="20"/>
                                             <animations/>
                                         </progressIndicator>
-                                    </subviews>
-                                    <animations/>
-                                </view>
-                            </tabViewItem>
-                            <tabViewItem label="Video" identifier="" id="WDO-nS-yd4">
-                                <view key="view" ambiguous="YES" id="eyF-Yt-x0C">
-                                    <rect key="frame" x="10" y="33" width="352" height="92"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TZo-LJ-68o">
-                                            <rect key="frame" x="11" y="61" width="330" height="32"/>
-                                            <animations/>
-                                            <buttonCell key="cell" type="push" title="Record" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Ybq-eR-vy5">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
                                     </subviews>
                                     <animations/>
                                 </view>

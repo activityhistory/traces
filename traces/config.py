@@ -56,3 +56,6 @@ CURRENT_DIR = None
 NOW = time.time
 PARSEDELAY = 15
 CLIPDELAY = 1
+
+# browsers
+BROWSERS = ['Google Chrome','Safari','Firefox']

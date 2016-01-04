@@ -30,7 +30,7 @@ class WebRecorder:
 		self.tabList = {}
 		self.lastSafariTime = None
 		self.lastFirefoxTime = None
-	
+
 	def chromeCallback(self, **kwargs):
 		recording = preferences.getValueForPreference('recording')
 		if recording:
@@ -41,7 +41,7 @@ class WebRecorder:
 			if notification_title != "MenuItemSelected" and notification_title != "TitleChanged":
 				self.AppRecorder.windowCallback(**kwargs)
 				return
-			
+
 			Chrome = SBApplication.applicationWithBundleIdentifier_("com.google.Chrome")
 			windows = Chrome.windows()
 			oldTabList = self.tabList
@@ -51,7 +51,7 @@ class WebRecorder:
 			  tabs = window.tabs()
 			  for tab in tabs:
 					self.tabList[tab.id()] = {'title': str(tab.title()), 'id': str(tab.id()), 'url': str(tab.URL())}
-			
+
 			closedTabs = set(oldTabList.keys()) - set(self.tabList.keys())
 			openedTabs = set(self.tabList.keys()) - set(oldTabList.keys())
 
@@ -62,18 +62,18 @@ class WebRecorder:
 
 			# write to browser log file about event
 			for tab in closedTabs:
-				text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + str(oldTabList[tab]['url']) + '", "title": "' + str(oldTabList[tab]['title']) + '", "event": "Closed"' +' }'
+				text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + str(oldTabList[tab]['url']) + '", "title": "' + str(oldTabList[tab]['title']) + '", "event": "Close"' +' }'
 				utils_cocoa.write_to_file(text, cfg.URLLOG)
 
 			for tabId, tabInfo in self.tabList.iteritems():
 				event = 'None'
 				if tabId in openedTabs:
-					text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Opened"' +' }'
+					text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Open"' +' }'
 					utils_cocoa.write_to_file(text, cfg.URLLOG)
 				elif tabInfo['url'] != oldTabList[tabId]['url']:
-					text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Opened"' +' }'
+					text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Open"' +' }'
 					utils_cocoa.write_to_file(text, cfg.URLLOG)
-					text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + oldTabList[tabId]['url'] + '", "title": "' + oldTabList[tabId]['title'] + '", "event": ' + '"Closed"' +' }'
+					text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + oldTabList[tabId]['url'] + '", "title": "' + oldTabList[tabId]['title'] + '", "event": ' + '"Close"' +' }'
 					utils_cocoa.write_to_file(text, cfg.URLLOG)
 
 	def safariCallback(self, **kwargs):
@@ -104,7 +104,7 @@ class WebRecorder:
 				time = entry[0]
 				if self.lastSafariTime < time:
 					self.lastSafariTime = time
-				text = '{"time": ' + str(utils_cocoa.safari_to_unix(time)) + ', "browser": "Safari", "url": "' + str(url) + '", "title": "' + str(title) + '", "event": ' + '"Opened"' +' }'
+				text = '{"time": ' + str(utils_cocoa.safari_to_unix(time)) + ', "browser": "Safari", "url": "' + str(url) + '", "title": "' + str(title) + '", "event": ' + '"Open"' +' }'
 				utils_cocoa.write_to_file(text, cfg.URLLOG)
 
 		if not recording:
@@ -147,7 +147,7 @@ class WebRecorder:
 					time = entry[0]
 					if self.lastFirefoxTime < time:
 						self.lastFirefoxTime = time
-					text = '{"time": ' + str(utils_cocoa.firefox_to_unix(time)) + ', "browser": "Firefox", "url": "' + str(url) + '", "title": "' + str(title) + '", "event": ' + '"Opened"' +' }'
+					text = '{"time": ' + str(utils_cocoa.firefox_to_unix(time)) + ', "browser": "Firefox", "url": "' + str(url) + '", "title": "' + str(title) + '", "event": ' + '"Open"' +' }'
 					utils_cocoa.write_to_file(text, cfg.URLLOG)
 
 		if not recording:
@@ -155,8 +155,8 @@ class WebRecorder:
 
 	def closeChrome(self):
 		for tabId, tabInfo in self.tabList.iteritems():
-			event = 'Closed'
-			text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Closed"' +' }'
+			event = 'Close'
+			text = '{"time": ' + str(t) + ', "browser": "Google Chrome", "url": "' + tabInfo['url'] + '", "title": "' + tabInfo['title'] + '", "event": ' + '"Close"' +' }'
 			utils_cocoa.write_to_file(text, cfg.URLLOG)
-		
+
 		self.tabList = {}
