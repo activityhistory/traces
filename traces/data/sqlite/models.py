@@ -259,20 +259,36 @@ class Clipboard(Core, Base):
 class URL(Core, Base):
     title = Column(Unicode)
     url = Column(Unicode)
-    event = Column(Unicode)
-    browser = Column(Unicode)
+    host = Column(Unicode)
 
-    def __init__(self, time, browser, title, url, event):
+    def __init__(self, time, title, url, host):
         self.time = time
-        self.browser = browser
         self.title = title
         self.url = url
+        self.host = host
+
+    def __repr__(self):
+        return "<URL '%s' - '%s'>" % (self.url, self.title)
+
+
+class URLEvent(Core, Base):
+    title = Column(Unicode)
+
+    url_id = Column(Integer, ForeignKey('url.id'), nullable=False, index=True)
+    window = relationship("URL", backref=backref('urlevents'))
+    app_id = Column(Integer, ForeignKey('app.id'), nullable=False, index=True)
+    window = relationship("App", backref=backref('urlevents'))
+    window_id = Column(Integer, ForeignKey('window.id'), nullable=False, index=True)
+    window = relationship("Window", backref=backref('urlevents'))
+
+    event = Column(Unicode)
+
+    def __init__(self, time, url_id, app_id, window_id, event):
+        self.time = time
+        self.url_id = url_id
+        self.app_id = app_id
+        self.window_id = window_id
         self.event = event
 
     def __repr__(self):
-        return "<Tab '%s' - '%s' %s>" % (self.url, self.title, self.event)
-
-# class Website(Core, Base):
-#     url = Column(Unicode, index=True)
-#
-#     def __init__(self, time, title, app_id, browser_url):
+        return "<URLEvent %s %s %s>" % (self.url_id, self.app_id, self.event)
