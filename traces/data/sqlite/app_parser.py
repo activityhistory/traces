@@ -20,7 +20,7 @@ import ast
 import config as cfg
 import utils_cocoa
 
-from models import (App, AppEvent, Window, WindowEvent, Geometry, Arrangement)
+from models import (App, AppEvent, Window, WindowEvent, Geometry, Arrangement, URL, URLEvent)
 
 
 def parse_apps(session, activity_tracker):
@@ -173,6 +173,10 @@ def parse_geometries(session, activity_tracker):
         geometries = session.query(Geometry).all()
         geometry_dicts = [[g.x, g.y, g.w, g.h] for g in geometries]
 
+        # get existing urls from the database
+        db_urls = session.query(URL).all()
+        urls = [d.url for d in db_urls]
+
         for line in f:
             try:
                 # get data
@@ -244,6 +248,25 @@ def parse_geometries(session, activity_tracker):
                         # add the geometry's gid to the window dictionary
                         gid = geometry_dicts.index(gd) + 1 # array starts at 0, database ids a 1
                         val['gid'] = gid # removing for now, may want to add back later, but will need new arrangement comparison method
+
+                        # add new urls to the database
+                        if 'tabs' in window.keys():
+                            tabs = val['tabs']
+                            for tab, tval in tabs.iteritems():
+                                if tval['url'] not in urls:
+                                    u = URL(t, tval['title'], tval['url'], tval['host'])
+                                    session.add(u)
+                                    activity_tracker.storage.sqlcommit()
+
+                                    # update our local urls list
+                                    db_urls = session.query(URL).all()
+                                    urls = [d.url for d in db_urls]
+
+                            # add the url's uid to the window dictionary
+                            uid = urls.index(t['url']) + 1 # array starts at 0, database ids a 1
+                            tval['uid'] = uid
+
+                        #TODO create url open, close, active, inactive events
 
                         # create open and active events if...
                         # this app was not even open the last time around
