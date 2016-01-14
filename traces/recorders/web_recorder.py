@@ -15,7 +15,7 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 from Foundation import *
 from ScriptingBridge import *
 
-from models import (URL, URLEvent)
+from data.sqlite.models import (URL, URLEvent)
 import config as cfg
 import utils_cocoa
 import preferences
@@ -42,22 +42,20 @@ class WebRecorder:
 			windowList = {}
 			tabList = {}
 
-			# set first tab and first window to active if browser is active
+			# set first window to active if browser is active
 			firstWindow = active
-			firstTab = active
 
 			for window in windows:
 				#TODO need to find way to tell if app is onscreen
 				cwid = window.id()
 				name = 'Chrome ' + str(cwid)
 				bounds = {'x':window.bounds().origin.x, 'y':window.bounds().origin.y, 'width':window.bounds().size.width, 'height':window.bounds().size.height}
-			  	tabs = window.tabs()
+				tabs = window.tabs()
 				if firstWindow:
 					firstWindow = False
-			  	for tab in tabs:
-					tabList[tab.id()] = {'active': firstTab, 'title': str(tab.title()), 'url': str(tab.URL()), 'host': urlparse.urlparse(str(tab.URL())).hostname}
-					if firstTab:
-						firstTab = False
+				for tab in tabs:
+					activeTab = True if tab.id() == window.activeTab().id() else False
+					tabList[tab.id()] = {'active': activeTab, 'title': str(tab.title()), 'url': str(tab.URL()), 'host': urlparse.urlparse(str(tab.URL())).hostname}
 				windowList[cwid] = {'active':firstWindow, 'name': name, 'bounds': bounds, 'tabs': tabList}
 				tabList = {}
 
@@ -175,7 +173,6 @@ class WebRecorder:
 	def firefoxCallback(self, **kwargs):
 		recording = preferences.getValueForPreference('recording')
 		if recording:
-			print 'FIREFOX CALLBACK'
 
 			notification_title = str(kwargs['notification'])[2:]
 
@@ -202,8 +199,6 @@ class WebRecorder:
 					self.lastFirefoxTime = ffTimeOffset
 
 				for entry in c.fetchall():
-					print '143'
-					print entry
 					url = entry[2]
 					title = entry[1]
 					time = entry[0]

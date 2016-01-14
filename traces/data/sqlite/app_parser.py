@@ -250,9 +250,11 @@ def parse_geometries(session, activity_tracker):
                         val['gid'] = gid # removing for now, may want to add back later, but will need new arrangement comparison method
 
                         # add new urls to the database
-                        if 'tabs' in window.keys():
+                        if 'tabs' in val.keys():
                             tabs = val['tabs']
                             for tab, tval in tabs.iteritems():
+                                t_active = tval['active']
+                                t_url = tval['url']
                                 if tval['url'] not in urls:
                                     u = URL(t, tval['title'], tval['url'], tval['host'])
                                     session.add(u)
@@ -262,11 +264,32 @@ def parse_geometries(session, activity_tracker):
                                     db_urls = session.query(URL).all()
                                     urls = [d.url for d in db_urls]
 
-                            # add the url's uid to the window dictionary
-                            uid = urls.index(t['url']) + 1 # array starts at 0, database ids a 1
-                            tval['uid'] = uid
+                                # add the url's uid to the window dictionary
+                                uid = urls.index(tval['url']) + 1 # array starts at 0, database ids a 1
+                                tval['uid'] = uid
 
-                        #TODO create url open, close, active, inactive events
+                                #TODO create url open, close, active, inactive events
+                                if not app in last_arr:
+                                    te = URLEvent(t, uid, pid, wid, "Open")
+                                    session.add(te)
+                                    if t_active:
+                                        te = URLEvent(t, uid, pid, wid, "Open")
+                                        session.add(te)
+                                elif not window in last_arr[app]['windows']:
+                                    te = URLEvent(t, uid, pid, wid, "Open")
+                                    session.add(te)
+                                    if t_active:
+                                        te = URLEvent(t, uid, pid, wid, "Active")
+                                        session.add(te)
+                                elif not tab in last_arr[app]['windows'][window]['tabs']:
+                                    te = URLEvent(t, uid, pid, wid, "Open")
+                                    session.add(te)
+                                    if t_active:
+                                        te = URLEvent(t, uid, pid, wid, "Active")
+                                        session.add(te)
+                                elif t_active and (not last_arr[app]['windows'][window]['tabs'][tab]['active'] or t_url != last_arr[app]['windows'][window]['tabs'][tab]['url']):
+                                    te = URLEvent(t, uid, pid, wid, "Active")
+                                    session.add(te)
 
                         # create open and active events if...
                         # this app was not even open the last time around
@@ -336,6 +359,34 @@ def parse_geometries(session, activity_tracker):
                             window_names = [w.title for w in windows]
 
                         wid = window_names.index(title) + 1 # array starts at 0, database ids a 1
+
+                        if 'tabs' in val.keys():
+                            tabs = val['tabs']
+                            for tab, tval in tabs.iteritems():
+                                uid = urls.index(tval['url']) + 1
+                                t_active = tval['active']
+                                t_url = tval['url']
+                                if not app in arrangement:
+                                    te = URLEvent(t, uid, pid, wid, "Close")
+                                    session.add(te)
+                                    if t_active:
+                                        te = URLEvent(t, uid, pid, wid, "Inactive")
+                                        session.add(te)
+                                elif not window in arrangement[app]['windows']:
+                                    te = URLEvent(t, uid, pid, wid, "Close")
+                                    session.add(te)
+                                    if t_active:
+                                        te = URLEvent(t, uid, pid, wid, "Inactive")
+                                        session.add(te)
+                                elif not tab in arrangement[app]['windows'][window]['tabs']:
+                                    te = URLEvent(t, uid, pid, wid, "Close")
+                                    session.add(te)
+                                    if t_active:
+                                        te = URLEvent(t, uid, pid, wid, "Inactive")
+                                        session.add(te)
+                                elif t_active and (not arrangement[app]['windows'][window]['tabs'][tab]['active'] or t_url != arrangement[app]['windows'][window]['tabs'][tab]['url']):
+                                    te = URLEvent(t, uid, pid, wid, "Inactive")
+                                    session.add(te)
 
                         # create close and inactive events if...
                         # this app is not longer present
