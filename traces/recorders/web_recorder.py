@@ -55,8 +55,8 @@ class WebRecorder:
 					firstWindow = False
 				for tab in tabs:
 					activeTab = True if tab.id() == window.activeTab().id() else False
-					tabList[tab.id()] = {'active': activeTab, 'title': str(tab.title()), 'url': str(tab.URL()), 'host': urlparse.urlparse(str(tab.URL())).hostname}
-				windowList[cwid] = {'active':firstWindow, 'name': name, 'bounds': bounds, 'tabs': tabList}
+					tabList[tab.id()] = {'active': activeTab, 'title': unicode(tab.title()), 'url': unicode(tab.URL()), 'host': urlparse.urlparse(unicode(tab.URL())).hostname}
+				windowList[cwid] = {'active':firstWindow, 'name': unicode(name), 'bounds': bounds, 'tabs': tabList}
 				tabList = {}
 
 			return windowList
