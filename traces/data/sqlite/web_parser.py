@@ -33,91 +33,91 @@ read-only? It looks like you can do read-only in python 3.4.0, but not 2.7:
 http://stackoverflow.com/questions/10205744/opening-sqlite3-database-from-python-in-read-only-mode
 
 This site includes a possible workaround for Python 2.7
-    fd = os.open(filename, os.O_RDONLY)
-    c = sqlite3.connect('/dev/fd/%d' % fd)
-    os.close(fd)
+	fd = os.open(filename, os.O_RDONLY)
+	c = sqlite3.connect('/dev/fd/%d' % fd)
+	os.close(fd)
 
 This sometimes seems to work for me, but not consistently.
 """
 
 class Bookmarks(object):
-    pass
+	pass
 
 class URLS(object):
-    pass
+	pass
 
 class Keywords(object):
-    pass
+	pass
 
 class Visits(object):
-    pass
+	pass
 
 class Items(object):
-    pass
+	pass
 
 # These use sqlalchemy to load the database schemas. However, I'm
 def loadSafariSession():
-    dbPath = os.path.expanduser('~/Library/Safari/History.db')
-    engine = create_engine('sqlite:///%s' % dbPath, echo=True)
+	dbPath = os.path.expanduser('~/Library/Safari/History.db')
+	engine = create_engine('sqlite:///%s' % dbPath, echo=True)
 
-    metadata = MetaData(engine)
-    history_visits = Table('history_visits', metadata, autoload=True)
-    mapper(Visits, history_visits)
-    history_items = Table('history_items', metadata, autoload=True)
-    mapper(Items, history_items)
+	metadata = MetaData(engine)
+	history_visits = Table('history_visits', metadata, autoload=True)
+	mapper(Visits, history_visits)
+	history_items = Table('history_items', metadata, autoload=True)
+	mapper(Items, history_items)
 
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
+	Session = sessionmaker(bind=engine)
+	session = Session()
+	return session
 
 #TODO figure out how to get this to work when database is locked
 def loadChromeSession():
-    dbPath = os.path.expanduser('~/Library/Application Support/Google/Chrome/Default/History')
-    engine = create_engine('sqlite:///%s' % dbPath, echo=True)
+	dbPath = os.path.expanduser('~/Library/Application Support/Google/Chrome/Default/History')
+	engine = create_engine('sqlite:///%s' % dbPath, echo=True)
 
-    metadata = MetaData(engine)
-    urls = Table('urls', metadata, autoload=True)
-    mapper(URLS, urls)
+	metadata = MetaData(engine)
+	urls = Table('urls', metadata, autoload=True)
+	mapper(URLS, urls)
 
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
+	Session = sessionmaker(bind=engine)
+	session = Session()
+	return session
 
 def get_first_safari_url():
-    conn = sqlite3.connect('/Users/adamrule/Library/Safari/History.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM history_items")
-    print c.fetchone()
-    conn.close()
+	conn = sqlite3.connect('/Users/adamrule/Library/Safari/History.db')
+	c = conn.cursor()
+	c.execute("SELECT * FROM history_items")
+	print c.fetchone()
+	conn.close()
 
 def update_safari_urls(start_time, end_time):
-    start = utils_cocoa.unix_to_safari(start_time)
-    end = utils_cocoa.unix_to_safari(end_time)
+	start = utils_cocoa.unix_to_safari(start_time)
+	end = utils_cocoa.unix_to_safari(end_time)
 
-    filename = os.path.expanduser('~/Library/Safari/History.db')
-    conn = sqlite3.connect(filename)
-    c = conn.cursor()
-    #TODO add a sql left join here to get url data
-    v = c.execute("SELECT * FROM history_visits where visit_time BETWEEN %d and %d" % (start, end))
-    print v.fetchall()
-    conn.close()
+	filename = os.path.expanduser('~/Library/Safari/History.db')
+	conn = sqlite3.connect(filename)
+	c = conn.cursor()
+	#TODO add a sql left join here to get url data
+	v = c.execute("SELECT * FROM history_visits where visit_time BETWEEN %d and %d" % (start, end))
+	print v.fetchall()
+	conn.close()
 
 def update_chrome_urls(start_time, end_time):
-    # open the database in read-only mode
-    # http://stackoverflow.com/questions/10205744/opening-sqlite3-database-from-python-in-read-only-mode
-    start = utils_cocoa.unix_to_chrome(start_time)
-    end = utils_cocoa.unix_to_chrome(end_time)
+	# open the database in read-only mode
+	# http://stackoverflow.com/questions/10205744/opening-sqlite3-database-from-python-in-read-only-mode
+	start = utils_cocoa.unix_to_chrome(start_time)
+	end = utils_cocoa.unix_to_chrome(end_time)
 
-    filename = os.path.expanduser('~/Library/Application Support/Google/Chrome/Default/History')
-    fd = os.open(filename, os.O_RDONLY)
-    conn = sqlite3.connect('/dev/fd/%d' % fd)
+	filename = os.path.expanduser('~/Library/Application Support/Google/Chrome/Default/History')
+	fd = os.open(filename, os.O_RDONLY)
+	conn = sqlite3.connect('/dev/fd/%d' % fd)
 
-    c = conn.cursor()
-    c.execute("SELECT * FROM visits WHERE visit_time BETWEEN " + str(start) +" AND " + str(end))
-    print c.fetchall()
-    os.close(fd)
+	c = conn.cursor()
+	c.execute("SELECT * FROM visits WHERE visit_time BETWEEN " + str(start) +" AND " + str(end))
+	print c.fetchall()
+	os.close(fd)
 
-    # get datetimes that we want to query
+	# get datetimes that we want to query
 
 def parse_urls(session):
   # get name of file to read
@@ -127,20 +127,20 @@ def parse_urls(session):
   # written to the database
   # TODO may need to check if file is already open using a file lock
   if os.path.isfile(urlfile):
-      f = open(urlfile, 'r+')
-      lines_to_save = []
-      for line in f:
-          text = ast.literal_eval(line.rstrip())
-          try:
-              url = URL(unicode(text['time']), unicode(text['browser']), unicode(text['title']), unicode(text['url']), unicode(text['event']))
-              session.add(url)
-          except:
-              print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
-              lines_to_save.append(line)
-      # write lines that did not make it into the database to the start of the
-      # file and delete the rest of the file
-      f.seek(0)
-      for line in lines_to_save:
-          f.write(line)
-      f.truncate()
-      f.close()
+	  f = open(urlfile, 'r+')
+	  lines_to_save = []
+	  for line in f:
+		  text = ast.literal_eval(line.rstrip())
+		  try:
+			  url = URL(unicode(text['time']), unicode(text['browser']), unicode(text['title']), unicode(text['url']), unicode(text['event']))
+			  session.add(url)
+		  except:
+			  print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
+			  lines_to_save.append(line)
+	  # write lines that did not make it into the database to the start of the
+	  # file and delete the rest of the file
+	  f.seek(0)
+	  for line in lines_to_save:
+		  f.write(line)
+	  f.truncate()
+	  f.close()

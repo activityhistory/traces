@@ -21,27 +21,27 @@ from activity_tracker import ActivityTracker
 
 
 def main():
-    print "Traces is starting"
+	print "Traces is starting"
 
-    # setting a utf8 as the default encoding
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+	# setting a utf8 as the default encoding
+	reload(sys)
+	sys.setdefaultencoding('utf8')
 
-    # find if external drives are attached for storing recording data
-    data.checkDrive()
+	# find if external drives are attached for storing recording data
+	data.checkDrive()
 
-    # create directories to store data, if needed
-    data.createDataDirectories(os.path.expanduser(cfg.CURRENT_DIR))
+	# create directories to store data, if needed
+	data.createDataDirectories(os.path.expanduser(cfg.CURRENT_DIR))
 
-    # start activity tracker
-    astore = ActivityTracker()
-    try:
-        astore.run()
-    except SystemExit:
-        astore.close()
-    except KeyboardInterrupt:
-        pass
+	# start activity tracker
+	astore = ActivityTracker()
+	try:
+		astore.run()
+	except SystemExit:
+		astore.close()
+	except KeyboardInterrupt:
+		pass
 
 
 if __name__ == '__main__':
-    main()
+	main()

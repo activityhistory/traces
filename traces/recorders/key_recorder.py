@@ -16,13 +16,13 @@ from AppKit import NSWorkspace, NSApp
 import os
 
 from Cocoa import (NSEvent, NSKeyDown, NSKeyDownMask, NSKeyUp, NSKeyUpMask,
-                   NSFlagsChanged, NSFlagsChangedMask, NSAlternateKeyMask,
-                   NSCommandKeyMask, NSControlKeyMask, NSShiftKeyMask,
-                   NSAlphaShiftKeyMask)
+				   NSFlagsChanged, NSFlagsChangedMask, NSAlternateKeyMask,
+				   NSCommandKeyMask, NSControlKeyMask, NSShiftKeyMask,
+				   NSAlphaShiftKeyMask)
 
 # from Quartz import (CFRunLoopRun, kCGWindowListOptionAll,
-# 					CGWindowListCopyWindowInfo, kCGNullWindowID,
-# 					kCGWindowListExcludeDesktopElements)
+#					CGWindowListCopyWindowInfo, kCGNullWindowID,
+#					kCGWindowListExcludeDesktopElements)
 
 import config as cfg
 import preferences
@@ -30,169 +30,169 @@ import utils_cocoa
 
 
 SKIP_MODIFIERS = {"", "Shift_L", "Control_L", "Super_L", "Alt_L", "Super_R",
-                    "Control_R", "Shift_R", "[65027]"}  # [65027] is AltGr in X
+					"Control_R", "Shift_R", "[65027]"}	# [65027] is AltGr in X
 
 # Cocoa does not provide a good api to get the keycodes,
 # therefore we have to provide our own.
 KEYCODES = {
-   u"\u0009": "Tab",
-   u"\u001b": "Escape",
-   u"\uf700": "Up",
-   u"\uF701": "Down",
-   u"\uF702": "Left",
-   u"\uF703": "Right",
-   u"\uF704": "F1",
-   u"\uF705": "F2",
-   u"\uF706": "F3",
-   u"\uF707": "F4",
-   u"\uF708": "F5",
-   u"\uF709": "F6",
-   u"\uF70A": "F7",
-   u"\uF70B": "F8",
-   u"\uF70C": "F9",
-   u"\uF70D": "F10",
-   u"\uF70E": "F11",
-   u"\uF70F": "F12",
-   u"\uF710": "F13",
-   u"\uF711": "F14",
-   u"\uF712": "F15",
-   u"\uF713": "F16",
-   u"\uF714": "F17",
-   u"\uF715": "F18",
-   u"\uF716": "F19",
-   u"\uF717": "F20",
-   u"\uF718": "F21",
-   u"\uF719": "F22",
-   u"\uF71A": "F23",
-   u"\uF71B": "F24",
-   u"\uF71C": "F25",
-   u"\uF71D": "F26",
-   u"\uF71E": "F27",
-   u"\uF71F": "F28",
-   u"\uF720": "F29",
-   u"\uF721": "F30",
-   u"\uF722": "F31",
-   u"\uF723": "F32",
-   u"\uF724": "F33",
-   u"\uF725": "F34",
-   u"\uF726": "F35",
-   u"\uF727": "Insert",
-   u"\uF728": "Delete",
-   u"\uF729": "Home",
-   u"\uF72A": "Begin",
-   u"\uF72B": "End",
-   u"\uF72C": "PageUp",
-   u"\uF72D": "PageDown",
-   u"\uF72E": "PrintScreen",
-   u"\uF72F": "ScrollLock",
-   u"\uF730": "Pause",
-   u"\uF731": "SysReq",
-   u"\uF732": "Break",
-   u"\uF733": "Reset",
-   u"\uF734": "Stop",
-   u"\uF735": "Menu",
-   u"\uF736": "User",
-   u"\uF737": "System",
-   u"\uF738": "Print",
-   u"\uF739": "ClearLine",
-   u"\uF73A": "ClearDisplay",
-   u"\uF73B": "InsertLine",
-   u"\uF73C": "DeleteLine",
-   u"\uF73D": "InsertChar",
-   u"\uF73E": "DeleteChar",
-   u"\uF73F": "Prev",
-   u"\uF740": "Next",
-   u"\uF741": "Select",
-   u"\uF742": "Execute",
-   u"\uF743": "Undo",
-   u"\uF744": "Redo",
-   u"\uF745": "Find",
-   u"\uF746": "Help",
-   u"\uF747": "ModeSwitch"}
+	u"\u0009": "Tab",
+	u"\u001b": "Escape",
+	u"\uf700": "Up",
+	u"\uF701": "Down",
+	u"\uF702": "Left",
+	u"\uF703": "Right",
+	u"\uF704": "F1",
+	u"\uF705": "F2",
+	u"\uF706": "F3",
+	u"\uF707": "F4",
+	u"\uF708": "F5",
+	u"\uF709": "F6",
+	u"\uF70A": "F7",
+	u"\uF70B": "F8",
+	u"\uF70C": "F9",
+	u"\uF70D": "F10",
+	u"\uF70E": "F11",
+	u"\uF70F": "F12",
+	u"\uF710": "F13",
+	u"\uF711": "F14",
+	u"\uF712": "F15",
+	u"\uF713": "F16",
+	u"\uF714": "F17",
+	u"\uF715": "F18",
+	u"\uF716": "F19",
+	u"\uF717": "F20",
+	u"\uF718": "F21",
+	u"\uF719": "F22",
+	u"\uF71A": "F23",
+	u"\uF71B": "F24",
+	u"\uF71C": "F25",
+	u"\uF71D": "F26",
+	u"\uF71E": "F27",
+	u"\uF71F": "F28",
+	u"\uF720": "F29",
+	u"\uF721": "F30",
+	u"\uF722": "F31",
+	u"\uF723": "F32",
+	u"\uF724": "F33",
+	u"\uF725": "F34",
+	u"\uF726": "F35",
+	u"\uF727": "Insert",
+	u"\uF728": "Delete",
+	u"\uF729": "Home",
+	u"\uF72A": "Begin",
+	u"\uF72B": "End",
+	u"\uF72C": "PageUp",
+	u"\uF72D": "PageDown",
+	u"\uF72E": "PrintScreen",
+	u"\uF72F": "ScrollLock",
+	u"\uF730": "Pause",
+	u"\uF731": "SysReq",
+	u"\uF732": "Break",
+	u"\uF733": "Reset",
+	u"\uF734": "Stop",
+	u"\uF735": "Menu",
+	u"\uF736": "User",
+	u"\uF737": "System",
+	u"\uF738": "Print",
+	u"\uF739": "ClearLine",
+	u"\uF73A": "ClearDisplay",
+	u"\uF73B": "InsertLine",
+	u"\uF73C": "DeleteLine",
+	u"\uF73D": "InsertChar",
+	u"\uF73E": "DeleteChar",
+	u"\uF73F": "Prev",
+	u"\uF740": "Next",
+	u"\uF741": "Select",
+	u"\uF742": "Execute",
+	u"\uF743": "Undo",
+	u"\uF744": "Redo",
+	u"\uF745": "Find",
+	u"\uF746": "Help",
+	u"\uF747": "ModeSwitch"}
 
 
 class KeyRecorder:
 
-    def __init__(self, sniffer):
-        self.sniffer = sniffer
+	def __init__(self, sniffer):
+		self.sniffer = sniffer
 
-    def start_key_listener(self):
-        #TODO may only need the keydown mask, rather than all three
-        mask = (NSKeyDownMask | NSKeyUpMask | NSFlagsChangedMask)
-        NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
+	def start_key_listener(self):
+		#TODO may only need the keydown mask, rather than all three
+		mask = (NSKeyDownMask | NSKeyUpMask | NSFlagsChangedMask)
+		NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 
-    def key_handler(self, event):
-        # neither of these is returning a valid value, just None and 0
-        # print event.window()
-        # print event.windowNumber()
+	def key_handler(self, event):
+		# neither of these is returning a valid value, just None and 0
+		# print event.window()
+		# print event.windowNumber()
 
-        recording = preferences.getValueForPreference('recording')
-        record_keystrokes = preferences.getValueForPreference('keystrokes')
-        if recording and record_keystrokes:
-            event_screenshots = preferences.getValueForPreference('eventScreenshots')
-            if event_screenshots:
-                self.sniffer.activity_tracker.take_screenshot()
+		recording = preferences.getValueForPreference('recording')
+		record_keystrokes = preferences.getValueForPreference('keystrokes')
+		if recording and record_keystrokes:
+			event_screenshots = preferences.getValueForPreference('eventScreenshots')
+			if event_screenshots:
+				self.sniffer.activity_tracker.take_screenshot()
 
-            if event.type() == NSKeyDown:
-                # get list of applications that show up in the dock
-                # workspace = NSWorkspace.sharedWorkspace()
-                # activeApps = workspace.runningApplications()
-                # app_name = ""
-                # window_name = ""
-                # for app in activeApps:
-                #     if app.isActive():
-                #         app_name = app.localizedName()
-                #         # print type(app)
-                #         # window_name = app.windows()
-                #         # print app_name
-                #         # print window_name
-                #
-                # options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
-                # windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID)
-                # print windows[0].keys()
-                # for window in windows:
-                # activeApp = utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName'])
-                # not working because I'm not calling it on the app itself
-                # print NSApp.keyWindow()
+			if event.type() == NSKeyDown:
+				# get list of applications that show up in the dock
+				# workspace = NSWorkspace.sharedWorkspace()
+				# activeApps = workspace.runningApplications()
+				# app_name = ""
+				# window_name = ""
+				# for app in activeApps:
+				#	  if app.isActive():
+				#		  app_name = app.localizedName()
+				#		  # print type(app)
+				#		  # window_name = app.windows()
+				#		  # print app_name
+				#		  # print window_name
+				#
+				# options = kCGWindowListOptionAll + kCGWindowListExcludeDesktopElements
+				# windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID)
+				# print windows[0].keys()
+				# for window in windows:
+				# activeApp = utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName'])
+				# not working because I'm not calling it on the app itself
+				# print NSApp.keyWindow()
 
-                # print utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication().keys())
-                # keyWindow = utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication().keyWindow())
+				# print utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication().keys())
+				# keyWindow = utils_cocoa.ascii_encode(NSWorkspace.sharedWorkspace().activeApplication().keyWindow())
 
-                # get the modifier keys that were depressed when this key was pressed
-                flags = event.modifierFlags()
-                modifiers = []  # OS X api doesn't care it if is left or right
-                if flags & NSControlKeyMask:
-                    modifiers.append('Ctrl')
-                if flags & NSAlternateKeyMask:
-                    modifiers.append('Alt')
-                if flags & NSCommandKeyMask:
-                    modifiers.append('Cmd')
-                if flags & (NSShiftKeyMask | NSAlphaShiftKeyMask):
-                    modifiers.append('Shift')
+				# get the modifier keys that were depressed when this key was pressed
+				flags = event.modifierFlags()
+				modifiers = []	# OS X api doesn't care it if is left or right
+				if flags & NSControlKeyMask:
+					modifiers.append('Ctrl')
+				if flags & NSAlternateKeyMask:
+					modifiers.append('Alt')
+				if flags & NSCommandKeyMask:
+					modifiers.append('Cmd')
+				if flags & (NSShiftKeyMask | NSAlphaShiftKeyMask):
+					modifiers.append('Shift')
 
-                # TODO determine why we have to use keycodes here for enter and
-                # backspace but can rely on the charachter list for the others
-                # get the charachter of the pressed key
-                character = event.charactersIgnoringModifiers()
-                if event.keyCode() is 51:
-                    character = "Backspace"
-                elif event.keyCode() is 8 and modifiers == ["Cmd"]:
-                    # trigger clipboard check
-                    self.sniffer.clr.get_clipboard_contents()
-                elif event.keyCode() is 36:
-                    character = "Enter"
-                elif event.keyCode() is 39 and modifiers == ["Shift"]:
-                    character = "\\\""
-                elif event.keyCode() is 42 and modifiers != ["Shift"]:
-                    character = "\\\\"
-                elif event.keyCode() is 46 and modifiers == ["Cmd", "Shift"]:
-                    self.sniffer.delegate.showExperience_("Fake Notification")
+				# TODO determine why we have to use keycodes here for enter and
+				# backspace but can rely on the charachter list for the others
+				# get the charachter of the pressed key
+				character = event.charactersIgnoringModifiers()
+				if event.keyCode() is 51:
+					character = "Backspace"
+				elif event.keyCode() is 8 and modifiers == ["Cmd"]:
+					# trigger clipboard check
+					self.sniffer.clr.get_clipboard_contents()
+				elif event.keyCode() is 36:
+					character = "Enter"
+				elif event.keyCode() is 39 and modifiers == ["Shift"]:
+					character = "\\\""
+				elif event.keyCode() is 42 and modifiers != ["Shift"]:
+					character = "\\\\"
+				elif event.keyCode() is 46 and modifiers == ["Cmd", "Shift"]:
+					self.sniffer.delegate.showExperience_("Fake Notification")
 
-                string = KEYCODES.get(character, character)
+				string = KEYCODES.get(character, character)
 
-                if string in SKIP_MODIFIERS:
-                    return
+				if string in SKIP_MODIFIERS:
+					return
 
-                # write JSON object to keylog file
-                text = '{"time": '+ str(cfg.NOW()) + ' , "key": "' + string + '" , "modifiers": ' + str(modifiers) + '}'
-                utils_cocoa.write_to_file(text, cfg.KEYLOG)
+				# write JSON object to keylog file
+				text = '{"time": '+ str(cfg.NOW()) + ' , "key": "' + string + '" , "modifiers": ' + str(modifiers) + '}'
+				utils_cocoa.write_to_file(text, cfg.KEYLOG)

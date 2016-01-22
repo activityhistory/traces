@@ -19,21 +19,21 @@ MAGIC_STRING = '\xc5\x7fdh\x05\xf6\xc5=\xcfh\xafv\xc0\xf4\x13i*.O\xf6\xc2\x8d\x0
 
 
 def check(data_dir, decrypter, read_only=False):
-    fname = os.path.join(data_dir, DIGEST_NAME)
-    if os.path.exists(fname):
-        if decrypter is None:
-            return False
-        f = open(fname, 'rb')
-        s = f.read()
-        f.close()
-        return decrypter.decrypt(s) == MAGIC_STRING
-    else:
-        if decrypter is not None:
-            if read_only:
-                return False
-            else:
-                s = decrypter.encrypt(MAGIC_STRING)
-                f = open(fname, 'wb')
-                f.write(s)
-                f.close()
-        return True
+	fname = os.path.join(data_dir, DIGEST_NAME)
+	if os.path.exists(fname):
+		if decrypter is None:
+			return False
+		f = open(fname, 'rb')
+		s = f.read()
+		f.close()
+		return decrypter.decrypt(s) == MAGIC_STRING
+	else:
+		if decrypter is not None:
+			if read_only:
+				return False
+			else:
+				s = decrypter.encrypt(MAGIC_STRING)
+				f = open(fname, 'wb')
+				f.write(s)
+				f.close()
+		return True

@@ -18,7 +18,7 @@ import config as cfg
 
 
 def dummyFunction():
-    """
-    Just a function so we can init the recorders
-    """
-    x = 1
+	"""
+	Just a function so we can init the recorders
+	"""
+	x = 1

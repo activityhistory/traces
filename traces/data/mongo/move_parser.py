@@ -20,27 +20,27 @@ import config as cfg
 
 
 def parse_moves(db):
-    # get names of files to read and mongodb collection to write
-    movefile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.MOVELOG)
-    move_collection = db[cfg.MOVECOL]
+	# get names of files to read and mongodb collection to write
+	movefile = os.path.join(os.path.expanduser(cfg.CURRENT_DIR), cfg.MOVELOG)
+	move_collection = db[cfg.MOVECOL]
 
-    # read the file, write lines to database, and save lines that were not
-    # written to the database
-    # TODO may need to check if file is already open using a file lock
-    if os.path.isfile(movefile):
-        f = open(movefile, 'r+')
-        lines_to_save = []
-        for line in f:
-            try:
-                text = ast.literal_eval(line.rstrip())
-                move_collection.insert_one(text)
-            except:
-                print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
-                lines_to_save.append(text)
-        # write lines that did not make it into the database to the start of the
-        # file and delete the rest of the file
-        f.seek(0)
-        for line in lines_to_save:
-            f.write(line)
-        f.truncate()
-        f.close()
+	# read the file, write lines to database, and save lines that were not
+	# written to the database
+	# TODO may need to check if file is already open using a file lock
+	if os.path.isfile(movefile):
+		f = open(movefile, 'r+')
+		lines_to_save = []
+		for line in f:
+			try:
+				text = ast.literal_eval(line.rstrip())
+				move_collection.insert_one(text)
+			except:
+				print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
+				lines_to_save.append(text)
+		# write lines that did not make it into the database to the start of the
+		# file and delete the rest of the file
+		f.seek(0)
+		for line in lines_to_save:
+			f.write(line)
+		f.truncate()
+		f.close()
