@@ -22,37 +22,37 @@ import utils_cocoa
 
 class MoveRecorder:
 
-    def __init__(self, sniffer):
-        self.sniffer = sniffer
+	def __init__(self, sniffer):
+		self.sniffer = sniffer
 
-    def start_move_listener(self):
-        mask = (NSMouseMovedMask)
-        NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.move_handler)
+	def start_move_listener(self):
+		mask = (NSMouseMovedMask)
+		NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.move_handler)
 
-    # TODO add tracking of duration of the move
-    def move_handler(self, event):
-        recording = preferences.getValueForPreference('recording')
-        event_screenshots = preferences.getValueForPreference('eventScreenshots')
-        if event_screenshots:
-            self.sniffer.activity_tracker.take_screenshot()
+	# TODO add tracking of duration of the move
+	def move_handler(self, event):
+		recording = preferences.getValueForPreference('recording')
+		event_screenshots = preferences.getValueForPreference('eventScreenshots')
+		if event_screenshots:
+			self.sniffer.activity_tracker.take_screenshot()
 
-        if recording:
-            if event.type() == NSMouseMoved:
-                loc = NSEvent.mouseLocation()
+		if recording:
+			if event.type() == NSMouseMoved:
+				loc = NSEvent.mouseLocation()
 
-                # get all the image size information
-                scr = NSScreen.screens()
-                xmin = 0
-                ymin = 0
-                for s in scr:
-                    if s.frame().origin.x < xmin:
-                        xmin = s.frame().origin.x
-                    if s.frame().origin.y < ymin:
-                        ymin = s.frame().origin.y
+				# get all the image size information
+				scr = NSScreen.screens()
+				xmin = 0
+				ymin = 0
+				for s in scr:
+					if s.frame().origin.x < xmin:
+						xmin = s.frame().origin.x
+					if s.frame().origin.y < ymin:
+						ymin = s.frame().origin.y
 
-                x = int(loc.x) - xmin
-                y = int(loc.y) - ymin
+				x = int(loc.x) - xmin
+				y = int(loc.y) - ymin
 
-                # write JSON object to movelog file
-                text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(x) + ',' + str(y) + ']}'
-                utils_cocoa.write_to_file(text, cfg.MOVELOG)
+				# write JSON object to movelog file
+				text = '{"time": '+ str(cfg.NOW()) + ' , "location": [' + str(x) + ',' + str(y) + ']}'
+				utils_cocoa.write_to_file(text, cfg.MOVELOG)

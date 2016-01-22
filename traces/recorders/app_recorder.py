@@ -308,7 +308,7 @@ class AppRecorder:
 ### Manager the event listeners ###
 	def start_app_observers(self):
 		recording = preferences.getValueForPreference('recording')
-        # prompt user to grant accessibility access to Traces, if not already granted
+		# prompt user to grant accessibility access to Traces, if not already granted
 		acc.is_enabled()
 
 		# get an early timestamp
@@ -326,28 +326,28 @@ class AppRecorder:
 		s = objc.selector(self.appDeactivateCallback_,signature='v@:@')
 		nc.addObserver_selector_name_object_(self, s, 'NSWorkspaceDidDeactivateApplicationNotification', None)
 
-        # create listeners for system events
+		# create listeners for system events
 		s = objc.selector(self.wakeCallback_,signature='v@:@')
 		nc.addObserver_selector_name_object_(self, s, 'NSWorkspaceDidWakeNotification', None)
 		s = objc.selector(self.sleepCallback_,signature='v@:@')
 		nc.addObserver_selector_name_object_(self, s, 'NSWorkspaceWillSleepNotification', None)
 
 		# other events that may be useful to track in the future
-        # https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSWorkspace_Class/
+		# https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSWorkspace_Class/
 		# NSWorkspaceDidHideApplicationNotification
 		# NSWorkspaceDidUnhideApplicationNotification
 		# NSWorkspaceActiveSpaceDidChangeNotification
-        # NSWorkspaceWillPowerOffNotification
-        # NSWorkspaceDidPerformFileOperationNotification
+		# NSWorkspaceWillPowerOffNotification
+		# NSWorkspaceDidPerformFileOperationNotification
 
-        # get list of active applications
+		# get list of active applications
 		activeApps = workspace.runningApplications()
 		regularApps = []
 		for app in activeApps:
 			if app.activationPolicy() == 0: # those that show up in the Dock
 				regularApps.append(app)
 
-        # listen for window events of these applications
+		# listen for window events of these applications
 		for app in regularApps:
 			try:
 				p = int(app.processIdentifier())
@@ -382,7 +382,7 @@ class AppRecorder:
 		recording = preferences.getValueForPreference('recording')
 		t = cfg.NOW()
 
-        # get workspace and list of all applications
+		# get workspace and list of all applications
 		workspace = NSWorkspace.sharedWorkspace()
 		activeApps = workspace.runningApplications()
 
@@ -390,13 +390,13 @@ class AppRecorder:
 		self.watched = {}
 
 		if recording:
-	        # prune list of applications to apps that appear in the dock
+			# prune list of applications to apps that appear in the dock
 			regularApps = []
 			for app in activeApps:
 				if app.activationPolicy() == 0:
 					regularApps.append(app)
 
-	        # listen for window events of these applications
+			# listen for window events of these applications
 			for app in regularApps:
 				name = utils_cocoa.ascii_encode(app.localizedName())
 				# log that the app recording will stop
@@ -414,17 +414,17 @@ class AppRecorder:
 	def pause_app_observers(self):
 		t = cfg.NOW()
 
-        # get workspace and list of all applications
+		# get workspace and list of all applications
 		workspace = NSWorkspace.sharedWorkspace()
 		activeApps = workspace.runningApplications()
 
-	    # prune list of applications to apps that appear in the dock
+		# prune list of applications to apps that appear in the dock
 		regularApps = []
 		for app in activeApps:
 			if app.activationPolicy() == 0:
 				regularApps.append(app)
 
-        # listen for window events of these applications
+		# listen for window events of these applications
 		for app in regularApps:
 			name = utils_cocoa.ascii_encode(app.localizedName())
 			# log that the app recording will stop
@@ -442,17 +442,17 @@ class AppRecorder:
 	def unpause_app_observers(self):
 		t = cfg.NOW()
 
-        # get workspace and list of all applications
+		# get workspace and list of all applications
 		workspace = NSWorkspace.sharedWorkspace()
 		activeApps = workspace.runningApplications()
 
-	    # prune list of applications to apps that appear in the dock
+		# prune list of applications to apps that appear in the dock
 		regularApps = []
 		for app in activeApps:
 			if app.activationPolicy() == 0:
 				regularApps.append(app)
 
-        # listen for window events of these applications
+		# listen for window events of these applications
 		for app in regularApps:
 			name = utils_cocoa.ascii_encode(app.localizedName())
 			# log that the app recording will stop
