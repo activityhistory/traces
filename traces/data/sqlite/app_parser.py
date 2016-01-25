@@ -132,7 +132,6 @@ def parse_windows(session, activity_tracker):
 				session.add(we)
 
 			except:
-				raise
 				print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
 				lines_to_save.append(line)
 		# write lines that did not make it into the database to the start of the
@@ -414,7 +413,6 @@ def parse_geometries(session, activity_tracker):
 				last_arr = copy.deepcopy(arrangement)
 
 			except:
-				raise
 				print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
 				lines_to_save.append(line)
 

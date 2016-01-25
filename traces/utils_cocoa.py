@@ -44,13 +44,6 @@ def write_to_file(text, fi):
 	print >>f, text
 	f.close()
 
-# TODO find a way to not throw away the charachters we cannot recognize
-def ascii_encode(text):
-	return json.dumps(text)
-	# return text.encode('ascii', 'replace')
-	# return string.encode('ascii', 'backslashreplace')
-	# return text.dataUsingEncoding_allowLossyConversion_(NSASCIIStringEncoding,True)
-
 def safari_to_unix(t):
 	# Apple measures time in seconds since 12:00AM Jan 1, 2001 (978307200 seconds after the epoch)
 	return t + 978307200

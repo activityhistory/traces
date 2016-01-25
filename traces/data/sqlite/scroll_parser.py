@@ -82,7 +82,6 @@ def parse_scrolls(session):
 					last_window = window_number
 
 			except:
-				raise
 				print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
 				lines_to_save.append(line)
 

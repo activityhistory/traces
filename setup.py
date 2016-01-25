@@ -19,7 +19,7 @@ DATA_FILES = ['./assets/clock.png',
 setup(
 	name="Traces",
 	app=['traces/__init__.py'],
-	version='0.9.0',
+	version='0.9.1',
 	setup_requires=["py2app"],
 	options={'py2app': OPTIONS},
 	data_files=DATA_FILES,
@@ -28,7 +28,6 @@ setup(
 		"pyobjc-core",
 		"pyobjc-framework-Cocoa",
 		"pyobjc-framework-Quartz",
-		"pymongo",
 		"sqlalchemy",
 	]
 )

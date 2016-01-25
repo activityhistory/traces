@@ -33,7 +33,6 @@ def parse_recorder(session):
 				re = RecordingEvent(text['time'], text['type'])
 				session.add(re)
 			except:
-				raise
 				print "Could not save " + str(text) + " to the database. Saving for the next round of parsing."
 				lines_to_save.append(text)
 		# write lines that did not make it into the database to the start of the

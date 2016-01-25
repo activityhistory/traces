@@ -129,9 +129,9 @@ def parse_urls(session):
   if os.path.isfile(urlfile):
 	  f = open(urlfile, 'r+')
 	  lines_to_save = []
-	  for line in f:
-		  text = ast.literal_eval(line.rstrip())
+	  for line in f:		  
 		  try:
+			  text = ast.literal_eval(line.rstrip())
 			  url = URL(unicode(text['time']), unicode(text['browser']), unicode(text['title']), unicode(text['url']), unicode(text['event']))
 			  session.add(url)
 		  except:

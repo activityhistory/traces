@@ -44,7 +44,6 @@ def parse_clicks(session):
 				click = Click(text['time'], text['button'], text['location'][0], text['location'][1], pid, wid)
 				session.add(click)
 			except:
-				raise
 				print "Could not save " + str(line) + " to the database. Saving for the next round of parsing."
 				lines_to_save.append(line)
 		# write lines that did not make it into the database to the start of the
