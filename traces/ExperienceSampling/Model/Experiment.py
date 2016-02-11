@@ -4,8 +4,9 @@ from Question import Question
 
 class Experiment:
 
-	_questions = []
-	_rules = []
+	def __init__(self):
+		self._questions = []
+		self._rules = []
 
 	def questions():
 	    doc = "The questions property."

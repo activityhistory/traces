@@ -4,7 +4,7 @@ from Foundation import NSObject
 
 import sys
 sys.path.insert(0, '..')
-
+from Model.Experiment import Experiment
 from Model.Question import Question
 
 class QuestionController(NSWindowController):
@@ -34,12 +34,9 @@ class QuestionController(NSWindowController):
 
 	def windowDidLoad(self):
 		NSWindowController.windowDidLoad(self)
-		self.experiment = None
-		self.tempQuestion = None
+		self.experiment = Experiment()
+		self.tempQuestion = Question()
 		self.main = None
-
-	def windowWillMiniaturize_(self, sender):
-		print "test"
 
 	def setExperiment(self, exp):
 		self.experiment = exp
@@ -64,10 +61,9 @@ class QuestionController(NSWindowController):
 		self.detailsUnunciated.setHidden_(True)
 		self.detailsType.setStringValue_("")
 		self.detailsType.setHidden_(True)
-
 		self.questionsList.addItemWithObjectValue_("")
 		for i in range(0, len(self.experiment.questions)) :
-			self.questionsList.addItemWithObjectValue_("Question " + str(i+1))
+			self.questionsList.addItemWithObjectValue_("Question " + str(i+1) + ": " + self.experiment.questions[i].ununciated[0:20] + " ...")
 
 		self.questionsList.selectItemWithObjectValue_("")
 		self.questionWindow.makeKeyAndOrderFront_(self.questionWindow)
@@ -84,7 +80,7 @@ class QuestionController(NSWindowController):
 			self.deleteButton.setTag_(-1)
 
 		else :
-			id = int(self.questionsList.objectValueOfSelectedItem()[-1])-1
+			id = int(self.questionsList.objectValueOfSelectedItem()[9:10])-1
 			self.tempQuestion = self.experiment.questions[id]
 			
 			self.detailsUnunciated.setHidden_(False)
@@ -148,16 +144,17 @@ class QuestionController(NSWindowController):
 
 	@objc.IBAction
 	def submitQuestion_(self, sender):
-		self.tempQuestion.ununciated = self.questionField.stringValue()
-		if self.questionType.selectedCell().title() == 'Open':
-			self.tempQuestion.type = 1
-		elif self.questionType.selectedCell().title() == 'MCQ':
-			self.tempQuestion.type = 2
+		if self.questionField.stringValue() != "":
+			self.tempQuestion.ununciated = self.questionField.stringValue()
+			if self.questionType.selectedCell().title() == 'Open':
+				self.tempQuestion.type = 1
+			elif self.questionType.selectedCell().title() == 'MCQ':
+				self.tempQuestion.type = 2
 
-		if self.submitButton.tag() == -1 :
-			self.experiment.addQuestion(self.tempQuestion)
-		else :
-			self.experiment.modifyQuestion(self.tempQuestion, self.submitButton.tag())
+			if self.submitButton.tag() == -1 :
+				self.experiment.addQuestion(self.tempQuestion)
+			else :
+				self.experiment.modifyQuestion(self.tempQuestion, self.submitButton.tag())
 
-		self.main.updateDisplay()
-		self.editWindow.orderOut_(self.editWindow)
+			self.main.updateDisplay()
+			self.editWindow.orderOut_(self.editWindow)

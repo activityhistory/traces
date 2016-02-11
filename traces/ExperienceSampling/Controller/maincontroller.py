@@ -3,7 +3,10 @@
 from Cocoa import *
 from Foundation import NSObject
 from questioncontroller import QuestionController
+from rulecontroller import RuleController
 from answercontroller import AnswerController
+from eventhandler import EventHandler
+
 import sys
 sys.path.insert(0, '..')
 
@@ -11,14 +14,17 @@ from Model.Experiment import Experiment
 
 class MainController(NSWindowController):
 
+	myWindow = objc.IBOutlet()
 	nbQuestions = objc.IBOutlet()
 	nbRules = objc.IBOutlet()
+	handler = None
 
 	def windowDidLoad(self):
 		NSWindowController.windowDidLoad(self)
-		self.experiment = Experiment()
 		self.questionsConfig = QuestionController.alloc().initWithWindowNibName_('Question')
+		self.rulesConfig = RuleController.alloc().initWithWindowNibName_('Rule')
 		self.answer = AnswerController.alloc()
+		self.experiment = Experiment()
 
 	def updateDisplay(self):
 		self.nbQuestions.setStringValue_(self.experiment.countQuestions())
@@ -39,12 +45,23 @@ class MainController(NSWindowController):
 		self.questionsConfig.setMainController(self)
 
 	@objc.IBAction
+	def addRule_(self, sender):
+		self.rulesConfig.showWindow_(self.rulesConfig)
+		self.rulesConfig.showAddWindow()
+		self.rulesConfig.setExperiment(self.experiment)
+		self.rulesConfig.setMainController(self)
+	
+	@objc.IBAction
+	def showRules_(self, sender):
+		self.rulesConfig.showWindow_(self.rulesConfig)
+		self.rulesConfig.showRules()
+		self.rulesConfig.setExperiment(self.experiment)
+		self.rulesConfig.setMainController(self)
+
+	@objc.IBAction
 	def startExperiment_(self, sender):
-		self.close()
-		self.answer.setExperiment(self.experiment)
-		self.answer.initWithWindowNibName_('answer')
-		self.answer.showWindow_(self.answer)
-		
+		self.myWindow.orderOut_(self.myWindow)
+		self.handler = EventHandler(self.experiment)
 
 	@objc.IBAction
 	def exit_(self, sender):

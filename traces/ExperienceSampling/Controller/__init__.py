@@ -3,7 +3,6 @@
 from Cocoa import *
 from Foundation import NSObject
 from maincontroller import MainController
-from appdelegate import AppDelegate
 
 def init():
 	app = NSApplication.sharedApplication()
