@@ -5,7 +5,6 @@ def displayRule(rule):
 	print "Rule:"
 	print "Question ununciated: " + rule.question.ununciated
 	print "event: " + rule.event.detail
-	print "condition: " + rule.condition.detail
 
 def displayQuestion(question):
 	print "Question:"
@@ -24,3 +23,11 @@ def displayExperiment(exp):
 		displayQuestion(exp.questions[i])
 	for j in range(0, len(exp.rules)):
 		displayRule(exp.rules[j])
+
+def getRulesByEvent(experiment, event):
+	rules = []
+	for i in range(0, experiment.countRules()):
+		if experiment.rules[i].event.type == event :
+			rules.append(experiment.rules[i])
+
+	return rules

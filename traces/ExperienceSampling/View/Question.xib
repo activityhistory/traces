@@ -114,7 +114,7 @@
                 <outlet property="view" destination="YNu-DI-Dmc" id="Z1e-fn-8sP"/>
             </connections>
         </viewController>
-        <popover behavior="t" id="1rO-Ho-kVE">
+        <popover id="1rO-Ho-kVE">
             <connections>
                 <outlet property="contentViewController" destination="pdn-UR-a5N" id="6ok-Fq-2hb"/>
             </connections>

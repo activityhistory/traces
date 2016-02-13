@@ -151,10 +151,14 @@ class QuestionController(NSWindowController):
 			elif self.questionType.selectedCell().title() == 'MCQ':
 				self.tempQuestion.type = 2
 
-			if self.submitButton.tag() == -1 :
-				self.experiment.addQuestion(self.tempQuestion)
-			else :
-				self.experiment.modifyQuestion(self.tempQuestion, self.submitButton.tag())
+			if self.tempQuestion.type == 2 and len(self.tempQuestion.choices) < 2:
+				self.popover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
+			else:
 
-			self.main.updateDisplay()
-			self.editWindow.orderOut_(self.editWindow)
+				if self.submitButton.tag() == -1 :
+					self.experiment.addQuestion(self.tempQuestion)
+				else :
+					self.experiment.modifyQuestion(self.tempQuestion, self.submitButton.tag())
+
+				self.main.updateDisplay()
+				self.editWindow.orderOut_(self.editWindow)

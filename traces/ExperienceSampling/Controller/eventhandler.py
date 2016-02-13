@@ -115,13 +115,10 @@ class EventHandler:
 
 	def __init__(self, exp):
 		self.experiment = exp
-		self.expectingKeyEvent = False
-		for i in range(0, self.experiment.countRules()):
-			if self.experiment.rules[i].event.type == 3:
-				self.expectingKeyEvent = True
-		self.answer = AnswerController.alloc().initWithWindowNibName_('answer')
-
-		if self.expectingKeyEvent == True:
+		self.answer = None
+		self.keyboardRules = functions.getRulesByEvent(self.experiment, 3)
+		if len(self.keyboardRules) != 0:
+			print "there are some keyboard rules"
 			self.start_key_listener()
 
 	def start_key_listener(self):
@@ -130,18 +127,24 @@ class EventHandler:
 		NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 
 	def key_handler(self, event):
+		# tester les préconditions
+		if len(self.keyboardRules) != 0 :
+			idToDelete = -1
+			if event.type() == NSKeyDown:
+				
+				flags = event.modifierFlags()
+				character = event.charactersIgnoringModifiers()
+				string = KEYCODES.get(character, character)
 
-		if event.type() == NSKeyDown:
-			
-			flags = event.modifierFlags()
-			modifiers = []	# OS X api doesn't care it if is left or right
-			if flags & NSCommandKeyMask:
-				modifiers.append('Cmd')
+				for i in range(0, len(self.keyboardRules)):
+					if string == self.keyboardRules[i].event.detail[-2].lower() and (flags & NSCommandKeyMask):
+						idToDelete = i
+						self.answer = AnswerController.alloc().initWithWindowNibName_('answer')
+						self.answer.showWindow_(self.answer)
+						self.answer.showQuestion(self.keyboardRules[i].question)
+						break
 
-			character = event.charactersIgnoringModifiers()
-			string = KEYCODES.get(character, character)
+				if idToDelete != -1:
+					del self.keyboardRules[i]
 
-			if string == 'c' and (flags & NSCommandKeyMask):
-				self.answer.showWindow_(self.answer)
-				self.answer.showQuestion(self.experiment.rules[].question.ununciated)
 				

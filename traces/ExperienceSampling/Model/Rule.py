@@ -8,33 +8,25 @@ class Event:
 		self.rule = rule
 		self.type = 0
 		self.detail = ""
-
-class Condition:
-
-	def __init__(self, rule):
-		self.rule = rule
-		self.type = 0
-		self.detail = ""
-		self.time = "00:00"
+		self.random = [1,1]
 
 class Rule:
 	"""
 	event: 0 = None
 		   1 = Random
-		   2 = Email
-		   3 = Key Shortcut
-
-	condition: 0 = None
-			   1 = Idle
-			   2 = Event triggered since
-			   3 = Elapsed time since last question
-			   4 = No fullscreen
+		   2 = App				2.1 = Safari
+		   						2.2 = Email
+		   
+		   3 = Key Shortcut		3.1 = Cmd + V
+		   						3.2 = Cmd + Z
+		   						3.3 = Cmd + N
 	"""
 
 	def __init__(self):
 		self._question = Question()
 		self._event = Event(self)
-		self._condition = Condition(self)
+		self._wait = False
+		self._time = "None"
 
 	def question():
 	    doc = "The question property."
@@ -58,16 +50,16 @@ class Rule:
 	    return locals()
 	event = property(**event())
 
-	def condition():
-	    doc = "The condition property."
+	def wait():
+	    doc = "The wait property."
 	    def fget(self):
-	        return self._condition
+	        return self._wait
 	    def fset(self, value):
-	        self._condition = value
+	        self._wait = value
 	    def fdel(self):
-	        del self._condition
+	        del self._wait
 	    return locals()
-	condition = property(**condition())
+	wait = property(**wait())
 
 	def time():
 	    doc = "The time property."

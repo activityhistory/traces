@@ -7,10 +7,6 @@
         <customObject id="-2" userLabel="File's Owner" customClass="RuleController">
             <connections>
                 <outlet property="addRuleButton" destination="FIS-y4-epx" id="iw9-qD-ScW"/>
-                <outlet property="condition" destination="fNn-cs-cgN" id="5K9-FN-n9P"/>
-                <outlet property="conditionButton" destination="GX3-3d-32D" id="VeF-y5-ArS"/>
-                <outlet property="conditionPopover" destination="LM6-g3-Z6f" id="3Gz-rW-Ydp"/>
-                <outlet property="conditionType" destination="CMP-os-w3V" id="YGO-Yu-3WA"/>
                 <outlet property="deleteButton" destination="jKW-15-hfL" id="RSy-v2-Zu2"/>
                 <outlet property="editWindow" destination="QvC-M9-y7g" id="jF6-lH-mae"/>
                 <outlet property="event" destination="9Av-UM-83e" id="gIi-SL-pZM"/>
@@ -22,12 +18,21 @@
                 <outlet property="modifyButton" destination="X7z-gC-9hc" id="HZt-vv-aXG"/>
                 <outlet property="question" destination="IZf-TD-8TE" id="K32-cX-amN"/>
                 <outlet property="questionUnunciated" destination="Dyp-7T-997" id="YSI-ZK-cdj"/>
+                <outlet property="randomContainer" destination="Pmz-xG-sqB" id="P3k-71-Dg9"/>
+                <outlet property="randomOne" destination="bG5-w3-trJ" id="YAZ-Lh-QWq"/>
+                <outlet property="randomShortcut" destination="ser-H0-rrq" id="LqE-Bo-L1H"/>
+                <outlet property="randomTwo" destination="eFs-ER-g3h" id="qqx-hG-IMn"/>
                 <outlet property="rules" destination="LAA-0c-4W3" id="waS-XX-AIa"/>
                 <outlet property="showRulesWindow" destination="St9-2N-RZn" id="fd0-TX-x75"/>
                 <outlet property="stepperMinutes" destination="JYj-LC-pAB" id="mig-Ks-Ibz"/>
+                <outlet property="stepperRandomOne" destination="azO-np-V3Y" id="0nF-cj-8ed"/>
+                <outlet property="stepperRandomTwo" destination="lzw-fx-cgx" id="h6e-TI-M0E"/>
                 <outlet property="stepperSeconds" destination="jOC-fr-ASa" id="hKf-qA-S2d"/>
+                <outlet property="timeBefore" destination="WXt-UK-axz" id="iCq-NE-Uj9"/>
+                <outlet property="timeBeforePopover" destination="LM6-g3-Z6f" id="ltR-EC-Gmt"/>
                 <outlet property="timeMinutes" destination="Uy7-HH-s20" id="Jzg-Ei-UbB"/>
                 <outlet property="timeSeconds" destination="QqF-uj-pdl" id="hkP-ls-reE"/>
+                <outlet property="timeToWait" destination="CMP-os-w3V" id="NsW-2g-e4Y"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -35,14 +40,14 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="480" height="284"/>
+            <rect key="contentRect" x="196" y="240" width="623" height="249"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1600" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="284"/>
+                <rect key="frame" x="0.0" y="0.0" width="623" height="249"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bIQ-Hw-bq2">
-                        <rect key="frame" x="37" y="240" width="196" height="17"/>
+                        <rect key="frame" x="37" y="212" width="196" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Choose the question to trigger:" id="ZII-Ca-VS4">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -50,23 +55,15 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sp5-2U-SmF">
-                        <rect key="frame" x="37" y="184" width="276" height="17"/>
+                        <rect key="frame" x="37" y="156" width="276" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Choose the event that triggers the question:" id="yTf-Zp-oOj">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13m-aw-IhT">
-                        <rect key="frame" x="37" y="131" width="127" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="On which condition:" id="MaF-bt-RvC">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kd4-6R-kHx">
-                        <rect key="frame" x="292" y="23" width="74" height="32"/>
+                        <rect key="frame" x="440" y="13" width="74" height="32"/>
                         <buttonCell key="cell" type="push" title="Abort" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2TH-xj-HhC">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -76,7 +73,7 @@
                         </connections>
                     </button>
                     <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IZf-TD-8TE">
-                        <rect key="frame" x="252" y="233" width="189" height="26"/>
+                        <rect key="frame" x="352" y="205" width="254" height="26"/>
                         <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="10" id="eR3-EB-q0T">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -86,8 +83,53 @@
                             <action selector="choosingQuestion:" target="-2" id="bRL-5E-o6C"/>
                         </connections>
                     </comboBox>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2vg-r5-dA0">
+                        <rect key="frame" x="37" y="92" width="247" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Time to wait before asking the question" id="OLF-hY-SU2">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WXt-UK-axz">
+                        <rect key="frame" x="513" y="91" width="90" height="18"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="44" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Xtm-Rx-mgi">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="No" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="ISs-3h-Ltv">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="Yes" imagePosition="left" alignment="left" inset="2" id="fUS-96-PIo">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="timeBeforeAskingQuestion:" target="-2" id="tEY-Ns-iCw"/>
+                                    </connections>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FIS-y4-epx">
+                        <rect key="frame" x="112" y="13" width="97" height="32"/>
+                        <buttonCell key="cell" type="push" title="Add Rule" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ock-6k-ki8">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="addRule:" target="-2" id="Iex-MF-cXh"/>
+                        </connections>
+                    </button>
                     <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Av-UM-83e">
-                        <rect key="frame" x="312" y="178" width="129" height="26"/>
+                        <rect key="frame" x="418" y="149" width="188" height="26"/>
                         <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" enabled="NO" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="10" id="vyH-OC-K8X">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -103,29 +145,9 @@
                             <action selector="choosingEvent:" target="-2" id="X8B-Qq-fB0"/>
                         </connections>
                     </comboBox>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FIS-y4-epx">
-                        <rect key="frame" x="95" y="23" width="97" height="32"/>
-                        <buttonCell key="cell" type="push" title="Add Rule" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ock-6k-ki8">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="addRule:" target="-2" id="Iex-MF-cXh"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GX3-3d-32D">
-                        <rect key="frame" x="306" y="120" width="138" height="32"/>
-                        <buttonCell key="cell" type="push" title="Add Condition ..." bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qsa-WR-ATo">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="choosingCondition:" target="-2" id="hfs-Gw-BHH"/>
-                        </connections>
-                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="72" y="192"/>
+            <point key="canvasLocation" x="143.5" y="181.5"/>
         </window>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="St9-2N-RZn">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
@@ -181,8 +203,8 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9qh-as-fBO">
-                        <rect key="frame" x="18" y="90" width="68" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Condition:" id="07I-Ng-nrd">
+                        <rect key="frame" x="18" y="95" width="84" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Time to wait:" id="07I-Ng-nrd">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -224,7 +246,7 @@
                     </textField>
                     <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LAA-0c-4W3">
                         <rect key="frame" x="93" y="229" width="282" height="26"/>
-                        <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="7jE-HH-9hC">
+                        <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="7jE-HH-9hC">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -242,98 +264,11 @@
             </view>
             <point key="canvasLocation" x="57" y="564"/>
         </window>
-        <viewController id="AzM-oI-iSr" userLabel="Popover View Controller">
-            <connections>
-                <outlet property="view" destination="coj-O5-EfP" id="kRJ-0m-L9o"/>
-            </connections>
-        </viewController>
-        <popover behavior="t" id="LM6-g3-Z6f">
-            <connections>
-                <outlet property="contentViewController" destination="AzM-oI-iSr" id="RUd-HF-APV"/>
-            </connections>
-        </popover>
-        <customView id="coj-O5-EfP">
-            <rect key="frame" x="0.0" y="0.0" width="339" height="108"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <subviews>
-                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JYj-LC-pAB">
-                    <rect key="frame" x="220" y="15" width="19" height="27"/>
-                    <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="sXl-MY-TFq"/>
-                    <connections>
-                        <action selector="defineTimeMinutes:" target="-2" id="eY1-KG-NPx"/>
-                    </connections>
-                </stepper>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JZw-or-XBF">
-                    <rect key="frame" x="18" y="20" width="52" height="19"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Time:" id="Eoq-Xd-ts8">
-                        <font key="font" metaFont="system" size="14"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QqF-uj-pdl">
-                    <rect key="frame" x="244" y="17" width="54" height="22"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="pCr-ot-add">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jOC-fr-ASa">
-                    <rect key="frame" x="303" y="16" width="19" height="27"/>
-                    <stepperCell key="cell" continuous="YES" alignment="left" increment="5" maxValue="60" id="HWt-Yl-yoz"/>
-                    <connections>
-                        <action selector="defineTimeSeconds:" target="-2" id="9nc-mY-7OT"/>
-                    </connections>
-                </stepper>
-                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uy7-HH-s20">
-                    <rect key="frame" x="161" y="17" width="54" height="22"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="BoS-Lh-Rd4">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RYr-Gi-AdY">
-                    <rect key="frame" x="18" y="71" width="76" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Condition:" id="3kD-AP-Bo8">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fNn-cs-cgN">
-                    <rect key="frame" x="136" y="64" width="189" height="26"/>
-                    <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="KCd-KG-mpJ">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        <objectValues>
-                            <string></string>
-                            <string>Idle</string>
-                            <string>Time elapsed since last question</string>
-                        </objectValues>
-                    </comboBoxCell>
-                    <connections>
-                        <action selector="fullscreenCondition:" target="-2" id="QNE-xl-LtU"/>
-                    </connections>
-                </comboBox>
-            </subviews>
-            <point key="canvasLocation" x="536.5" y="349"/>
-        </customView>
-        <stepperCell continuous="YES" alignment="left" maxValue="100" valueWraps="YES" id="Ytw-WY-1Wj">
-            <font key="font" metaFont="system"/>
-        </stepperCell>
         <viewController id="VTC-7Y-IOu" userLabel="Popover View Controller">
             <connections>
                 <outlet property="view" destination="MIG-Iw-6UP" id="Vlx-QO-YEM"/>
             </connections>
         </viewController>
-        <popover behavior="t" id="Eq2-mQ-Pxr">
-            <connections>
-                <outlet property="contentViewController" destination="VTC-7Y-IOu" id="HoK-uS-BBa"/>
-            </connections>
-        </popover>
         <customView id="MIG-Iw-6UP">
             <rect key="frame" x="0.0" y="0.0" width="272" height="62"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -360,24 +295,24 @@
                     </comboBoxCell>
                 </comboBox>
             </subviews>
-            <point key="canvasLocation" x="520" y="88"/>
+            <point key="canvasLocation" x="658" y="47"/>
         </customView>
+        <popover behavior="t" id="Eq2-mQ-Pxr">
+            <connections>
+                <outlet property="contentViewController" destination="VTC-7Y-IOu" id="HoK-uS-BBa"/>
+            </connections>
+        </popover>
         <viewController id="n1A-vv-3yr" userLabel="Popover View Controller">
             <connections>
                 <outlet property="view" destination="GoZ-nI-LQ2" id="b6D-Iq-j3o"/>
             </connections>
         </viewController>
-        <popover behavior="semitransient" id="Nut-Jn-5Nf">
-            <connections>
-                <outlet property="contentViewController" destination="n1A-vv-3yr" id="9Pz-iH-Coq"/>
-            </connections>
-        </popover>
         <customView id="GoZ-nI-LQ2">
-            <rect key="frame" x="0.0" y="0.0" width="272" height="62"/>
+            <rect key="frame" x="0.0" y="0.0" width="298" height="126"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pzl-eZ-pBx">
-                    <rect key="frame" x="18" y="25" width="95" height="17"/>
+                    <rect key="frame" x="18" y="90" width="95" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Key Shortcut:" id="fpa-It-2Zj">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -385,7 +320,7 @@
                     </textFieldCell>
                 </textField>
                 <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Av5-7Y-l4z">
-                    <rect key="frame" x="119" y="19" width="136" height="26"/>
+                    <rect key="frame" x="145" y="83" width="136" height="26"/>
                     <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="xCi-aa-yWc">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -398,8 +333,146 @@
                         </objectValues>
                     </comboBoxCell>
                 </comboBox>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rtl-pI-Vjj">
+                    <rect key="frame" x="20" y="53" width="65" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Random:" id="R1d-Od-rYK">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <customView hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pmz-xG-sqB">
+                    <rect key="frame" x="157" y="11" width="121" height="33"/>
+                    <subviews>
+                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bG5-w3-trJ">
+                            <rect key="frame" x="8" y="6" width="22" height="22"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="vXS-4Y-c8Q">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eFs-ER-g3h">
+                            <rect key="frame" x="72" y="6" width="22" height="22"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="v9v-me-YId">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lzw-fx-cgx">
+                            <rect key="frame" x="99" y="3" width="19" height="27"/>
+                            <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="1" id="9Lb-sv-Miw"/>
+                            <connections>
+                                <action selector="defineRandomTwo:" target="-2" id="Eav-sh-IkJ"/>
+                            </connections>
+                        </stepper>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mGY-gu-Tt6">
+                            <rect key="frame" x="58" y="9" width="9" height="17"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="/" id="Qzl-Xy-g5Q">
+                                <font key="font" metaFont="system" size="17"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="azO-np-V3Y">
+                            <rect key="frame" x="35" y="3" width="19" height="27"/>
+                            <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="1" id="MQf-q9-1pY"/>
+                            <connections>
+                                <action selector="defineRandomOne:" target="-2" id="iDz-hO-RVJ"/>
+                            </connections>
+                        </stepper>
+                    </subviews>
+                </customView>
+                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ser-H0-rrq">
+                    <rect key="frame" x="183" y="52" width="100" height="18"/>
+                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    <size key="cellSize" width="48" height="18"/>
+                    <size key="intercellSpacing" width="4" height="2"/>
+                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="niN-wG-JLe">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <cells>
+                        <column>
+                            <buttonCell type="radio" title="Yes" imagePosition="left" alignment="left" tag="1" inset="2" id="Dng-Oj-eCn">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </column>
+                        <column>
+                            <buttonCell type="radio" title="No" imagePosition="left" alignment="left" state="on" inset="2" id="KpB-o0-Dtc">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </column>
+                    </cells>
+                    <connections>
+                        <action selector="settingRandomShortcut:" target="-2" id="lhv-5Z-xOq"/>
+                    </connections>
+                </matrix>
             </subviews>
-            <point key="canvasLocation" x="520" y="197"/>
+            <point key="canvasLocation" x="658" y="203"/>
         </customView>
+        <popover behavior="semitransient" id="Nut-Jn-5Nf">
+            <connections>
+                <outlet property="contentViewController" destination="n1A-vv-3yr" id="9Pz-iH-Coq"/>
+            </connections>
+        </popover>
+        <viewController id="AzM-oI-iSr" userLabel="Popover View Controller">
+            <connections>
+                <outlet property="view" destination="coj-O5-EfP" id="kRJ-0m-L9o"/>
+            </connections>
+        </viewController>
+        <customView id="coj-O5-EfP">
+            <rect key="frame" x="0.0" y="0.0" width="261" height="45"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JZw-or-XBF">
+                    <rect key="frame" x="18" y="15" width="52" height="19"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Time:" id="Eoq-Xd-ts8">
+                        <font key="font" metaFont="system" size="14"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QqF-uj-pdl">
+                    <rect key="frame" x="166" y="11" width="54" height="22"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="pCr-ot-add">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jOC-fr-ASa">
+                    <rect key="frame" x="225" y="10" width="19" height="27"/>
+                    <stepperCell key="cell" continuous="YES" alignment="left" increment="5" maxValue="60" id="HWt-Yl-yoz"/>
+                    <connections>
+                        <action selector="defineTimeSeconds:" target="-2" id="9nc-mY-7OT"/>
+                    </connections>
+                </stepper>
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uy7-HH-s20">
+                    <rect key="frame" x="83" y="11" width="54" height="22"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="BoS-Lh-Rd4">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JYj-LC-pAB">
+                    <rect key="frame" x="142" y="9" width="19" height="27"/>
+                    <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="sXl-MY-TFq"/>
+                    <connections>
+                        <action selector="defineTimeMinutes:" target="-2" id="eY1-KG-NPx"/>
+                    </connections>
+                </stepper>
+            </subviews>
+            <point key="canvasLocation" x="658.5" y="292.5"/>
+        </customView>
+        <popover behavior="t" id="LM6-g3-Z6f">
+            <connections>
+                <outlet property="contentViewController" destination="AzM-oI-iSr" id="RUd-HF-APV"/>
+            </connections>
+        </popover>
     </objects>
 </document>
