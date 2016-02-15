@@ -91,33 +91,6 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WXt-UK-axz">
-                        <rect key="frame" x="513" y="91" width="90" height="18"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="44" height="18"/>
-                        <size key="intercellSpacing" width="4" height="2"/>
-                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Xtm-Rx-mgi">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <cells>
-                            <column>
-                                <buttonCell type="radio" title="No" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="ISs-3h-Ltv">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </column>
-                            <column>
-                                <buttonCell type="radio" title="Yes" imagePosition="left" alignment="left" inset="2" id="fUS-96-PIo">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                    <connections>
-                                        <action selector="timeBeforeAskingQuestion:" target="-2" id="tEY-Ns-iCw"/>
-                                    </connections>
-                                </buttonCell>
-                            </column>
-                        </cells>
-                    </matrix>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="FIS-y4-epx">
                         <rect key="frame" x="112" y="13" width="97" height="32"/>
                         <buttonCell key="cell" type="push" title="Add Rule" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ock-6k-ki8">
@@ -145,6 +118,33 @@
                             <action selector="choosingEvent:" target="-2" id="X8B-Qq-fB0"/>
                         </connections>
                     </comboBox>
+                    <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WXt-UK-axz">
+                        <rect key="frame" x="513" y="91" width="90" height="18"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="44" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="Xtm-Rx-mgi">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="No" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="ISs-3h-Ltv">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                            <column>
+                                <buttonCell type="radio" title="Yes" imagePosition="left" alignment="left" inset="2" id="fUS-96-PIo">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="timeBeforeAskingQuestion:" target="-2" id="tEY-Ns-iCw"/>
+                                    </connections>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                    </matrix>
                 </subviews>
             </view>
             <point key="canvasLocation" x="143.5" y="181.5"/>
@@ -289,13 +289,13 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <objectValues>
                             <string></string>
-                            <string>Safari</string>
-                            <string>Email</string>
+                            <string>Firefox</string>
+                            <string>Mail</string>
                         </objectValues>
                     </comboBoxCell>
                 </comboBox>
             </subviews>
-            <point key="canvasLocation" x="658" y="47"/>
+            <point key="canvasLocation" x="671" y="163"/>
         </customView>
         <popover behavior="t" id="Eq2-mQ-Pxr">
             <connections>
@@ -387,7 +387,7 @@
                 <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ser-H0-rrq">
                     <rect key="frame" x="183" y="52" width="100" height="18"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="48" height="18"/>
+                    <size key="cellSize" width="44" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="niN-wG-JLe">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -412,7 +412,7 @@
                     </connections>
                 </matrix>
             </subviews>
-            <point key="canvasLocation" x="658" y="203"/>
+            <point key="canvasLocation" x="671" y="319"/>
         </customView>
         <popover behavior="semitransient" id="Nut-Jn-5Nf">
             <connections>
@@ -467,7 +467,7 @@
                     </connections>
                 </stepper>
             </subviews>
-            <point key="canvasLocation" x="658.5" y="292.5"/>
+            <point key="canvasLocation" x="324.5" y="390.5"/>
         </customView>
         <popover behavior="t" id="LM6-g3-Z6f">
             <connections>

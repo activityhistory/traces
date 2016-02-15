@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, '..')
 from Model.Experiment import Experiment
 from Model.Question import Question
-
+import functions
 class QuestionController(NSWindowController):
 
 	# windows outlets
@@ -135,9 +135,9 @@ class QuestionController(NSWindowController):
 		if self.choice4.stringValue() != "" :
 			i += 1
 
-		self.tempQuestion.choices = [str] * i
-		for j in range(0, i-1):
-			exec("self.tempQuestion.choices[%d] = self.choice%d.stringValue()" % (j, j+1))
+		self.tempQuestion.choices = []
+		for j in range(i):
+			exec("self.tempQuestion.choices.append(str(self.choice%d.stringValue()))" % (j+1))
 		
 		if i >= 2:
 			self.popover.performClose_(self.popover)
@@ -154,7 +154,6 @@ class QuestionController(NSWindowController):
 			if self.tempQuestion.type == 2 and len(self.tempQuestion.choices) < 2:
 				self.popover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
 			else:
-
 				if self.submitButton.tag() == -1 :
 					self.experiment.addQuestion(self.tempQuestion)
 				else :

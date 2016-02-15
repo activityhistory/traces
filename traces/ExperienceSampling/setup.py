@@ -8,7 +8,7 @@ Usage:
 from setuptools import setup
 
 APP = ['Main.py']
-DATA_FILES = ['View/Main.xib', 'View/Question.xib', 'View/Rule.xib', 'View/answer.xib']
+DATA_FILES = ['View/Main.xib', 'View/Question.xib', 'View/Rule.xib', 'View/SimpleAnswer.xib', 'View/MCQAnswer.xib']
 OPTIONS = {'argv_emulation': True}
 
 setup(

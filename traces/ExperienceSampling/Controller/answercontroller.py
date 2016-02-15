@@ -11,7 +11,14 @@ import functions
 class AnswerController(NSWindowController):
 
 	ununciated = objc.IBOutlet()
-	answer = objc.IBOutlet()
+	textAnswer = objc.IBOutlet()
+	choiceAnswer = objc.IBOutlet()
+
+	choice1 = objc.IBOutlet()
+	choice2 = objc.IBOutlet()
+	choice3 = objc.IBOutlet()
+	choice4 = objc.IBOutlet()
+	
 	answerWindow = objc.IBOutlet()
 
 	def windowDidLoad(self):
@@ -21,14 +28,28 @@ class AnswerController(NSWindowController):
 	def orderOut(self):
 		self.answerWindow.orderOut_(self.window)
 
-	def showQuestion(self, question):
+	def showSimpleQuestion(self, question):
 		self.ununciated.setStringValue_(question.ununciated)
 		self.ununciated.setHidden_(False)
+		self.answerWindow.makeKeyAndOrderFront_(self.answerWindow)
+
+	def showMCQuestion(self, question):
+		self.ununciated.setStringValue_(question.ununciated)
+		self.ununciated.setHidden_(False)
+
+		for i in range(len(question.choices)):
+			exec("self.choice%d.setTitle_('%s')" % (i+1, question.choices[i]))
+			exec("self.choice%d.setTransparent_(False)" % (i+1))
+
 		self.answerWindow.makeKeyAndOrderFront_(self.answerWindow)
 
 	def setExperiment(self, exp):
 		self.experiment = exp
 
 	@objc.IBAction
-	def submitAnswer_(self, sender):
+	def submitSimpleAnswer_(self, sender):
+		self.answerWindow.close()
+
+	@objc.IBAction
+	def submitMCQAnswer_(self, sender):
 		self.answerWindow.orderOut_(self.answerWindow)

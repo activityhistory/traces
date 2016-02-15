@@ -66,6 +66,10 @@ class RuleController(NSWindowController):
 		self.event.selectItemWithObjectValue_("")
 		self.eventApp.selectItemWithObjectValue_("")
 		self.eventShortcut.selectItemWithObjectValue_("")
+		self.randomShortcut.setState_atRow_column_(NSOnState, 0, 1)
+		self.randomShortcut.setState_atRow_column_(NSOffState, 0, 0)
+		self.timeBefore.setState_atRow_column_(NSOnState, 0, 0)
+		self.timeBefore.setState_atRow_column_(NSOffState, 0, 1)
 		self.event.setEnabled_(False)
 		self.timeBefore.setEnabled_(False)
 		self.randomContainer.setHidden_(True)
@@ -79,15 +83,16 @@ class RuleController(NSWindowController):
 
 	@objc.IBAction
 	def choosingEvent_(self, sender):
-		if self.event.objectValueOfSelectedItem() == "Opening App":
-			self.eventShortcutPopover.performClose_(self.eventShortcutPopover)
-			self.eventAppPopover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
-		elif self.event.objectValueOfSelectedItem() == "Key Shortcut":
-			self.eventAppPopover.performClose_(self.eventAppPopover)
-			self.eventShortcutPopover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
-
-		if self.event.objectValueOfSelectedItem() != "Random":
+		if self.event.objectValueOfSelectedItem() == "":
+			self.timeBefore.setEnabled_(False)
+		else:
 			self.timeBefore.setEnabled_(True)
+			if self.event.objectValueOfSelectedItem() == "Opening App":
+				self.eventShortcutPopover.performClose_(self.eventShortcutPopover)
+				self.eventAppPopover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
+			elif self.event.objectValueOfSelectedItem() == "Key Shortcut":
+				self.eventAppPopover.performClose_(self.eventAppPopover)
+				self.eventShortcutPopover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
 
 	@objc.IBAction
 	def settingRandomShortcut_(self, sender):
@@ -132,7 +137,9 @@ class RuleController(NSWindowController):
 	@objc.IBAction
 	def addRule_(self, sender):
 		if self.question.objectValueOfSelectedItem() != "" and self.event.objectValueOfSelectedItem() != "" and \
-		(self.eventApp.objectValueOfSelectedItem() != "" or self.eventShortcut.objectValueOfSelectedItem() != ""): 
+		(self.eventApp.objectValueOfSelectedItem() != "" or self.eventShortcut.objectValueOfSelectedItem() != "" or \
+		self.event.objectValueOfSelectedItem() == "Random"): 
+			
 			id = int(self.question.objectValueOfSelectedItem()[9:10])-1
 			self.tempRule.question = self.experiment.questions[id]
 
@@ -145,12 +152,13 @@ class RuleController(NSWindowController):
 			elif self.event.objectValueOfSelectedItem() == "Key Shortcut":
 				self.tempRule.event.type = 3
 				self.tempRule.event.detail = str(self.event.objectValueOfSelectedItem()) + ": " + str(self.eventShortcut.objectValueOfSelectedItem())
-				self.tempRule.event.random[0] = int(self.randomOne.stringValue())
-				self.tempRule.event.random[1] = int(self.randomTwo.stringValue())
+				if self.randomShortcut.selectedCell().title() == 'Yes':
+					self.tempRule.event.randomShortcut[0] = int(self.randomOne.stringValue())
+					self.tempRule.event.randomShortcut[1] = int(self.randomTwo.stringValue())
 
 			if self.timeBefore.selectedCell().title() == "Yes":
 				self.tempRule.wait = True
-				self.tempRule.time = self.stepperMinutes.stringValue() + ":" + self.stepperSeconds.stringValue()
+				self.tempRule.timeToWait = self.stepperMinutes.stringValue() + ":" + self.stepperSeconds.stringValue()
 
 			if self.addRuleButton.tag() == -1:
 				self.experiment.addRule(self.tempRule)
@@ -189,10 +197,10 @@ class RuleController(NSWindowController):
 			self.questionUnunciated.setHidden_(False)
 			self.eventType.setStringValue_(self.tempRule.event.detail)
 			self.eventType.setHidden_(False)
-			if self.tempRule.time != "None":
-				self.timeToWait.setStringValue_(self.tempRule.time.split(':')[0] + " min and " + self.tempRule.time.split(':')[1] + " sec")
+			if self.tempRule.wait != False:
+				self.timeToWait.setStringValue_(self.tempRule.timeToWait.split(':')[0] + " min and " + self.tempRule.timeToWait.split(':')[1] + " sec")
 			else:
-				self.timeToWait.setStringValue_(self.tempRule.time)
+				self.timeToWait.setStringValue_(self.tempRule.timeToWait)
 
 			self.timeToWait.setHidden_(False)
 
@@ -217,7 +225,7 @@ class RuleController(NSWindowController):
 				self.eventApp.selectItemWithObjectValue_(self.tempRule.event.detail.split(': ')[1])
 			elif self.event.objectValueOfSelectedItem() == "Key Shortcut":
 				self.eventShortcut.selectItemWithObjectValue_(self.tempRule.event.detail.split(': ')[1])
-				if self.tempRule.event.random == [1,1]:
+				if self.tempRule.event.randomShortcut == [1,1]:
 					self.randomShortcut.setState_atRow_column_(NSOnState, 0, 1)
 					self.randomShortcut.setState_atRow_column_(NSOffState, 0, 0)
 				else:
@@ -227,8 +235,8 @@ class RuleController(NSWindowController):
 			if self.tempRule.wait == True:
 				self.timeBefore.setState_atRow_column_(NSOnState, 0, 1)
 				self.timeBefore.setState_atRow_column_(NSOffState, 0, 0)
-				self.stepperMinutes.setIntValue_(int(self.tempRule.time.split(":")[0]))
-				self.stepperMinutes.setIntValue_(int(self.tempRule.time.split(":")[1]))
+				self.stepperMinutes.setIntValue_(int(self.tempRule.timeToWait.split(":")[0]))
+				self.stepperMinutes.setIntValue_(int(self.tempRule.timeToWait.split(":")[1]))
 			else:
 				self.timeBefore.setState_atRow_column_(NSOnState, 0, 0)
 				self.timeBefore.setState_atRow_column_(NSOffState, 0, 1)

@@ -7,8 +7,9 @@ class Event:
 	def __init__(self, rule):
 		self.rule = rule
 		self.type = 0
+		self.randomShortcut = [1,1]
 		self.detail = ""
-		self.random = [1,1]
+		
 
 class Rule:
 	"""
@@ -26,7 +27,7 @@ class Rule:
 		self._question = Question()
 		self._event = Event(self)
 		self._wait = False
-		self._time = "None"
+		self._timeToWait = "00:00"
 
 	def question():
 	    doc = "The question property."
@@ -61,13 +62,13 @@ class Rule:
 	    return locals()
 	wait = property(**wait())
 
-	def time():
-	    doc = "The time property."
+	def timeToWait():
+	    doc = "The timeToWait property."
 	    def fget(self):
-	        return self._time
+	        return self._timeToWait
 	    def fset(self, value):
-	        self._time = value
+	        self._timeToWait = value
 	    def fdel(self):
-	        del self._time
+	        del self._timeToWait
 	    return locals()
-	time = property(**time())
+	timeToWait = property(**timeToWait())
