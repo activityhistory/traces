@@ -8,3 +8,5 @@ if __name__ == "__main__":
 
 	print "Running Config ... "
 	Controller.run()
+	
+	raise "merde"

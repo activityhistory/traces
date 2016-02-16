@@ -19,7 +19,6 @@ import data
 import config as cfg
 from activity_tracker import ActivityTracker
 
-
 def main():
 	print "Traces is starting"
 
@@ -32,6 +31,9 @@ def main():
 
 	# create directories to store data, if needed
 	data.createDataDirectories(os.path.expanduser(cfg.CURRENT_DIR))
+
+	if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
+		print "Experience Sampling is starting"
 
 	# start activity tracker
 	astore = ActivityTracker()

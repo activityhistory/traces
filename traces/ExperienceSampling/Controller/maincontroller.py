@@ -6,8 +6,9 @@ from questioncontroller import QuestionController
 from rulecontroller import RuleController
 from answercontroller import AnswerController
 from eventhandler import EventHandler
-
-import sys
+import functions
+import json
+import sys, os
 sys.path.insert(0, '..')
 
 from Model.Experiment import Experiment
@@ -23,7 +24,6 @@ class MainController(NSWindowController):
 		NSWindowController.windowDidLoad(self)
 		self.questionsConfig = QuestionController.alloc().initWithWindowNibName_('Question')
 		self.rulesConfig = RuleController.alloc().initWithWindowNibName_('Rule')
-		self.answer = AnswerController.alloc()
 		self.experiment = Experiment()
 
 	def updateDisplay(self):
@@ -60,8 +60,11 @@ class MainController(NSWindowController):
 
 	@objc.IBAction
 	def startExperiment_(self, sender):
+		configFileName = os.path.expanduser("~") + "/.traces/config.log"
+		config = open(configFileName, 'w')
+		config.write(functions.dumpJson(self.experiment))
+		config.close()
 		self.myWindow.orderOut_(self.myWindow)
-		self.handler = EventHandler(self.experiment)
 
 	@objc.IBAction
 	def exit_(self, sender):

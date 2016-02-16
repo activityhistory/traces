@@ -5,30 +5,8 @@ from Question import Question
 class Experiment:
 
 	def __init__(self):
-		self._questions = []
-		self._rules = []
-
-	def questions():
-	    doc = "The questions property."
-	    def fget(self):
-	        return self._questions
-	    def fset(self, value):
-	        self._questions = value
-	    def fdel(self):
-	        del self._questions
-	    return locals()
-	questions = property(**questions())
-
-	def rules():
-	    doc = "The rules property."
-	    def fget(self):
-	        return self._rules
-	    def fset(self, value):
-	        self._rules = value
-	    def fdel(self):
-	        del self._rules
-	    return locals()
-	rules = property(**rules())
+		self.questions = []
+		self.rules = []
 
 	##### Counts #####
 	def countQuestions(self):
