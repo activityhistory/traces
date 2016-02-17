@@ -18,12 +18,14 @@ class AnswerController(NSWindowController):
 	choice2 = objc.IBOutlet()
 	choice3 = objc.IBOutlet()
 	choice4 = objc.IBOutlet()
-	
+
 	answerWindow = objc.IBOutlet()
 
+	shown = False
 	def windowDidLoad(self):
 		NSWindowController.windowDidLoad(self)
 		self.experiment = Experiment()
+		self.shown = False
 
 	def orderOut(self):
 		self.answerWindow.orderOut_(self.window)
@@ -32,6 +34,7 @@ class AnswerController(NSWindowController):
 		self.ununciated.setStringValue_(question.ununciated)
 		self.ununciated.setHidden_(False)
 		self.answerWindow.makeKeyAndOrderFront_(self.answerWindow)
+		self.shown = True
 
 	def showMCQuestion(self, question):
 		self.ununciated.setStringValue_(question.ununciated)
@@ -42,14 +45,17 @@ class AnswerController(NSWindowController):
 			exec("self.choice%d.setTransparent_(False)" % (i+1))
 
 		self.answerWindow.makeKeyAndOrderFront_(self.answerWindow)
+		self.shown = True
 
 	def setExperiment(self, exp):
 		self.experiment = exp
 
 	@objc.IBAction
 	def submitSimpleAnswer_(self, sender):
-		self.answerWindow.close()
+		self.answerWindow.orderOut_(self.answerWindow)
+		self.shown = False
 
 	@objc.IBAction
 	def submitMCQAnswer_(self, sender):
 		self.answerWindow.orderOut_(self.answerWindow)
+		self.shown = False

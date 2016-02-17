@@ -12,6 +12,7 @@ You should have received a copy of the GNU General Public License
 along with Traces. If not, see <http://www.gnu.org/licenses/>.
 """
 from AppKit import *
+from Foundation import *
 from answercontroller import AnswerController
 
 from Cocoa import (NSEvent, NSKeyDown, NSKeyDownMask, NSKeyUp, NSKeyUpMask,
@@ -114,80 +115,85 @@ KEYCODES = {
 class EventHandler:
 
 	def __init__(self, exp):
-		self.questionBeingAsked = False
 		self.experiment = exp
-		self.answer = None
+		self.answer = AnswerController.alloc()
 		self.randomRules = functions.getRulesByEvent(self.experiment, 1)
 		self.appRules = functions.getRulesByEvent(self.experiment, 2)
 		self.keyboardRules = functions.getRulesByEvent(self.experiment, 3)
 		
-		if len(self.randomRules):
-			print "there are some random rules"
-			self.randomThread = None
-			self.start_random_handler()
-
-		if len(self.appRules):
-			print "there are some app rules"
-			self.workspace = None
-			self.appThread = threading.Timer(5.0, self.start_app_handler)
-			self.appThread.start()
-
-		if len(self.keyboardRules) != 0:
-			print "there are some keyboard rules"
-			self.keyThread = None
-			self.start_key_handler()
+		self.randomThread = None
+		self.appThread = None
+		self.keyThread = None
+		
+		self.workspace = None
 
 	def start_random_handler(self):
-		for i in range(len(self.randomRules)):
-			if self.randomRules[i].wait == True:
-				time = float(self.randomRules[i].timeToWait.split(":")[0]) * 60.0 + float(self.randomRules[i].timeToWait.split(":")[1])
-				self.randomThread = threading.Timer(time, self.showQuestion, [self.randomRules[i].question])
-				self.randomThread.start()
+		print "Entering random handler, shown = " + str(self.answer.shown) + ", remaining random rules = " + str(len(self.randomRules))
+		if self.answer.shown == False:
+			idToDelete = -1
+			for i in range(len(self.randomRules)):
+				if self.randomRules[i].wait == True:
+					time = float(self.randomRules[i].timeToWait.split(":")[0]) * 60.0 + float(self.randomRules[i].timeToWait.split(":")[1])
+					self.randomRules[i].wait = False
+					self.randomThread = threading.Timer(time, self.start_random_handler)
+					self.randomThread.start()
+				else:
+					idToDelete = i
+					self.showQuestion(self.randomRules[i].question)
+					break
 
+			if idToDelete != -1:
+				del self.randomRules[idToDelete]
+		else:
+			if len(self.randomRules) > 0:
+				print "Looping ..."
+				self.randomThread = threading.Timer(1.0, self.start_random_handler)
+				self.randomThread.start()
+		print "shown at the end of random_handler = " + str(self.answer.shown)
 	def start_key_handler(self):
 		#TODO may only need the keydown mask, rather than all three
 		mask = (NSKeyDownMask | NSKeyUpMask | NSFlagsChangedMask)
 		NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 
 	def start_app_handler(self):
-		if self.questionBeingAsked == False :
-			idToDelete = -1
-			self.workspace = NSWorkspace.sharedWorkspace()
-			activeApps = self.workspace.runningApplications()
-			regularApps = []
-			for app in activeApps:
-				if app.activationPolicy() == 0: # those that show up in the Dock
-					regularApps.append(app)
+		if self.answer.shown == False :
+			if len(self.appRules) > 0:
+				idToDelete = -1
+				self.workspace = NSWorkspace.sharedWorkspace()
+				activeApps = self.workspace.runningApplications()
+				regularApps = []
+				for app in activeApps:
+					if app.activationPolicy() == 0: # those that show up in the Dock
+						regularApps.append(app)
 
-			# listen for window events of these applications
-			for app in regularApps:
-				try:
-					p = int(app.processIdentifier())
-					name = unicode(app.localizedName())
-					for i in range(len(self.appRules)):
-						if self.appRules[i].event.detail.split(": ")[1] == str(name):
-							if self.appRules[i].wait == True :
-								time = float(self.appRules[i].timeToWait.split(":")[0]) * 60.0 + float(self.appRules[i].timeToWait.split(":")[1])
-								thread = threading.Timer(time, self.showQuestion, [self.appRules[i].question])
-								thread.start()
-							else:
-								idToDelete = i
-								self.questionBeingAsked = True
-								self.showQuestion(self.appRules[i].question)
-						break
-					if idToDelete != -1:
-						del self.appRules[idToDelete]
-				except:
-					raise
-					print "Could not create event listener for application: " + str(name)
-
-		self.appThread = threading.Timer(1.0, self.start_app_handler)
-		self.appThread.start()
+				# listen for window events of these applications
+				for app in regularApps:
+					try:
+						p = int(app.processIdentifier())
+						name = unicode(app.localizedName())
+						for i in range(len(self.appRules)):
+							if self.appRules[i].event.detail.split(": ")[1] == str(name):
+								if self.appRules[i].wait == True :
+									time = float(self.appRules[i].timeToWait.split(":")[0]) * 60.0 + float(self.appRules[i].timeToWait.split(":")[1])
+									thread = threading.Timer(time, self.showQuestion, [self.appRules[i].question])
+									thread.start()
+								else:
+									idToDelete = i
+									self.showQuestion(self.appRules[i].question)
+									break
+						if idToDelete != -1:
+							del self.appRules[idToDelete]
+					except:
+						raise
+						print "Could not create event listener for application: " + str(name)
+		else:
+			if len(self.appRules) > 0:
+				self.appThread = threading.Timer(1.0, self.start_app_handler)
+				self.appThread.start()
 
 	def key_handler(self, event):
-		# tester les préconditions
-		if self.questionBeingAsked == False:
-			if len(self.keyboardRules) != 0 :
+		if self.answer.shown == False:
+			if len(self.keyboardRules) > 0 :
 				idToDelete = -1
 				if event.type() == NSKeyDown:
 					
@@ -204,7 +210,6 @@ class EventHandler:
 									self.keyThread.start()
 								else :
 									idToDelete = i
-									self.questionBeingAsked = True
 									self.showQuestion(self.keyboardRules[i].question)
 									break
 							else:
@@ -213,15 +218,16 @@ class EventHandler:
 					if idToDelete != -1:
 						del self.keyboardRules[idToDelete]
 		else:
-			self.keyThread = threading.Timer(1.0, self.start_key_handler)
-			self.keyThread.start()
+			if len(self.keyboardRules) > 0:
+				self.keyThread = threading.Timer(1.0, self.key_handler, [event])
+				self.keyThread.start()
 
 	def showQuestion(self, question):
 		if question.type == 1:
-			self.answer = AnswerController.alloc().initWithWindowNibName_('SimpleAnswer')
+			self.answer.initWithWindowNibName_('SimpleAnswer')
 			self.answer.showWindow_(self.answer)
 			self.answer.showSimpleQuestion(question)
 		elif question.type == 2:
-			self.answer = AnswerController.alloc().initWithWindowNibName_('MCQAnswer')
+			self.answer.initWithWindowNibName_('MCQAnswer')
 			self.answer.showWindow_(self.answer)
 			self.answer.showMCQuestion(question)

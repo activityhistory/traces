@@ -91,7 +91,7 @@ def loadJson(data):
 
 			tempExp.addRule(tempRule)
 
-		displayExperiment(tempExp)
+		return tempExp
 
 	except IOError:
 		print "Could not open file: " + filename

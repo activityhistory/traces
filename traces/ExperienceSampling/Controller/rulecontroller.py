@@ -40,12 +40,13 @@ class RuleController(NSWindowController):
 	modifyButton = objc.IBOutlet()
 	deleteButton = objc.IBOutlet()
 
+	experiment = Experiment()
+	tempRule = Rule()
+	main = None
+
 	def windowDidLoad(self):
 		NSWindowController.windowDidLoad(self)
-		self.experiment = Experiment()
-		self.tempRule = Rule()
-		self.main = None
-
+		
 	def setExperiment(self, exp):
 		self.experiment = exp
 
@@ -70,6 +71,8 @@ class RuleController(NSWindowController):
 		self.randomShortcut.setState_atRow_column_(NSOffState, 0, 0)
 		self.timeBefore.setState_atRow_column_(NSOnState, 0, 0)
 		self.timeBefore.setState_atRow_column_(NSOffState, 0, 1)
+		self.timeMinutes.setIntValue_(0)
+		self.timeSeconds.setIntValue_(0)
 		self.event.setEnabled_(False)
 		self.timeBefore.setEnabled_(False)
 		self.randomContainer.setHidden_(True)
@@ -236,10 +239,12 @@ class RuleController(NSWindowController):
 				self.timeBefore.setState_atRow_column_(NSOnState, 0, 1)
 				self.timeBefore.setState_atRow_column_(NSOffState, 0, 0)
 				self.stepperMinutes.setIntValue_(int(self.tempRule.timeToWait.split(":")[0]))
-				self.stepperMinutes.setIntValue_(int(self.tempRule.timeToWait.split(":")[1]))
+				self.stepperSeconds.setIntValue_(int(self.tempRule.timeToWait.split(":")[1]))
 			else:
 				self.timeBefore.setState_atRow_column_(NSOnState, 0, 0)
 				self.timeBefore.setState_atRow_column_(NSOffState, 0, 1)
+				self.stepperMinutes.setIntValue_(0)
+				self.stepperSeconds.setIntValue_(0)
 
 			self.addRuleButton.setTag_(sender.tag())
 			self.editWindow.makeKeyAndOrderFront_(self.editWindow)

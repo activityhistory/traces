@@ -32,12 +32,13 @@ class QuestionController(NSWindowController):
 	modifyButton = objc.IBOutlet()
 	deleteButton = objc.IBOutlet()
 
+	experiment = Experiment()
+	tempQuestion = Question()
+	main = None
+	
 	def windowDidLoad(self):
 		NSWindowController.windowDidLoad(self)
-		self.experiment = Experiment()
-		self.tempQuestion = Question()
-		self.main = None
-
+		
 	def setExperiment(self, exp):
 		self.experiment = exp
 
