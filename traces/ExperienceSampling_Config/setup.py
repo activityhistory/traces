@@ -7,12 +7,12 @@ Usage:
 
 from setuptools import setup
 
-APP = ['Main.py']
 DATA_FILES = ['View/Main.xib', 'View/Question.xib', 'View/Rule.xib', 'View/SimpleAnswer.xib', 'View/MCQAnswer.xib']
-OPTIONS = {'argv_emulation': True}
+OPTIONS = {'argv_emulation': True, 'iconfile' : 'assets/exp.icns'}
 
 setup(
-    app=APP,
+	name="Experience Sampling",
+	app=['Main.py'],
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],

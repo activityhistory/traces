@@ -10,6 +10,7 @@ import functions
 
 class AnswerController(NSWindowController):
 
+
 	ununciated = objc.IBOutlet()
 	textAnswer = objc.IBOutlet()
 	choiceAnswer = objc.IBOutlet()

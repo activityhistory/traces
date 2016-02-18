@@ -14,7 +14,10 @@ DATA_FILES = ['./assets/clock.png',
 			'./assets/clock_grey.png',
 			'./assets/cursor.png',
 			'./traces/preferences.xib',
-			'./traces/experience.xib']
+			'./traces/experience.xib',
+			'./traces/ExperienceSampling_Config/View/SimpleAnswer.xib',
+			'./traces/ExperienceSampling_Config/View/MCQAnswer.xib',
+			'./traces/ExperienceSampling_Config/View/Answers.xib']
 
 setup(
 	name="Traces",

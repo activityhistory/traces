@@ -32,6 +32,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="submitMCQAnswer:" target="-2" id="49n-iH-xm8"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6kq-7b-744">
                         <rect key="frame" x="20" y="208" width="64" height="17"/>
@@ -60,7 +63,7 @@
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wGq-3f-id7">
                         <rect key="frame" x="22" y="61" width="270" height="84"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="133" height="41"/>
+                        <size key="cellSize" width="58" height="18"/>
                         <size key="intercellSpacing" width="7" height="3"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="8M7-fu-w5o">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

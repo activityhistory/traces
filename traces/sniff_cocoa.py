@@ -16,7 +16,9 @@ along with Traces. If not, see <http://www.gnu.org/licenses/>.
 import os
 import errno
 import threading
-
+import json
+import shutil
+import datetime
 from Foundation import *
 from AppKit import *
 from PyObjCTools import AppHelper
@@ -43,13 +45,15 @@ from recorders.clipboard_recorder import ClipboardRecorder
 from experience import ExperienceController
 from preferences import PreferencesController
 
-
+from ExperienceSampling_Experiencing import functions
+from ExperienceSampling_Experiencing.eventhandler import EventHandler
 class Sniffer:
 	def __init__(self, activity_tracker):
 		# set reference to tracker object that spawned this sniffer
 		self.activity_tracker = activity_tracker
 		self.delegate = None
-
+		self.exp = None
+		self.experiment = None
 	def createAppDelegate(self):
 		sc = self
 
@@ -85,6 +89,15 @@ class Sniffer:
 			def applicationWillTerminate_(self, application):
 				t = cfg.NOW()
 
+				if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
+					oldConfig = os.path.expanduser("~") + "/.traces/config." + datetime.datetime.now().isoformat() + ".log"
+
+					shutil.copy(os.path.expanduser("~") + "/.traces/config.log", oldConfig)
+					#os.remove(os.path.expanduser("~") + "/.traces/config.log")
+					
+					answersFileName = os.path.expanduser("~") + "/.traces/answers." + datetime.datetime.now().isoformat() + ".log"
+					answersFile = open(answersFileName, 'w')
+					answersFile.write(json.dumps(sc.exp.answers, default=lambda o: o.__dict__, sort_keys=True, indent=4))
 				# close all open app and window listeners
 				sc.ar.stop_app_observers()
 
@@ -135,6 +148,9 @@ class Sniffer:
 			def showExperience_(self, notification):
 				ExperienceController.show(sc)
 
+			def showAnswers_(self, notification):
+				sc.exp.showAnswers()
+				
 			# could do this in Interface BUilder, but creating here works too
 			def createStatusMenu(self):
 				print "Creating app menu"
@@ -186,6 +202,13 @@ class Sniffer:
 				menuitem.setKeyEquivalentModifierMask_(NSShiftKeyMask + NSCommandKeyMask)
 				self.menu.addItem_(menuitem)
 
+				if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
+					menuitem = NSMenuItem.separatorItem()
+					self.menu.addItem_(menuitem)
+
+					menuitem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_('Show Answers', 'showAnswers:', 'a')
+					self.menu.addItem_(menuitem)
+
 				menuitem = NSMenuItem.separatorItem()
 				self.menu.addItem_(menuitem)
 
@@ -200,10 +223,38 @@ class Sniffer:
 
 		return AppDelegate
 
+	def runEventHandler(self):
+		try:
+			print "Experience Sampling has been set up"
+			fileJson = open(os.path.expanduser("~") + "/.traces/config.log", 'r')
+			dataJson = json.load(fileJson)
+			self.experiment = functions.loadJson(dataJson)
+			functions.displayExperiment(self.experiment)
+			
+			print "Starting experience sampling"
+			self.exp = EventHandler(self.experiment)
+
+			if len(self.exp.randomRules) > 0:
+				print "there are some random rules"
+				self.exp.start_random_handler()
+
+			if len(self.exp.appRules) > 0:
+				print "there are some app rules"
+				self.exp.appThread = threading.Timer(5.0, self.exp.start_app_handler)
+				self.exp.appThread.start()
+
+			if len(self.exp.keyboardRules) > 0:
+				print "there are some keyboard rules"
+				self.exp.start_key_handler()
+		
+		except TypeError:
+			print "Initialization failed"
 	def run(self):
 		# set up the application
 		self.app = NSApplication.sharedApplication()
 		self.delegate = self.createAppDelegate().alloc().init()
+		if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
+			self.runEventHandler()
 		self.delegate.activity_tracker = self.activity_tracker
 		self.app.setDelegate_(self.delegate)
 		self.app.setActivationPolicy_(NSApplicationActivationPolicyAccessory)

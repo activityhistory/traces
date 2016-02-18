@@ -6,15 +6,15 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AnswerController">
             <connections>
-                <outlet property="answer" destination="nYw-XO-pE3" id="fwv-N9-XG8"/>
-                <outlet property="answerWindow" destination="QvC-M9-y7g" id="7Aa-db-AbJ"/>
-                <outlet property="ununciated" destination="hz6-K2-k2t" id="Z1m-II-vBu"/>
+                <outlet property="answerWindow" destination="QvC-M9-y7g" id="kAP-8P-6pg"/>
+                <outlet property="textAnswer" destination="nYw-XO-pE3" id="bUr-UY-gZY"/>
+                <outlet property="ununciated" destination="aTB-RY-Qlg" id="X43-JQ-85C"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="answer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="alertPanel" id="QvC-M9-y7g">
-            <windowStyleMask key="styleMask" titled="YES"/>
+        <window title="Answer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="alertPanel" id="QvC-M9-y7g">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="106" y="478" width="530" height="245"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1600" height="877"/>
@@ -38,14 +38,6 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hz6-K2-k2t">
-                        <rect key="frame" x="105" y="208" width="73" height="17"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="ununciated" id="xEl-UA-eGP">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I9k-SE-Mbi">
                         <rect key="frame" x="224" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="Submit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7UZ-ql-EvP">
@@ -53,7 +45,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="submitSimpleAnswer:" target="-2" id="P0i-Jb-DJN"/>
+                            <action selector="submitSimpleAnswer:" target="-2" id="rWh-rD-eqK"/>
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nYw-XO-pE3">
@@ -62,6 +54,14 @@
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aTB-RY-Qlg">
+                        <rect key="frame" x="107" y="173" width="405" height="52"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="G4t-lx-fhi">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                 </subviews>

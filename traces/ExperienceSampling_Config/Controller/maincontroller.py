@@ -65,6 +65,8 @@ class MainController(NSWindowController):
 		config.write(functions.dumpJson(self.experiment))
 		config.close()
 		self.myWindow.close()
+		from PyObjCTools import AppHelper
+		AppHelper.stopEventLoop()
 		
 
 	@objc.IBAction
