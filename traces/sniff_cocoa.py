@@ -93,7 +93,7 @@ class Sniffer:
 					oldConfig = os.path.expanduser("~") + "/.traces/config." + datetime.datetime.now().isoformat() + ".log"
 
 					shutil.copy(os.path.expanduser("~") + "/.traces/config.log", oldConfig)
-					#os.remove(os.path.expanduser("~") + "/.traces/config.log")
+					os.remove(os.path.expanduser("~") + "/.traces/config.log")
 					
 					answersFileName = os.path.expanduser("~") + "/.traces/answers." + datetime.datetime.now().isoformat() + ".log"
 					answersFile = open(answersFileName, 'w')
