@@ -229,7 +229,6 @@ class Sniffer:
 			fileJson = open(os.path.expanduser("~") + "/.traces/config.log", 'r')
 			dataJson = json.load(fileJson)
 			self.experiment = functions.loadJson(dataJson)
-			functions.displayExperiment(self.experiment)
 			
 			print "Starting experience sampling"
 			self.exp = EventHandler(self.experiment)
