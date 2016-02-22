@@ -132,9 +132,11 @@ class EventHandler:
 		self.answers = []
 
 	def start_random_handler(self):
+		#if no question is already shown
 		if self.simpleAnswer.shown == False and self.MCQAnswer.shown == False: 
 			idToDelete = -1
 			for i in range(len(self.randomRules)):
+				#we make it wait the mentionned time
 				if self.randomRules[i].wait == True:
 					time = float(self.randomRules[i].timeToWait.split(":")[0]) * 60.0 + float(self.randomRules[i].timeToWait.split(":")[1])
 					self.randomRules[i].wait = False
@@ -145,6 +147,7 @@ class EventHandler:
 					self.showQuestion(self.randomRules[i].question)
 					break
 
+			# if the question is shown we delete it from the rules
 			if idToDelete != -1:
 				del self.randomRules[idToDelete]
 		else:
@@ -152,8 +155,9 @@ class EventHandler:
 				self.randomThread = threading.Timer(1.0, self.start_random_handler)
 				self.randomThread.start()
 
+
 	def start_key_handler(self):
-		#TODO may only need the keydown mask, rather than all three
+		#may only need the keydown mask, rather than all three
 		mask = (NSKeyDownMask | NSKeyUpMask | NSFlagsChangedMask)
 		NSEvent.addGlobalMonitorForEventsMatchingMask_handler_(mask, self.key_handler)
 

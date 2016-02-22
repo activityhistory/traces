@@ -9,6 +9,15 @@ from Model.Rule import Rule
 
 class RuleController(NSWindowController):
 
+	"""
+	To see connections between Outlets/Actions and the interface:
+	- load the corresponding view in XCode
+	- Click on Add files and add the corresponding controller
+	- Check on the connections investigator
+
+	"""
+
+	#edit window outlets
 	editWindow = objc.IBOutlet()
 	question = objc.IBOutlet()
 	event = objc.IBOutlet()
@@ -21,6 +30,7 @@ class RuleController(NSWindowController):
 	eventShortcut = objc.IBOutlet()
 	eventShortcutPopover = objc.IBOutlet()
 
+	#Key shortcut random outlets
 	randomShortcut = objc.IBOutlet()
 	randomContainer = objc.IBOutlet()
 	randomOne = objc.IBOutlet()
@@ -28,10 +38,12 @@ class RuleController(NSWindowController):
 	randomTwo = objc.IBOutlet()
 	stepperRandomTwo = objc.IBOutlet()
 
+	# time before event outlets
 	timeBefore = objc.IBOutlet()
 	timeBeforePopover = objc.IBOutlet()
 	addRuleButton = objc.IBOutlet()
 
+	#show rules window outlets
 	showRulesWindow = objc.IBOutlet()
 	rules = objc.IBOutlet()
 	questionUnunciated = objc.IBOutlet()
@@ -79,12 +91,12 @@ class RuleController(NSWindowController):
 
 		self.editWindow.makeKeyAndOrderFront_(self.editWindow)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when we choose a question
 	def choosingQuestion_(self, sender):
 		if self.question.objectValueOfSelectedItem() != "":
 			self.event.setEnabled_(True)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when choosing an event
 	def choosingEvent_(self, sender):
 		if self.event.objectValueOfSelectedItem() == "":
 			self.timeBefore.setEnabled_(False)
@@ -97,7 +109,7 @@ class RuleController(NSWindowController):
 				self.eventAppPopover.performClose_(self.eventAppPopover)
 				self.eventShortcutPopover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when choosing a keyboard event
 	def settingRandomShortcut_(self, sender):
 		self.randomOne.setStringValue_(self.stepperRandomOne.stringValue())
 		self.randomTwo.setStringValue_(self.stepperRandomTwo.stringValue())
@@ -107,7 +119,7 @@ class RuleController(NSWindowController):
 		elif self.randomShortcut.selectedCell().title() == 'No':
 			self.randomContainer.setHidden_(True)
 		
-	@objc.IBAction
+	@objc.IBAction # triggered when setting the first value of the random keyboard shortcut
 	def defineRandomOne_(self, sender):
 		if self.stepperRandomOne.intValue() > self.stepperRandomTwo.intValue():
 			self.stepperRandomOne.setIntValue_(self.stepperRandomTwo.intValue())
@@ -116,33 +128,35 @@ class RuleController(NSWindowController):
 
 		self.randomOne.setStringValue_(self.stepperRandomOne.stringValue())
 
-	@objc.IBAction
+	@objc.IBAction # triggered when setting the second value of the random keyboard shortcut
 	def defineRandomTwo_(self, sender):
 		if self.stepperRandomTwo.intValue() < 1:
 			self.stepperRandomTwo.setIntValue_(1)
 			
 		self.randomTwo.setStringValue_(self.stepperRandomTwo.stringValue())
 
-	@objc.IBAction
+	@objc.IBAction # triggered when choosing yes to "time before ..."
 	def timeBeforeAskingQuestion_(self, sender):
 		self.timeMinutes.setStringValue_(self.stepperMinutes.stringValue() + " Min")
 		self.timeSeconds.setStringValue_(self.stepperSeconds.stringValue() + " Sec")
 		self.timeBeforePopover.showRelativeToRect_ofView_preferredEdge_(sender.bounds(), sender, NSMaxXEdge)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when setting the minutes 
 	def defineTimeMinutes_(self, sender):
 		self.timeMinutes.setStringValue_(self.stepperMinutes.stringValue() + " Min")
 
-	@objc.IBAction
+	@objc.IBAction # triggered when setting the seconds
 	def defineTimeSeconds_(self, sender):
 		self.timeSeconds.setStringValue_(self.stepperSeconds.stringValue() + " Sec")
 
-	@objc.IBAction
+	@objc.IBAction # triggered when clicking on submit
 	def addRule_(self, sender):
+		#checkin fields
 		if self.question.objectValueOfSelectedItem() != "" and self.event.objectValueOfSelectedItem() != "" and \
 		(self.eventApp.objectValueOfSelectedItem() != "" or self.eventShortcut.objectValueOfSelectedItem() != "" or \
 		self.event.objectValueOfSelectedItem() == "Random"): 
 			
+			# getting the id of the question
 			id = int(self.question.objectValueOfSelectedItem()[9:10])-1
 			self.tempRule.question = self.experiment.questions[id]
 
@@ -183,7 +197,7 @@ class RuleController(NSWindowController):
 		self.rules.selectItemWithObjectValue_("")
 		self.showRulesWindow.makeKeyAndOrderFront_(self.showRules)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when choosing a rule to modify or delete
 	def showRuleDetails_(self, sender):
 		if self.rules.objectValueOfSelectedItem() == "":
 			self.questionUnunciated.setStringValue_("")
@@ -210,8 +224,9 @@ class RuleController(NSWindowController):
 			self.modifyButton.setTag_(id)
 			self.deleteButton.setTag_(id)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when clicking on modify
 	def modifyRule_(self, sender):
+		# if the tag equals -1 it means that we havent selected a valid rule
 		if sender.tag() != -1:
 			self.editWindow.setTitle_("Modify Rule")
 			self.addRuleButton.setTitle_("Modify Rule")
@@ -249,7 +264,7 @@ class RuleController(NSWindowController):
 			self.addRuleButton.setTag_(sender.tag())
 			self.editWindow.makeKeyAndOrderFront_(self.editWindow)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when clicking on delete
 	def deleteRule_(self, sender):
 		if sender.tag() != -1:
 			self.experiment.deleteRule(sender.tag())

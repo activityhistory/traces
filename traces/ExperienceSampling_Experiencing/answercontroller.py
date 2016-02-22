@@ -10,6 +10,14 @@ import os
 
 class AnswerController(NSWindowController):
 
+	"""
+	To see connections between Outlets/Actions and the interface:
+	- load the corresponding view in XCode
+	- Click on Add files and add the corresponding controller
+	- Check on the connections investigator
+
+	"""
+	
 	ununciated = objc.IBOutlet()
 	textAnswer = objc.IBOutlet()
 	choiceAnswer = objc.IBOutlet()

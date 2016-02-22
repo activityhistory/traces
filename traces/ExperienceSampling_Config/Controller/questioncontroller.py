@@ -9,6 +9,14 @@ from Model.Question import Question
 import functions
 class QuestionController(NSWindowController):
 
+	"""
+	To see connections between Outlets/Actions and the interface:
+	- load the corresponding view in XCode
+	- Click on Add files and add the corresponding controller
+	- Check on the connections investigator
+
+	"""
+
 	# windows outlets
 	editWindow = objc.IBOutlet()
 	questionWindow = objc.IBOutlet()
@@ -46,6 +54,7 @@ class QuestionController(NSWindowController):
 		self.main = main
 
 	def showAddWindow(self):
+		# reinitializing fields
 		self.tempQuestion = Question()
 		self.submitButton.setTag_(-1)
 		self.questionField.setStringValue_(self.tempQuestion.ununciated)
@@ -57,20 +66,25 @@ class QuestionController(NSWindowController):
 		self.editWindow.makeKeyAndOrderFront_(self.editWindow)
 
 	def showQuestions(self):
+		# reinitializing fields
+		self.modifyButton.setTag_(-1)
+		self.deleteButton.setTag_(-1)
 		self.questionsList.removeAllItems()
 		self.detailsUnunciated.setStringValue_("")
 		self.detailsUnunciated.setHidden_(True)
 		self.detailsType.setStringValue_("")
 		self.detailsType.setHidden_(True)
 		self.questionsList.addItemWithObjectValue_("")
+		#get all the questions
 		for i in range(0, len(self.experiment.questions)) :
 			self.questionsList.addItemWithObjectValue_("Question " + str(i+1) + ": " + self.experiment.questions[i].ununciated[0:20] + " ...")
 
 		self.questionsList.selectItemWithObjectValue_("")
 		self.questionWindow.makeKeyAndOrderFront_(self.questionWindow)
 
-	@objc.IBAction
+	@objc.IBAction # triggered when choosing a question to edit
 	def ShowQuestionDetails_(self, sender):
+		#as we choose a question, this Action goes off
 		if self.questionsList.objectValueOfSelectedItem() == "" :
 			self.detailsUnunciated.setStringValue_("")
 			self.detailsUnunciated.setHidden_(True)
@@ -95,7 +109,7 @@ class QuestionController(NSWindowController):
 			self.modifyButton.setTag_(id)
 			self.deleteButton.setTag_(id)
 	
-	@objc.IBAction
+	@objc.IBAction # triggered when clicking on modify
 	def modifyQuestion_(self, sender):
 		if sender.tag() != -1 :
 			self.questionWindow.orderOut_(self.questionWindow)
@@ -103,6 +117,7 @@ class QuestionController(NSWindowController):
 			self.questionType.setState_atRow_column_(NSOnState, self.tempQuestion.type-1, 0)
 			if self.tempQuestion.type == 2:
 				prefix = "choice"
+				# retreiving every choice of the question
 				for i in range(0, len(self.tempQuestion.choices)-1):
 					exec("self.%s%d.setStringValue_('%s')" % (prefix, i+1, self.tempQuestion.choices[i]))
 
@@ -123,6 +138,7 @@ class QuestionController(NSWindowController):
 
 	@objc.IBAction
 	def addChoices_(self, sender):
+		# counting the number of choices filled so that we can alloc the necessary space
 		i = 0
 		if self.choice1.stringValue() != "" :
 			i += 1

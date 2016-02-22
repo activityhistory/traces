@@ -4,15 +4,23 @@ from Cocoa import *
 from Foundation import NSObject
 from questioncontroller import QuestionController
 from rulecontroller import RuleController
-from answercontroller import AnswerController
-from eventhandler import EventHandler
 import functions, threading, json
 import sys, os
 sys.path.insert(0, '..')
 
+#the sys.path.insert(...) allows us to import modules from the parent folder
+
 from Model.Experiment import Experiment
 
 class MainController(NSWindowController):
+
+	"""
+	To see connections between Outlets/Actions and the interface:
+	- load the corresponding view in XCode
+	- Click on Add files and add the corresponding controller
+	- Check on the connections investigator
+
+	"""
 
 	myWindow = objc.IBOutlet()
 	nbQuestions = objc.IBOutlet()
@@ -60,6 +68,7 @@ class MainController(NSWindowController):
 
 	@objc.IBAction
 	def startExperiment_(self, sender):
+		# creating JSON file containing the experiement: config file
 		configFileName = os.path.expanduser("~") + "/.traces/config.log"
 		config = open(configFileName, 'w')
 		config.write(functions.dumpJson(self.experiment))
@@ -71,6 +80,7 @@ class MainController(NSWindowController):
 
 	@objc.IBAction
 	def exit_(self, sender):
+		# exiting experience Sampling ...
 		self.close()
 		from PyObjCTools import AppHelper
 		AppHelper.stopEventLoop()

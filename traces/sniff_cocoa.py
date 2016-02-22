@@ -89,15 +89,18 @@ class Sniffer:
 			def applicationWillTerminate_(self, application):
 				t = cfg.NOW()
 
+				# Logging the answers if an experiment has been set up
 				if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
 					oldConfig = os.path.expanduser("~") + "/.traces/config." + datetime.datetime.now().isoformat() + ".log"
 
+					# copying the config file
 					shutil.copy(os.path.expanduser("~") + "/.traces/config.log", oldConfig)
 					os.remove(os.path.expanduser("~") + "/.traces/config.log")
 					
 					answersFileName = os.path.expanduser("~") + "/.traces/answers." + datetime.datetime.now().isoformat() + ".log"
 					answersFile = open(answersFileName, 'w')
 					answersFile.write(json.dumps(sc.exp.answers, default=lambda o: o.__dict__, sort_keys=True, indent=4))
+					
 				# close all open app and window listeners
 				sc.ar.stop_app_observers()
 
@@ -202,6 +205,7 @@ class Sniffer:
 				menuitem.setKeyEquivalentModifierMask_(NSShiftKeyMask + NSCommandKeyMask)
 				self.menu.addItem_(menuitem)
 
+				# if a config has been set up, set the menu button
 				if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
 					menuitem = NSMenuItem.separatorItem()
 					self.menu.addItem_(menuitem)
@@ -223,6 +227,8 @@ class Sniffer:
 
 		return AppDelegate
 
+	# this function will look for the config file, recreate a experiment object from it
+	# then load the handler
 	def runEventHandler(self):
 		try:
 			print "Experience Sampling has been set up"
@@ -252,6 +258,8 @@ class Sniffer:
 		# set up the application
 		self.app = NSApplication.sharedApplication()
 		self.delegate = self.createAppDelegate().alloc().init()
+
+		# checking from config to start the experience sampling
 		if os.path.isfile(os.path.expanduser("~") + "/.traces/config.log"):
 			self.runEventHandler()
 		self.delegate.activity_tracker = self.activity_tracker
