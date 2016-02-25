@@ -233,12 +233,16 @@ class EventHandler:
 				self.keyThread = threading.Timer(1.0, self.key_handler, [event])
 				self.keyThread.start()
 
-	def showQuestion(self, question):
+	def showQuestion(self, question, modified = -1):
 		if question.type == 1:
 			self.simpleAnswer.initWithWindowNibName_('SimpleAnswer')
 			self.simpleAnswer.showWindow_(self.simpleAnswer)
 			self.answersWindow.setHandler(self)
-			self.simpleAnswer.showSimpleQuestion(question, self)
+			if modified == -1:
+				self.simpleAnswer.showSimpleQuestion(question, self)
+			else:
+				self.simpleAnswer.showSimpleQuestion(question, self, modified)
+
 		elif question.type == 2:
 			self.MCQAnswer.initWithWindowNibName_('MCQAnswer')
 			self.MCQAnswer.showWindow_(self.MCQAnswer)
@@ -254,4 +258,7 @@ class EventHandler:
 	def modifyAnswer(self, id):
 		for i in range(len(self.experiment.questions)):
 			if self.experiment.questions[i].ununciated == self.answers[id].question:
-				self.showQuestion(self.experiment.questions[i])
+				self.showQuestion(self.experiment.questions[i], id)
+
+	def deleteAnswer(self, id):
+		del self.answers[id]
