@@ -247,7 +247,10 @@ class EventHandler:
 			self.MCQAnswer.initWithWindowNibName_('MCQAnswer')
 			self.MCQAnswer.showWindow_(self.MCQAnswer)
 			self.answersWindow.setHandler(self)
-			self.MCQAnswer.showMCQuestion(question, self)
+			if modified == -1:
+				self.MCQAnswer.showMCQuestion(question, self)
+			else:
+				self.MCQAnswer.showMCQuestion(question, self, modified)
 
 	def showAnswers(self):
 		self.answersWindow.initWithWindowNibName_('Answers')

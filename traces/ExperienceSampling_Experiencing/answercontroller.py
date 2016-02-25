@@ -60,7 +60,7 @@ class AnswerController(NSWindowController):
 		if modified != -1:
 			self.idToModify = modified
 
-	def showMCQuestion(self, question, handler):
+	def showMCQuestion(self, question, handler, modified = -1):
 		self.answer = Answer()
 		self.handler = handler
 		self.ununciated.setStringValue_(question.ununciated)
@@ -79,6 +79,8 @@ class AnswerController(NSWindowController):
 		self.answerWindow.makeMainWindow()
 		self.answerWindow.setLevel_(NSFloatingWindowLevel)
 		self.shown = True
+		if modified != -1:
+			self.idToModify = modified
 
 	def setHandler(self, handler):
 		self.handler = handler
@@ -96,13 +98,18 @@ class AnswerController(NSWindowController):
 
 		self.answerWindow.close()
 		self.shown = False
-
+		self.close()
+		
 	@objc.IBAction
 	def submitMCQAnswer_(self, sender):
 		self.answer.question = self.ununciated.stringValue()
 		self.answer.time = str(datetime.datetime.now())
 		self.answer.value = str(self.choiceAnswer.selectedCell().title())
-		self.handler.answers.append(self.answer)
+		if self.idToModify == -1:
+			self.handler.answers.append(self.answer)
+		else:
+			self.handler.answers[self.idToModify] = self.answer
+			self.idToModify = -1
 		
 		self.answerWindow.close()
 		self.shown = False
